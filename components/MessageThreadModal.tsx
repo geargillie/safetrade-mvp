@@ -121,7 +121,7 @@ export default function MessageThreadModal({
 
             setMessages(prev => [...prev, {
               ...newMessage,
-              sender: senderData
+              sender: senderData || undefined // Fix: Convert null to undefined
             }])
           }
         }

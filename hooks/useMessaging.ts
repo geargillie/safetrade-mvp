@@ -337,7 +337,7 @@ export const useConversationMessages = (conversationId: string, currentUserId: s
 
             setMessages(prev => [...prev, {
               ...newMessage,
-              sender: senderData
+              sender: senderData || undefined // Fix: Convert null to undefined
             }])
 
             // Mark as read if user is viewing the conversation

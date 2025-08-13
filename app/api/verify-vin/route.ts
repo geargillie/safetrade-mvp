@@ -2,6 +2,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+// Define types for better TypeScript support
+interface Alert {
+  level: string;
+  message: string;
+  action: string;
+}
+
+interface VerificationReport {
+  vin: string;
+  isValid: boolean;
+  isStolen: boolean;
+  vehicleInfo: any;
+  stolenCheck: {
+    checked: boolean;
+    sources: string[];
+    isStolen: boolean;
+    lastChecked: string;
+  };
+  alerts: Alert[];
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { vin } = await request.json()
@@ -35,8 +56,8 @@ export async function POST(request: NextRequest) {
     // Step 4: Additional validation checks
     const validationResult = performVINValidation(cleanVIN)
 
-    // Compile comprehensive report
-    const verificationReport = {
+    // Compile comprehensive report with proper typing
+    const verificationReport: VerificationReport = {
       vin: cleanVIN,
       isValid: validationResult.isValid,
       isStolen: nicbResult.isStolen || stolenCheck.isStolen,
@@ -47,7 +68,7 @@ export async function POST(request: NextRequest) {
         isStolen: nicbResult.isStolen || stolenCheck.isStolen,
         lastChecked: new Date().toISOString()
       },
-      alerts: []
+      alerts: [] // Now properly typed as Alert[]
     }
 
     // Add alerts based on findings

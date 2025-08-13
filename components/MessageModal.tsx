@@ -281,7 +281,7 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
 
             setMessages(prev => [...prev, {
               ...newMessage,
-              sender: senderData
+              sender: senderData || undefined // Fix: Convert null to undefined
             }])
             
             scrollToBottom()
