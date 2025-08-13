@@ -30,7 +30,7 @@ interface ListingCardProps {
   showVerificationBadge?: boolean;  // For future use
 }
 
-export default function ListingCard({ listing, showVerificationBadge: _showVerificationBadge = true }: ListingCardProps) {
+export default function ListingCard({ listing }: ListingCardProps) {
   // Get primary image
   const primaryImage = listing.listing_images?.find((img) => img.is_primary) 
     || listing.listing_images?.[0];

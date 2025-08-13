@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Test the exact same verification logic as the main API
     const mockDocumentImage = 'data:image/jpeg;base64,' + 'x'.repeat(60000) // Large enough to pass size check

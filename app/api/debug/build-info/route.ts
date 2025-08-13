@@ -30,11 +30,11 @@ export async function GET() {
     // Check if we can access the file system (might be restricted in some deployments)
     let file_system_access = 'unknown'
     try {
-      const fs = require('fs')
-      const path = require('path')
+      const fs = await import('fs')
+      const path = await import('path')
       const createPagePath = path.join(process.cwd(), 'app', 'listings', 'create', 'page.tsx')
       file_system_access = fs.existsSync(createPagePath) ? 'accessible' : 'file_not_found'
-    } catch (err) {
+    } catch {
       file_system_access = 'restricted'
     }
 
