@@ -9,14 +9,25 @@ import FreeIdentityVerification from '@/components/FreeIdentityVerification';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{
+    id: string;
+    email?: string;
+    user_metadata?: {
+      first_name?: string;
+      last_name?: string;
+    };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
   const [showVerification, setShowVerification] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<any>(null);
+  const [verificationStatus, setVerificationStatus] = useState<{
+    verified?: boolean;
+    status?: string;
+  } | null>(null);
 
   useEffect(() => {
     checkUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkUser = async () => {
@@ -47,7 +58,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleVerificationComplete = (result: any) => {
+  const handleVerificationComplete = (result: { verified?: boolean; status?: string }) => {
     console.log('Verification completed:', result);
     if (result.verified) {
       setIsVerified(true);
@@ -165,7 +176,7 @@ export default function ProfilePage() {
         )}
 
         {/* Verification Modal */}
-        {showVerification && (
+        {showVerification && user && (
           <div className="mt-6 border-t border-gray-200 pt-6">
             <FreeIdentityVerification
               userId={user.id}

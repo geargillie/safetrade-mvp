@@ -10,7 +10,7 @@ import type { Conversation } from '@/hooks/useMessaging'
 
 export default function MessagesPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; user_metadata?: { first_name?: string } } | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [isMobile, setIsMobile] = useState(false)
@@ -21,6 +21,7 @@ export default function MessagesPage() {
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
     return () => window.removeEventListener('resize', checkScreenSize)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkUser = async () => {

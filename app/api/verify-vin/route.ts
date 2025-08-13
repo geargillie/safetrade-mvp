@@ -9,11 +9,22 @@ interface Alert {
   action: string;
 }
 
+interface VehicleInfo {
+  make?: string;
+  model?: string;
+  year?: string;
+  vehicleType?: string;
+  engineSize?: string;
+  fuelType?: string;
+  bodyClass?: string;
+  plantCountry?: string;
+}
+
 interface VerificationReport {
   vin: string;
   isValid: boolean;
   isStolen: boolean;
-  vehicleInfo: any;
+  vehicleInfo: VehicleInfo | null;
   stolenCheck: {
     checked: boolean;
     sources: string[];
@@ -96,11 +107,12 @@ export async function POST(request: NextRequest) {
       data: verificationReport
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('VIN verification error:', error)
+    const err = error as { message?: string }
     return NextResponse.json({ 
       error: 'VIN verification failed',
-      details: error.message 
+      details: err.message || 'Unknown error'
     }, { status: 500 })
   }
 }
@@ -108,7 +120,7 @@ export async function POST(request: NextRequest) {
 // Check our local stolen vehicle database
 async function checkLocalStolenDatabase(vin: string) {
   try {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('stolen_vehicles')
       .select('*')
       .eq('vin', vin)
@@ -152,17 +164,22 @@ async function fetchNHTSAData(vin: string) {
 
     const data = await response.json()
     
+    interface NHTSAResult {
+      Variable: string;
+      Value: string;
+    }
+    
     if (data.Results) {
-      const results = data.Results
+      const results: NHTSAResult[] = data.Results
       return {
-        make: results.find((r: any) => r.Variable === 'Make')?.Value || 'Unknown',
-        model: results.find((r: any) => r.Variable === 'Model')?.Value || 'Unknown',
-        year: results.find((r: any) => r.Variable === 'Model Year')?.Value || 'Unknown',
-        vehicleType: results.find((r: any) => r.Variable === 'Vehicle Type')?.Value || 'Unknown',
-        engineSize: results.find((r: any) => r.Variable === 'Engine Number of Cylinders')?.Value,
-        fuelType: results.find((r: any) => r.Variable === 'Fuel Type - Primary')?.Value,
-        bodyClass: results.find((r: any) => r.Variable === 'Body Class')?.Value,
-        plantCountry: results.find((r: any) => r.Variable === 'Plant Country')?.Value,
+        make: results.find((r) => r.Variable === 'Make')?.Value || 'Unknown',
+        model: results.find((r) => r.Variable === 'Model')?.Value || 'Unknown',
+        year: results.find((r) => r.Variable === 'Model Year')?.Value || 'Unknown',
+        vehicleType: results.find((r) => r.Variable === 'Vehicle Type')?.Value || 'Unknown',
+        engineSize: results.find((r) => r.Variable === 'Engine Number of Cylinders')?.Value,
+        fuelType: results.find((r) => r.Variable === 'Fuel Type - Primary')?.Value,
+        bodyClass: results.find((r) => r.Variable === 'Body Class')?.Value,
+        plantCountry: results.find((r) => r.Variable === 'Plant Country')?.Value,
         lastUpdated: new Date().toISOString()
       }
     }
@@ -287,7 +304,7 @@ function validateVINChecksum(vin: string): boolean {
 }
 
 // Store verification result for future reference
-async function storeVerificationResult(vin: string, result: any) {
+async function storeVerificationResult(vin: string, result: VerificationReport) {
   try {
     await supabase
       .from('vin_verification_history')

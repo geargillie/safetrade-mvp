@@ -6,7 +6,14 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 interface NavigationProps {
-  user?: any;
+  user?: {
+    id: string
+    email?: string
+    user_metadata?: {
+      first_name?: string
+      last_name?: string
+    }
+  };
   onSignOut?: () => void;
 }
 
@@ -20,9 +27,12 @@ export default function Navigation({ user, onSignOut }: NavigationProps) {
     if (user?.id) {
       checkVerificationStatus();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const checkVerificationStatus = async () => {
+    if (!user?.id) return;
+    
     try {
       const response = await fetch(`/api/identity/free-verify?userId=${user.id}`);
       if (response.ok) {

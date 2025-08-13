@@ -6,9 +6,10 @@ import { supabase } from '@/lib/supabase'
 
 interface PhoneVerificationProps {
   onVerified: () => void
+  userId?: string
 }
 
-export default function PhoneVerification({ onVerified }: PhoneVerificationProps) {
+export default function PhoneVerification({ onVerified, userId }: PhoneVerificationProps) {
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [step, setStep] = useState<'phone' | 'code'>('phone')
@@ -51,7 +52,7 @@ export default function PhoneVerification({ onVerified }: PhoneVerificationProps
       } else {
         setMessage(`Error: ${data.error}`)
       }
-    } catch (error) {
+    } catch {
       setMessage('Failed to send code. Please try again.')
     } finally {
       setLoading(false)
@@ -67,7 +68,7 @@ export default function PhoneVerification({ onVerified }: PhoneVerificationProps
       const response = await fetch('/api/verify-phone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code, action: 'verify' })
+        body: JSON.stringify({ phone, code, action: 'verify', userId })
       })
 
       const data = await response.json()
@@ -91,7 +92,7 @@ export default function PhoneVerification({ onVerified }: PhoneVerificationProps
       } else {
         setMessage(`Error: ${data.error}`)
       }
-    } catch (error) {
+    } catch {
       setMessage('Verification failed. Please try again.')
     } finally {
       setLoading(false)
@@ -120,7 +121,7 @@ export default function PhoneVerification({ onVerified }: PhoneVerificationProps
               maxLength={14}
             />
             <p className="text-xs text-gray-500 mt-1">
-              We'll send you a verification code
+              We&apos;ll send you a verification code
             </p>
           </div>
 

@@ -9,12 +9,12 @@ import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 
 export default function CreateListing() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isVerified, setIsVerified] = useState<boolean | null>(null)
   const [showVerification, setShowVerification] = useState(false)
-  const [verificationStatus, setVerificationStatus] = useState<any>(null)
+  const [verificationStatus, setVerificationStatus] = useState<{ verified: boolean; status: string } | null>(null)
   
   const [formData, setFormData] = useState({
     title: '',
@@ -33,13 +33,38 @@ export default function CreateListing() {
   const [images, setImages] = useState<string[]>([])
   const [vinVerification, setVinVerification] = useState<{
     loading: boolean
-    result: any
+    result: { 
+      success?: boolean; 
+      data?: unknown;
+      isValid?: boolean;
+      isStolen?: boolean;
+      warnings?: string[];
+      alerts?: { message: string }[];
+      stolenCheck?: { 
+        details?: { source?: string }; 
+        lastChecked?: string 
+      };
+      vehicleInfo?: {
+        make?: string;
+        model?: string;
+        year?: string;
+        msrp?: number;
+        sources?: string[];
+        error?: string;
+        bodyStyle?: string;
+        engineSize?: string;
+        transmission?: string;
+        fuelType?: string;
+        color?: string;
+        trim?: string;
+      };
+    } | null
     error: string
   }>({ loading: false, result: null, error: '' })
 
   useEffect(() => {
     checkUser()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -100,7 +125,7 @@ export default function CreateListing() {
     }
   }
 
-  const handleVerificationComplete = (result: any) => {
+  const handleVerificationComplete = (result: { verified?: boolean; status?: string; score?: number; message?: string }) => {
     console.log('Verification completed:', result)
     if (result.verified) {
       setIsVerified(true)
@@ -108,7 +133,10 @@ export default function CreateListing() {
       setShowVerification(false)
       setMessage('✅ Identity verified successfully! You can now create listings.')
     } else {
-      setVerificationStatus(result)
+      setVerificationStatus({ 
+        verified: result.verified || false,
+        status: result.status || 'failed'
+      })
       setMessage(`Identity verification: ${result.message}`)
     }
   }
@@ -155,7 +183,7 @@ export default function CreateListing() {
     return 'Fair'
   }
 
-  const generateVehicleDescription = (vehicleInfo: any) => {
+  const generateVehicleDescription = (vehicleInfo: { make?: string; model?: string; year?: string; fuelType?: string; bodyClass?: string; error?: string; engineSize?: string; transmission?: string; bodyStyle?: string; color?: string; msrp?: number; sources?: string[] }) => {
     if (!vehicleInfo || vehicleInfo.error) return ''
     
     const parts = []
@@ -279,11 +307,11 @@ export default function CreateListing() {
           error: data.message || 'Verification failed' 
         })
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setVinVerification({ 
         loading: false, 
         result: null, 
-        error: error.message 
+        error: (error as { message?: string }).message || 'Unknown error' 
       })
     }
   }
@@ -294,6 +322,10 @@ export default function CreateListing() {
     setMessage('')
 
     try {
+      if (!user) {
+        throw new Error('Please log in to create a listing')
+      }
+
       // Check verification status again before submission
       if (!isVerified) {
         throw new Error('Identity verification required to create listings')
@@ -359,8 +391,9 @@ export default function CreateListing() {
         router.push('/listings')
       }, 2000)
 
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error: unknown) {
+      const err = error as { message?: string }
+      setMessage(`Error: ${err.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -385,7 +418,7 @@ export default function CreateListing() {
             </h1>
             
             <p className="text-gray-600 mb-6">
-              To maintain SafeTrade's military-grade security standards, all sellers must verify their identity 
+              To maintain SafeTrade&apos;s military-grade security standards, all sellers must verify their identity 
               before creating listings. This helps protect buyers and builds trust in our marketplace.
             </p>
 
@@ -665,7 +698,7 @@ export default function CreateListing() {
                           <strong>VIN Warning</strong>
                         </div>
                         <div className="text-sm mt-1">
-                          {vinVerification.result.alerts?.map((alert: any) => alert.message).join(', ')}
+                          {vinVerification.result.alerts?.map((alert: { message: string }) => alert.message).join(', ')}
                         </div>
                       </div>
                     )}

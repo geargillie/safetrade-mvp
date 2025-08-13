@@ -27,7 +27,12 @@ interface Conversation {
 interface MessageModalProps {
   isOpen: boolean
   onClose: () => void
-  listing: any
+  listing: {
+    id: string
+    title: string
+    price?: number
+    seller_id: string
+  }
   currentUserId: string
   existingConversationId?: string // Add this prop for when seller opens existing conversation
 }
@@ -50,7 +55,8 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
       // Cleanup any subscriptions
       supabase.removeAllChannels()
     }
-  }, [isOpen, listing, currentUserId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, listing, currentUserId, existingConversationId])
 
   useEffect(() => {
     scrollToBottom()
@@ -78,7 +84,7 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
       }
 
       // Find or create conversation
-      let conv = await findOrCreateConversation()
+      const conv = await findOrCreateConversation()
       if (!conv) {
         setError("Failed to create conversation")
         setLoading(false)
@@ -257,7 +263,7 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
   }
 
   const setupRealTimeSubscription = (conversationId: string) => {
-    const channel = supabase
+    supabase
       .channel(`conversation:${conversationId}`)
       .on('postgres_changes', 
         { 
@@ -289,6 +295,8 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
         }
       )
       .subscribe()
+    // Return cleanup function if needed
+    return () => supabase.removeAllChannels()
 
     console.log('Real-time subscription set up for conversation:', conversationId)
   }
@@ -368,16 +376,17 @@ export default function MessageModal({ isOpen, onClose, listing, currentUserId, 
       setMessages(prev => prev.filter(msg => !msg.id.startsWith('temp-')))
       await loadMessages(conversation.id)
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error sending message:', error)
       
       // More specific error messages
       let errorMessage = 'Failed to send message'
-      if (error.message?.includes('row-level security')) {
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      if (errorMsg.includes('row-level security')) {
         errorMessage = 'Permission denied. Please try refreshing the page and logging in again.'
-      } else if (error.message?.includes('conversation')) {
+      } else if (errorMsg.includes('conversation')) {
         errorMessage = 'Lost connection to conversation. Please try again.'
-      } else if (error.message?.includes('authenticated')) {
+      } else if (errorMsg.includes('authenticated')) {
         errorMessage = 'You need to be logged in to send messages.'
       }
       

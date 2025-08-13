@@ -30,7 +30,7 @@ export default function MessageButton({ listing, currentUserId, className = '' }
     setLoading(true)
     
     try {
-      const conversationId = await getOrCreateConversation(
+      await getOrCreateConversation(
         listing.id,
         currentUserId,
         listing.seller_id
@@ -38,7 +38,7 @@ export default function MessageButton({ listing, currentUserId, className = '' }
       
       // Redirect to messages page
       router.push('/messages')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error starting conversation:', error)
       alert('Failed to start conversation. Please try again.')
     } finally {

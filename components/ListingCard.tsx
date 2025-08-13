@@ -5,14 +5,31 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  make: string;
+  model?: string;
+  year?: number;
+  mileage?: number;
+  city?: string;
+  vin_verified?: boolean;
+  condition?: string;
+  created_at: string;
+  seller_id: string;
+  listing_images?: { image_url: string; is_primary?: boolean }[];
+  user_profiles?: { identity_verified?: boolean; first_name?: string; last_name?: string };
+}
+
 interface ListingCardProps {
-  listing: any;
+  listing: Listing;
   showVerificationBadge?: boolean;
 }
 
 export default function ListingCard({ listing, showVerificationBadge = true }: ListingCardProps) {
   // Get primary image
-  const primaryImage = listing.listing_images?.find((img: any) => img.is_primary) 
+  const primaryImage = listing.listing_images?.find((img) => img.is_primary) 
     || listing.listing_images?.[0];
 
   // Check if seller is verified

@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback } from 'react';
 
 interface FreeIdentityVerificationProps {
   userId: string;
-  onComplete: (result: any) => void;
+  onComplete: (result: { verified?: boolean; status?: string; score?: number; message?: string }) => void;
   onError: (error: string) => void;
 }
 
@@ -18,8 +18,7 @@ export default function FreeIdentityVerification({
   const [currentStep, setCurrentStep] = useState<VerificationStep>('intro');
   const [loading, setLoading] = useState(false);
   const [documentImage, setDocumentImage] = useState<string | null>(null);
-  const [extractedData, setExtractedData] = useState<any>(null);
-  const [verificationResult, setVerificationResult] = useState<any>(null);
+  const [verificationResult, setVerificationResult] = useState<{ verified?: boolean; score?: number; message?: string } | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,10 +51,11 @@ export default function FreeIdentityVerification({
         await performRealTimeVerification(base64);
       };
       reader.readAsDataURL(file);
-    } catch (error) {
+    } catch {
       onError('Failed to process document');
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onError]);
 
   // Real-time government ID verification
@@ -83,16 +83,14 @@ export default function FreeIdentityVerification({
       
       if (result.verified) {
         setCurrentStep('complete');
-        setTimeout(() => {
-          onComplete(result);
-        }, 2000);
+        // Don't auto-call onComplete, let user click the continue button
       } else {
         onError(result.message || 'ID verification failed');
         setCurrentStep('document');
       }
       
-    } catch (error: any) {
-      onError('Government ID verification failed: ' + error.message);
+    } catch (error: unknown) {
+      onError('Government ID verification failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
       setCurrentStep('document');
     } finally {
       setLoading(false);
@@ -114,7 +112,7 @@ export default function FreeIdentityVerification({
       <div className="bg-green-50 rounded-lg p-4 mb-6">
         <h3 className="font-semibold text-green-900 mb-2">✅ Real-time Government Verification</h3>
         <div className="text-sm text-green-800 space-y-1 text-left">
-          <p>• Upload driver's license, passport, or state ID</p>
+          <p>• Upload driver&apos;s license, passport, or state ID</p>
           <p>• Instant verification with government databases</p>
           <p>• Bank-level security and encryption</p>
           <p>• Data deleted after verification</p>
@@ -129,7 +127,7 @@ export default function FreeIdentityVerification({
       </button>
       
       <p className="text-xs text-gray-500 mt-4">
-        Powered by SafeTrade's secure verification system
+        Powered by SafeTrade&apos;s secure verification system
       </p>
     </div>
   );
@@ -139,7 +137,7 @@ export default function FreeIdentityVerification({
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold mb-2">Upload Government ID</h3>
         <p className="text-gray-600">
-          Upload a clear photo of your driver's license, passport, or government-issued ID
+          Upload a clear photo of your driver&apos;s license, passport, or government-issued ID
         </p>
       </div>
 
@@ -170,6 +168,7 @@ export default function FreeIdentityVerification({
           </div>
         ) : (
           <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={documentImage} 
               alt="Uploaded document" 
@@ -180,7 +179,6 @@ export default function FreeIdentityVerification({
               <button
                 onClick={() => {
                   setDocumentImage(null);
-                  setExtractedData(null);
                 }}
                 className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600"
                 disabled={loading}
@@ -195,7 +193,7 @@ export default function FreeIdentityVerification({
       <div className="mt-6 bg-blue-50 rounded-lg p-4">
         <h4 className="font-medium text-blue-900 mb-2">📋 Accepted Documents:</h4>
         <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Driver's License (front side)</li>
+          <li>• Driver&apos;s License (front side)</li>
           <li>• Passport (photo page)</li>
           <li>• State ID Card</li>
           <li>• National ID Card</li>
@@ -257,7 +255,7 @@ export default function FreeIdentityVerification({
       </p>
       
       {verificationResult && (
-        <div className="bg-green-50 rounded-lg p-4 text-left">
+        <div className="bg-green-50 rounded-lg p-4 text-left mb-6">
           <h4 className="font-medium text-green-900 mb-2">📋 Verification Details:</h4>
           <div className="text-sm text-green-800 space-y-1">
             <p>• Document Type: Government ID</p>
@@ -267,6 +265,13 @@ export default function FreeIdentityVerification({
           </div>
         </div>
       )}
+      
+      <button
+        onClick={() => onComplete(verificationResult || { verified: true })}
+        className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium"
+      >
+        Continue to Complete Registration
+      </button>
     </div>
   );
 

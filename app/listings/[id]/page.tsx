@@ -43,7 +43,7 @@ export default function ListingDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [listing, setListing] = useState<Listing | null>(null)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [error, setError] = useState<string | null>(null)
@@ -92,9 +92,10 @@ export default function ListingDetailPage() {
       }
 
       setListing(listingData)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading listing:', err)
-      setError(err.message)
+      const error = err as { message?: string }
+      setError(error.message || 'Unknown error')
     } finally {
       setLoading(false)
     }
@@ -193,10 +194,13 @@ export default function ListingDetailPage() {
                 <>
                   {/* Main Image */}
                   <div className="aspect-w-16 aspect-h-10 bg-gray-100">
-                    <img
-                      src={listing.images[selectedImageIndex]?.image_url}
+                    <Image
+                      src={listing.images[selectedImageIndex]?.image_url || '/placeholder.jpg'}
                       alt={listing.title}
+                      width={800}
+                      height={384}
                       className="w-full h-96 object-cover"
+                      priority
                     />
                   </div>
                   
@@ -214,9 +218,11 @@ export default function ListingDetailPage() {
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                           >
-                            <img
-                              src={image.image_url}
+                            <Image
+                              src={image.image_url || '/placeholder.jpg'}
                               alt={`${listing.title} - Image ${index + 1}`}
+                              width={80}
+                              height={80}
                               className="w-full h-full object-cover"
                             />
                           </button>

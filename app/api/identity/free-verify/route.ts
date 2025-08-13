@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// Types for verification data
+interface VerificationData {
+  documentImage?: string;
+  selfieImage?: string;
+  livenessImages?: string[];
+  timestamp?: string;
+}
+
 // Simple verification scoring system
-function calculateVerificationScore(data: any): { score: number; reasons: string[] } {
+function calculateVerificationScore(data: VerificationData): { score: number; reasons: string[] } {
   let score = 0;
   const reasons: string[] = [];
 
@@ -37,12 +45,12 @@ function calculateVerificationScore(data: any): { score: number; reasons: string
 }
 
 // Simulate basic fraud detection
-function performFraudCheck(data: any): { riskLevel: 'low' | 'medium' | 'high'; flags: string[] } {
+function performFraudCheck(data: VerificationData): { riskLevel: 'low' | 'medium' | 'high'; flags: string[] } {
   const flags: string[] = [];
   let riskLevel: 'low' | 'medium' | 'high' = 'low';
 
   // Check for suspicious patterns (this is very basic - you'd enhance this)
-  const timestamp = new Date(data.timestamp);
+  const timestamp = new Date(data.timestamp || new Date());
   const now = new Date();
   const timeDiff = now.getTime() - timestamp.getTime();
 

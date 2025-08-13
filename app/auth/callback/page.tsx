@@ -10,9 +10,65 @@ export default function AuthCallback() {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    handleEmailConfirmation()
-  }, [])
+  const createUserProfileIfNeeded = async (user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) => {
+    try {
+      console.log('Creating user profile after email confirmation for user:', user.id)
+      
+      // Get stored profile data from localStorage
+      let profileData = null
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('pendingProfileData')
+        if (stored) {
+          profileData = JSON.parse(stored)
+          localStorage.removeItem('pendingProfileData') // Clean up
+        }
+      }
+      
+      // Use stored data or extract from user metadata
+      const firstName = profileData?.firstName || user.user_metadata?.first_name || ''
+      const lastName = profileData?.lastName || user.user_metadata?.last_name || ''
+      const email = profileData?.email || user.email || ''
+      
+      if (!firstName || !lastName) {
+        console.warn('Missing first/last name for profile creation')
+        return
+      }
+      
+      // Get the current session to use for authenticated API call
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        console.error('No access token available for profile creation')
+        return
+      }
+      
+      console.log('Calling API to create profile with authenticated session')
+      
+      // Use the new API endpoint with proper authentication
+      const response = await fetch('/api/auth/create-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email
+        })
+      })
+      
+      const result = await response.json()
+      
+      if (!response.ok) {
+        console.error('Profile creation API failed:', result)
+      } else {
+        console.log('Profile created successfully via API:', result)
+      }
+    } catch (error) {
+      console.error('Profile creation error:', error)
+    }
+  }
 
   const handleEmailConfirmation = async () => {
     try {
@@ -26,13 +82,38 @@ export default function AuthCallback() {
         return
       }
 
-      if (session) {
+      if (session?.user) {
         setMessage('Email confirmed successfully!')
         
-        // Redirect to phone verification or dashboard
-        setTimeout(() => {
-          router.push('/auth/register?step=phone')
-        }, 2000)
+        // Create user profile now that we have an authenticated session
+        await createUserProfileIfNeeded(session.user)
+        
+        // Check what step the user should go to next
+        try {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('phone_verified, identity_verified')
+            .eq('id', session.user.id)
+            .single()
+          
+          let nextStep = 'verify_phone' // Default next step after email confirmation
+          
+          if (profile?.identity_verified) {
+            nextStep = 'complete'
+          } else if (profile?.phone_verified) {
+            nextStep = 'verify_identity'
+          }
+          
+          setTimeout(() => {
+            router.push(`/auth/register?step=${nextStep}`)
+          }, 2000)
+        } catch (profileError) {
+          console.error('Error checking profile:', profileError)
+          // Default to phone verification step
+          setTimeout(() => {
+            router.push('/auth/register?step=verify_phone')
+          }, 2000)
+        }
       } else {
         setMessage('Email confirmation successful! Please continue with registration.')
         setTimeout(() => {
@@ -46,6 +127,11 @@ export default function AuthCallback() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    handleEmailConfirmation()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">

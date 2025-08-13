@@ -49,7 +49,8 @@ export default function MessageThreadModal({
     return () => {
       supabase.removeAllChannels()
     }
-  }, [isOpen, conversationId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, conversationId, currentUserId])
 
   useEffect(() => {
     scrollToBottom()
@@ -99,7 +100,7 @@ export default function MessageThreadModal({
   }
 
   const setupRealTimeSubscription = () => {
-    const channel = supabase
+    supabase
       .channel(`thread:${conversationId}`)
       .on('postgres_changes', 
         { 

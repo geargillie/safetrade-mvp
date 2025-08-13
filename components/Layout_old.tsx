@@ -17,7 +17,7 @@ export default function Layout({
   maxWidth = '7xl',
   className = ''
 }: LayoutProps) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: { first_name?: string } } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function Layout({
       {/* Navigation */}
       {showNavigation && (
         <Navigation 
-          user={user} 
+          user={user || undefined} 
           onSignOut={() => setUser(null)} 
         />
       )}

@@ -31,8 +31,8 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
     try {
       await sendMessage(newMessage)
       setNewMessage('')
-    } catch (err: any) {
-      alert('Failed to send message: ' + err.message)
+    } catch (err: unknown) {
+      alert('Failed to send message: ' + (err instanceof Error ? err.message : String(err)))
     }
   }
 

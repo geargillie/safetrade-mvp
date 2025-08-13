@@ -8,7 +8,7 @@ import ImageUpload from '@/components/ImageUpload'
 
 export default function CreateListing() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; user_metadata?: { first_name?: string; last_name?: string } } | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   
@@ -29,12 +29,33 @@ export default function CreateListing() {
   const [images, setImages] = useState<string[]>([])
   const [vinVerification, setVinVerification] = useState<{
     loading: boolean
-    result: any
+    result: {
+      isValid?: boolean
+      isStolen?: boolean
+      vehicleInfo?: {
+        make?: string
+        model?: string
+        year?: string | number
+        msrp?: number
+        bodyStyle?: string
+        engineSize?: string
+        transmission?: string
+        fuelType?: string
+        color?: string
+        trim?: string
+        sources?: string[]
+        error?: string
+      }
+      stolenCheck?: { details?: { source?: string }; lastChecked?: string }
+      warnings?: string[]
+      alerts?: { message: string }[]
+    } | null
     error: string
   }>({ loading: false, result: null, error: '' })
 
   useEffect(() => {
     checkUser()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkUser = async () => {
@@ -109,7 +130,7 @@ export default function CreateListing() {
     return 'Fair'
   }
 
-  const generateVehicleDescription = (vehicleInfo: any) => {
+  const generateVehicleDescription = (vehicleInfo: { make?: string; model?: string; year?: string | number; engineSize?: string; transmission?: string; bodyStyle?: string; fuelType?: string; color?: string; msrp?: number; sources?: string[]; error?: string }) => {
     if (!vehicleInfo || vehicleInfo.error) return ''
     
     const parts = []
@@ -233,11 +254,11 @@ export default function CreateListing() {
           error: data.message || 'Verification failed' 
         })
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setVinVerification({ 
         loading: false, 
         result: null, 
-        error: error.message 
+        error: error instanceof Error ? error.message : 'Unknown error' 
       })
     }
   }
@@ -248,6 +269,10 @@ export default function CreateListing() {
     setMessage('')
 
     try {
+      if (!user) {
+        throw new Error('Please log in to create a listing')
+      }
+
       if (!formData.title || !formData.price || !formData.make || !formData.vin) {
         throw new Error('Please fill in all required fields')
       }
@@ -308,8 +333,8 @@ export default function CreateListing() {
         router.push('/listings')
       }, 2000)
 
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error: unknown) {
+      setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -489,7 +514,7 @@ export default function CreateListing() {
                           <strong>VIN Warning</strong>
                         </div>
                         <div className="text-sm mt-1">
-                          {vinVerification.result.alerts?.map((alert: any) => alert.message).join(', ')}
+                          {vinVerification.result.alerts?.map((alert: { message: string }) => alert.message).join(', ')}
                         </div>
                       </div>
                     )}

@@ -8,7 +8,29 @@ import PageHeader from '@/components/PageHeader';
 import ListingCard from '@/components/ListingCard';
 
 export default function ListingsPage() {
-  const [listings, setListings] = useState<any[]>([]);
+  const [listings, setListings] = useState<{
+    id: string;
+    title: string;
+    price: number;
+    make: string;
+    model?: string;
+    year?: number;
+    condition?: string;
+    city?: string;
+    created_at: string;
+    seller_id: string;
+    mileage?: number;
+    vin_verified?: boolean;
+    user_profiles?: {
+      first_name?: string;
+      last_name?: string;
+      identity_verified?: boolean;
+    };
+    listing_images?: {
+      image_url: string;
+      is_primary?: boolean;
+    }[];
+  }[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     search: '',
@@ -18,15 +40,17 @@ export default function ListingsPage() {
     year: '',
     condition: ''
   });
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string } | null>(null);
 
   useEffect(() => {
     checkUser();
     fetchListings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchListings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const checkUser = async () => {

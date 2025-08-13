@@ -26,7 +26,17 @@ interface SellerChatViewProps {
 
 export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [selectedConversation, setSelectedConversation] = useState<any>(null)
+  const [selectedConversation, setSelectedConversation] = useState<{
+    conversation: Conversation
+    listing: {
+      id: string
+      title: string
+      price: number
+      seller_id: string
+    }
+    otherUserId: string
+    otherUserName: string
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -52,6 +62,7 @@ export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
     return () => {
       supabase.removeChannel(conversationSubscription)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserId])
 
   const loadSellerConversations = async () => {
@@ -122,7 +133,7 @@ export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
-            <p className="text-gray-500">When potential buyers message you about your listings, they'll appear here.</p>
+            <p className="text-gray-500">When potential buyers message you about your listings, they&apos;ll appear here.</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
@@ -150,7 +161,7 @@ export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
                     </p>
                     {conversation.last_message && (
                       <p className="text-sm text-gray-600 truncate">
-                        "{conversation.last_message}"
+                        &quot;{conversation.last_message}&quot;
                       </p>
                     )}
                   </div>

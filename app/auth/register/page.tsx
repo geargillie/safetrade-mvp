@@ -1,7 +1,9 @@
 // app/auth/register/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
@@ -9,7 +11,8 @@ import PageHeader from '@/components/PageHeader'
 import PhoneVerification from '@/components/PhoneVerification'
 import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 
-export default function Register() {
+function RegisterContent() {
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -19,12 +22,64 @@ export default function Register() {
   const [userId, setUserId] = useState<string | null>(null)
   const [step, setStep] = useState<'register' | 'verify_email' | 'verify_phone' | 'verify_identity' | 'complete'>('register')
 
+  // Check user registration progress on component mount
+  useEffect(() => {
+    const checkRegistrationProgress = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (session?.user) {
+        setUserId(session.user.id)
+        
+        // Check what step the user should be on
+        if (session.user.email_confirmed_at) {
+          // Email is verified, check other verification status
+          try {
+            // Check phone verification status
+            const { data: profile } = await supabase
+              .from('user_profiles')
+              .select('phone_verified, identity_verified')
+              .eq('id', session.user.id)
+              .single()
+            
+            if (profile?.identity_verified) {
+              setStep('complete')
+              setMessage('Welcome back! Your account is fully verified.')
+            } else if (profile?.phone_verified) {
+              setStep('verify_identity')
+              setMessage('Phone verified! Please complete identity verification.')
+            } else {
+              setStep('verify_phone')
+              setMessage('Email verified! Please verify your phone number.')
+            }
+          } catch (error) {
+            console.error('Error checking verification status:', error)
+            setStep('verify_phone')
+            setMessage('Email verified! Please verify your phone number.')
+          }
+        } else {
+          setStep('verify_email')
+          setMessage('Please check your email and click the confirmation link.')
+        }
+      } else {
+        // Check URL parameters for step
+        const urlStep = searchParams.get('step')
+        if (urlStep && ['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].includes(urlStep)) {
+          setStep(urlStep as typeof step)
+        }
+      }
+    }
+
+    checkRegistrationProgress()
+  }, [searchParams])
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setMessage('')
 
     try {
+      console.log('Starting user registration for:', email)
+      
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -38,40 +93,83 @@ export default function Register() {
         }
       })
 
-      if (error) throw error
+      console.log('Supabase signup response:', { data, error })
+
+      if (error) {
+        console.error('Signup error:', error)
+        throw error
+      }
 
       if (data.user) {
+        console.log('User created successfully:', {
+          id: data.user.id,
+          email: data.user.email,
+          emailConfirmed: data.user.email_confirmed_at,
+          confirmationSentAt: data.user.confirmation_sent_at
+        })
         setUserId(data.user.id)
         
-        // Create user profile - use upsert to handle duplicates
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .upsert({
-            id: data.user.id,
-            first_name: firstName,
-            last_name: lastName
-          }, { 
-            onConflict: 'id' 
-          })
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError)
-          // Don't fail registration if profile creation fails
+        console.log('User signup successful, skipping profile creation until email confirmation')
+        
+        // Store user info in localStorage for profile creation after email confirmation
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pendingProfileData', JSON.stringify({
+            userId: data.user.id,
+            firstName,
+            lastName,
+            email
+          }))
         }
 
         // Check if email needs confirmation
         if (data.user.email_confirmed_at) {
           // Email already confirmed, go to phone verification
+          console.log('Email was already confirmed, proceeding to phone verification')
+          
+          // Create profile immediately for confirmed users
+          try {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session?.access_token) {
+              const response = await fetch('/api/auth/create-profile', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                  firstName,
+                  lastName,
+                  email
+                })
+              })
+              
+              if (response.ok) {
+                console.log('Profile created successfully for confirmed user')
+              } else {
+                console.error('Failed to create profile for confirmed user')
+              }
+            }
+          } catch (error) {
+            console.error('Error creating profile for confirmed user:', error)
+          }
+          
           setStep('verify_phone')
           setMessage('Account created! Now let\'s verify your phone number.')
         } else {
           // Email needs confirmation
+          console.log('Email confirmation required, confirmation email should be sent')
           setStep('verify_email')
-          setMessage('Check your email and click the confirmation link to continue.')
+          
+          if (data.user.confirmation_sent_at) {
+            setMessage('Check your email and click the confirmation link to continue. If you don\'t see the email, check your spam folder.')
+          } else {
+            setMessage('Account created, but email confirmation may not be required. Try clicking "Check Email Verification" below.')
+          }
         }
       }
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error: unknown) {
+      const err = error as { message?: string }
+      setMessage(`Error: ${err.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -82,6 +180,8 @@ export default function Register() {
     setMessage('')
     
     try {
+      console.log('Checking email verification status...')
+      
       // Refresh the session first
       const { data: { session }, error } = await supabase.auth.getSession()
       
@@ -91,13 +191,26 @@ export default function Register() {
         return
       }
 
+      console.log('Current session:', {
+        user: session?.user ? {
+          id: session.user.id,
+          email: session.user.email,
+          emailConfirmed: session.user.email_confirmed_at,
+          confirmationSentAt: session.user.confirmation_sent_at
+        } : null
+      })
+
       if (session?.user?.email_confirmed_at) {
         setUserId(session.user.id)
         setStep('verify_phone')
-        setMessage('Email verified! Now let\'s verify your phone.')
+        setMessage('Email verified! Now let&apos;s verify your phone.')
+      } else if (session?.user) {
+        // User exists but email not confirmed yet
+        setMessage('Email not verified yet. Please check your email and click the confirmation link first. Check your spam folder if needed.')
+        console.log('Email confirmation pending for user:', session.user.email)
       } else {
-        setMessage('Email not verified yet. Please check your email and click the confirmation link first.')
-        console.log('Session user:', session?.user)
+        setMessage('No active session found. Please try registering again.')
+        setStep('register')
       }
     } catch (error) {
       console.error('Verification check failed:', error)
@@ -107,18 +220,36 @@ export default function Register() {
     }
   }
 
-  const handlePhoneVerified = () => {
+  const handlePhoneVerified = async () => {
     setStep('verify_identity')
-    setMessage('Phone verified! Now let\'s verify your identity for secure trading.')
+    setMessage('Phone verified! Now let&apos;s verify your identity for secure trading.')
+    
+    // Check if identity is already verified
+    if (userId) {
+      try {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('identity_verified')
+          .eq('id', userId)
+          .single()
+        
+        if (profile?.identity_verified) {
+          setStep('complete')
+          setMessage('Welcome! Your account is fully verified.')
+        }
+      } catch (error) {
+        console.error('Error checking identity verification:', error)
+      }
+    }
   }
 
-  const handleIdentityVerified = (result: any) => {
+  const handleIdentityVerified = (result: { verified?: boolean; status?: string; score?: number; message?: string }) => {
     console.log('Identity verification completed:', result)
     if (result.verified) {
       setStep('complete')
       setMessage('Identity verified successfully!')
     } else {
-      setMessage(`Identity verification: ${result.message}`)
+      setMessage(`Identity verification: ${result.message || 'Failed'}`)
       // Still allow completion even if identity verification failed/pending
       setTimeout(() => setStep('complete'), 3000)
     }
@@ -135,10 +266,40 @@ export default function Register() {
     setMessage('You can complete identity verification later in your profile settings.')
   }
 
-  const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Join SafeTrade' }
-  ];
+  const resendConfirmationEmail = async () => {
+    setLoading(true)
+    setMessage('')
+    
+    try {
+      console.log('Resending confirmation email for:', email)
+      
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+      
+      if (error) {
+        console.error('Resend email error:', error)
+        setMessage('Failed to resend confirmation email. Please try again.')
+      } else {
+        setMessage('Confirmation email resent! Please check your email and spam folder.')
+      }
+    } catch (error) {
+      console.error('Resend email failed:', error)
+      setMessage('Failed to resend confirmation email. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Breadcrumbs for potential future use
+  // const breadcrumbs = [
+  //   { label: 'Home', href: '/' },
+  //   { label: 'Join SafeTrade' }
+  // ];
 
   return (
     <Layout showNavigation={false} maxWidth="2xl" className="py-12">
@@ -253,9 +414,13 @@ export default function Register() {
                 subtitle={`We sent a confirmation link to ${email}`}
                 icon="📧"
               />
-              <p className="text-sm text-gray-500">
-                Click the link in your email, then come back here to continue.
-              </p>
+              <div className="text-sm text-gray-500 space-y-2">
+                <p>Click the link in your email, then come back here to continue.</p>
+                <p className="text-xs">
+                  💡 <strong>Can&apos;t find the email?</strong> Check your spam/junk folder. 
+                  It may take a few minutes to arrive.
+                </p>
+              </div>
               <div className="space-y-2">
                 <button
                   onClick={checkEmailVerification}
@@ -265,12 +430,52 @@ export default function Register() {
                   {loading ? 'Checking...' : 'I\'ve Confirmed My Email'}
                 </button>
                 
+                <button
+                  onClick={resendConfirmationEmail}
+                  disabled={loading}
+                  className="w-full bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 disabled:opacity-50 text-sm"
+                >
+                  {loading ? 'Sending...' : 'Resend Confirmation Email'}
+                </button>
+                
                 {/* Temporary skip button for testing */}
                 <button
-                  onClick={() => setStep('verify_phone')}
+                  onClick={async () => {
+                    console.log('Skipping email verification for testing')
+                    
+                    // Create profile when skipping email verification
+                    try {
+                      const { data: { session } } = await supabase.auth.getSession()
+                      if (session?.access_token) {
+                        const response = await fetch('/api/auth/create-profile', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${session.access_token}`
+                          },
+                          body: JSON.stringify({
+                            firstName,
+                            lastName,
+                            email
+                          })
+                        })
+                        
+                        if (response.ok) {
+                          console.log('Profile created successfully during email skip')
+                        } else {
+                          console.error('Failed to create profile during email skip')
+                        }
+                      }
+                    } catch (error) {
+                      console.error('Error creating profile during email skip:', error)
+                    }
+                    
+                    setStep('verify_phone')
+                    setMessage('Email verification skipped for testing. Now verify your phone.')
+                  }}
                   className="w-full bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 text-sm"
                 >
-                  Skip for Testing (Remove Later)
+                  Skip Email Verification (Testing Only)
                 </button>
               </div>
             </div>
@@ -283,7 +488,21 @@ export default function Register() {
                 subtitle="We'll send you a code to verify your phone number"
                 icon="📱"
               />
-              <PhoneVerification onVerified={handlePhoneVerified} />
+              <PhoneVerification onVerified={handlePhoneVerified} userId={userId || undefined} />
+              
+              {/* Skip button for testing */}
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    console.log('Skipping phone verification for testing')
+                    setStep('verify_identity')
+                    setMessage('Phone verification skipped for testing. Now verify your identity.')
+                  }}
+                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                >
+                  Skip phone verification (testing only)
+                </button>
+              </div>
             </div>
           )}
 
@@ -398,4 +617,12 @@ export default function Register() {
       </div>
     </Layout>
   )
+}
+
+export default function Register() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
+  );
 }

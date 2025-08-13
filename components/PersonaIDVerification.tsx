@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 interface PersonaIDVerificationProps {
   userId: string;
-  onComplete: (result: any) => void;
+  onComplete: (result: unknown) => void;
   onError: (error: string) => void;
 }
 
@@ -15,7 +15,17 @@ export default function PersonaIDVerification({
   onError 
 }: PersonaIDVerificationProps) {
   const [loading, setLoading] = useState(false);
-  const [personaClient, setPersonaClient] = useState<any>(null);
+  const [personaClient, setPersonaClient] = useState<{
+    Client: new (config: {
+      templateId?: string
+      environmentId?: string
+      sessionToken: string
+      onReady: () => void
+      onComplete: (data: { inquiryId: string; status: string; fields: unknown }) => void
+      onCancel: (data: { inquiryId: string; sessionToken: string }) => void
+      onError: (error: Error) => void
+    }) => { open: () => void }
+  } | null>(null);
 
   useEffect(() => {
     // Load Persona script
@@ -23,7 +33,7 @@ export default function PersonaIDVerification({
     script.src = 'https://cdn.withpersona.com/dist/persona-v4.5.0.js';
     script.onload = () => {
       // Persona is now available globally
-      setPersonaClient((window as any).Persona);
+      setPersonaClient((window as unknown as { Persona: typeof personaClient }).Persona);
     };
     document.head.appendChild(script);
 
@@ -63,28 +73,28 @@ export default function PersonaIDVerification({
           console.log('Persona ready');
           client.open();
         },
-        onComplete: ({ inquiryId, status, fields }: any) => {
+        onComplete: ({ inquiryId, status, fields }: { inquiryId: string; status: string; fields: unknown }) => {
           console.log('Persona verification complete:', { inquiryId, status });
           handlePersonaComplete(inquiryId, status, fields);
         },
-        onCancel: ({ inquiryId, sessionToken }: any) => {
+        onCancel: ({}: { inquiryId: string; sessionToken: string }) => {
           console.log('Persona verification cancelled');
           setLoading(false);
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           console.error('Persona error:', error);
           onError('Verification failed: ' + error.message);
           setLoading(false);
         }
       });
 
-    } catch (error: any) {
-      onError('Failed to start verification: ' + error.message);
+    } catch (error: unknown) {
+      onError('Failed to start verification: ' + (error instanceof Error ? error.message : String(error)));
       setLoading(false);
     }
   };
 
-  const handlePersonaComplete = async (inquiryId: string, status: string, fields: any) => {
+  const handlePersonaComplete = async (inquiryId: string, status: string, fields: unknown) => {
     try {
       // Send completion data to your backend
       const response = await fetch('/api/persona/handle-completion', {
@@ -105,8 +115,8 @@ export default function PersonaIDVerification({
       const result = await response.json();
       onComplete(result);
 
-    } catch (error: any) {
-      onError('Failed to process verification: ' + error.message);
+    } catch (error: unknown) {
+      onError('Failed to process verification: ' + (error instanceof Error ? error.message : String(error)));
     } finally {
       setLoading(false);
     }
@@ -124,14 +134,14 @@ export default function PersonaIDVerification({
         </h2>
         
         <p className="text-gray-600 mb-8">
-          We use Persona's professional verification service to ensure the highest 
+          We use Persona&apos;s professional verification service to ensure the highest 
           level of security and fraud prevention for all SafeTrade users.
         </p>
 
         <div className="bg-green-50 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-green-900 mb-2">✅ What You'll Need</h3>
+          <h3 className="font-semibold text-green-900 mb-2">✅ What You&apos;ll Need</h3>
           <ul className="text-sm text-green-800 space-y-1 text-left">
-            <li>• Government-issued photo ID (Driver's License, Passport, etc.)</li>
+            <li>• Government-issued photo ID (Driver&apos;s License, Passport, etc.)</li>
             <li>• Well-lit area for taking photos</li>
             <li>• 2-3 minutes of your time</li>
           </ul>

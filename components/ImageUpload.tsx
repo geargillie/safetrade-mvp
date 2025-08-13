@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 
 interface ImageUploadProps {
   onImagesUploaded: (imageUrls: string[]) => void
@@ -201,10 +202,12 @@ export default function ImageUpload({
                 moveImage(fromIndex, index)
               }}
             >
-              <img
+              <Image
                 src={imageUrl}
                 alt={`Motorcycle ${index + 1}`}
                 className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
               
               {/* Main Image Badge */}

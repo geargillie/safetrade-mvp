@@ -19,7 +19,7 @@ export default function Login() {
     setMessage('')
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -29,8 +29,9 @@ export default function Login() {
       setMessage('Login successful!')
       // Redirect to listings page
       router.push('/listings')
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error: unknown) {
+      const err = error as { message?: string }
+      setMessage(`Error: ${err.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -87,7 +88,7 @@ export default function Login() {
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
                 Create one here
               </Link>
