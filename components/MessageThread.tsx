@@ -60,9 +60,13 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
   const otherUser = getOtherUser()
   const isCurrentUserBuyer = conversation.buyer_id === currentUserId
 
-  const handleMeetingLocationSelect = async (location: string, datetime: string) => {
+  const handleMeetingLocationSelect = async (location: string, datetime: string, agreedPrice?: number) => {
     // Send a system message about the meeting arrangement
-    const meetingMessage = `📍 **Meeting Arranged**\n\n**Location:** ${location}\n**Date & Time:** ${datetime}\n\n✅ Both parties have agreed to meet. Please arrive on time and prioritize safety!`
+    const priceInfo = agreedPrice && agreedPrice !== conversation.listing_price 
+      ? `**Agreed Price:** $${agreedPrice.toLocaleString()} (was $${conversation.listing_price.toLocaleString()})\n`
+      : `**Price:** $${conversation.listing_price.toLocaleString()}\n`
+    
+    const meetingMessage = `🤝 **Purchase Agreement Confirmed**\n\n**Vehicle:** ${conversation.listing_title}\n${priceInfo}**Meeting Location:** ${location}\n**Date & Time:** ${datetime}\n\n✅ Both parties have agreed to the terms. Please arrive on time and prioritize safety!\n\n💡 **Before meeting:**\n• Bring cash or certified funds\n• Have title transfer paperwork ready\n• Meet during daylight hours\n• Inspect the vehicle thoroughly`
     
     try {
       await sendMessage(meetingMessage)

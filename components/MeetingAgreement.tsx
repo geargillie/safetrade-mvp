@@ -11,7 +11,7 @@ interface MeetingAgreementProps {
   listingCity: string
   listingZipCode?: string
   isSellerView: boolean
-  onSelectMeetingLocation: (location: string, datetime: string) => void
+  onSelectMeetingLocation: (location: string, datetime: string, agreedPrice?: number) => void
   onCancel: () => void
 }
 
@@ -30,10 +30,16 @@ export default function MeetingAgreement({
   const [customLocation, setCustomLocation] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
-  const [step, setStep] = useState<'agreement' | 'location' | 'confirm'>('agreement')
+  const [agreedPrice, setAgreedPrice] = useState(listingPrice)
+  const [priceNegotiated, setPriceNegotiated] = useState(false)
+  const [step, setStep] = useState<'agreement' | 'price' | 'location' | 'confirm'>('agreement')
 
   const meetingSuggestions = getMeetingLocationSuggestions(listingCity, listingZipCode)
   const { vicinity } = maskLocation(listingCity, listingZipCode)
+
+  const handleProceedToPrice = () => {
+    setStep('price')
+  }
 
   const handleProceedToLocation = () => {
     setStep('location')
@@ -46,7 +52,7 @@ export default function MeetingAgreement({
   const handleConfirmMeeting = () => {
     const finalLocation = selectedLocation === 'custom' ? customLocation : selectedLocation
     const datetime = `${selectedDate} at ${selectedTime}`
-    onSelectMeetingLocation(finalLocation, datetime)
+    onSelectMeetingLocation(finalLocation, datetime, agreedPrice)
   }
 
   const getTomorrowDate = () => {
@@ -82,7 +88,7 @@ export default function MeetingAgreement({
             </div>
             <div className="flex space-x-3">
               <button
-                onClick={handleProceedToLocation}
+                onClick={handleProceedToPrice}
                 className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 font-medium"
               >
                 Arrange Meeting
@@ -110,7 +116,7 @@ export default function MeetingAgreement({
             </div>
             <div className="flex space-x-3">
               <button
-                onClick={handleProceedToLocation}
+                onClick={handleProceedToPrice}
                 className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 font-medium"
               >
                 Yes, I Want to Buy
@@ -124,6 +130,95 @@ export default function MeetingAgreement({
             </div>
           </div>
         )}
+      </div>
+    )
+  }
+
+  if (step === 'price') {
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-lg mx-auto">
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            💰
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Agree on Final Price</h3>
+          <p className="text-sm text-gray-600">Negotiate and confirm the purchase price</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-blue-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-blue-900">Listed Price:</span>
+              <span className="text-lg font-bold text-blue-900">${listingPrice.toLocaleString()}</span>
+            </div>
+            <div className="text-sm text-blue-800">
+              {listingTitle}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {isSellerView ? 'Your asking price:' : 'Your offer:'}
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <input
+                type="number"
+                value={agreedPrice}
+                onChange={(e) => {
+                  setAgreedPrice(Number(e.target.value))
+                  setPriceNegotiated(Number(e.target.value) !== listingPrice)
+                }}
+                className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
+                min="1"
+                step="100"
+              />
+            </div>
+          </div>
+
+          {priceNegotiated && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-center text-sm text-yellow-800">
+                <span className="mr-2">💡</span>
+                <div>
+                  <div className="font-medium">Price Change Detected</div>
+                  <div className="text-xs mt-1">
+                    {agreedPrice > listingPrice 
+                      ? `+$${(agreedPrice - listingPrice).toLocaleString()} above asking price`
+                      : `-$${(listingPrice - agreedPrice).toLocaleString()} below asking price`
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h4 className="font-medium text-gray-900 mb-2">💬 Price Negotiation Tips:</h4>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Be respectful and reasonable in your offer</li>
+              <li>• Consider the motorcycle&apos;s condition and market value</li>
+              <li>• Factor in any needed repairs or maintenance</li>
+              <li>• Remember both parties should feel good about the deal</li>
+            </ul>
+          </div>
+
+          <div className="flex space-x-3">
+            <button
+              onClick={handleProceedToLocation}
+              disabled={!agreedPrice || agreedPrice < 1}
+              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              Agree on ${agreedPrice?.toLocaleString()}
+            </button>
+            <button
+              onClick={() => setStep('agreement')}
+              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+            >
+              Back
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -232,7 +327,7 @@ export default function MeetingAgreement({
               Continue
             </button>
             <button
-              onClick={() => setStep('agreement')}
+              onClick={() => setStep('price')}
               className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
             >
               Back
@@ -259,7 +354,15 @@ export default function MeetingAgreement({
           <div className="bg-white rounded-lg p-4 border border-green-200">
             <div className="space-y-2 text-sm">
               <div><strong>Vehicle:</strong> {listingTitle}</div>
-              <div><strong>Price:</strong> ${listingPrice.toLocaleString()}</div>
+              <div className="flex items-center justify-between">
+                <span><strong>Agreed Price:</strong></span>
+                <span className="text-lg font-bold text-green-600">${agreedPrice.toLocaleString()}</span>
+              </div>
+              {priceNegotiated && (
+                <div className="text-xs text-gray-600">
+                  (Listed at ${listingPrice.toLocaleString()})
+                </div>
+              )}
               <div><strong>Location:</strong> {finalLocation}</div>
               <div><strong>Date & Time:</strong> {selectedDate} at {selectedTime}</div>
             </div>
