@@ -54,8 +54,6 @@ export default function HomePage() {
         </div>
       </div>
 
-
-
       {/* How It Works */}
       <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 mb-16">
         <h2 className="text-xl font-bold text-gray-900 text-center mb-6">How SafeTrade Works</h2>
@@ -105,14 +103,13 @@ export default function HomePage() {
         </div>
         <div>
           <div className="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
-          <div className="text-gray-600 text-sm">Scam Prevention</div>
+          <div className="text-gray-600 text-sm">Fraud Prevention</div>
         </div>
         <div>
           <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
-          <div className="text-gray-600 text-sm">Security Monitoring</div>
+          <div className="text-gray-600 text-sm">Monitoring</div>
         </div>
       </div>
-
     </Layout>
   );
 }

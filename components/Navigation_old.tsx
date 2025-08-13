@@ -64,7 +64,7 @@ export default function Navigation({ user, onSignOut }: NavigationProps) {
               </div>
               <span className="text-xl font-bold text-gray-900">SafeTrade</span>
               <span className="hidden sm:inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-                Secure Marketplace
+                Military-Grade Security
               </span>
             </Link>
           </div>
@@ -104,7 +104,7 @@ export default function Navigation({ user, onSignOut }: NavigationProps) {
                     </span>
                   ) : (
                     <Link
-                      href="/listings/create"
+                      href="/profile"
                       className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium hover:bg-yellow-200 transition-colors"
                     >
                       Complete Verification

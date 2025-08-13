@@ -76,6 +76,8 @@ export default function Layout({
           )}
         </div>
       </main>
+
+      {/* Footer - Removed */}
     </div>
   );
 }
