@@ -5,16 +5,12 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/ImageUpload'
-import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 
 export default function CreateListing() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [isVerified, setIsVerified] = useState<boolean | null>(null)
-  const [showVerification, setShowVerification] = useState(false)
-  const [verificationStatus, setVerificationStatus] = useState<any>(null)
   
   const [formData, setFormData] = useState({
     title: '',
@@ -74,48 +70,6 @@ export default function CreateListing() {
     }
     
     setUser(user)
-    
-    // Check identity verification status
-    await checkVerificationStatus(user.id)
-  }
-
-  const checkVerificationStatus = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/identity/free-verify?userId=${userId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setVerificationStatus(data)
-        setIsVerified(data.verified)
-        
-        if (!data.verified && data.status === 'not_started') {
-          // User hasn't started verification yet
-          setShowVerification(false) // Don't auto-show, let them click
-        }
-      } else {
-        setIsVerified(false)
-      }
-    } catch (error) {
-      console.error('Error checking verification status:', error)
-      setIsVerified(false)
-    }
-  }
-
-  const handleVerificationComplete = (result: any) => {
-    console.log('Verification completed:', result)
-    if (result.verified) {
-      setIsVerified(true)
-      setVerificationStatus({ ...verificationStatus, verified: true, status: 'verified' })
-      setShowVerification(false)
-      setMessage('✅ Identity verified successfully! You can now create listings.')
-    } else {
-      setVerificationStatus(result)
-      setMessage(`Identity verification: ${result.message}`)
-    }
-  }
-
-  const handleVerificationError = (error: string) => {
-    console.error('Identity verification error:', error)
-    setMessage(`Identity verification error: ${error}`)
   }
 
   const suggestPrice = (msrp: number, year: string | number) => {
@@ -294,11 +248,6 @@ export default function CreateListing() {
     setMessage('')
 
     try {
-      // Check verification status again before submission
-      if (!isVerified) {
-        throw new Error('Identity verification required to create listings')
-      }
-
       if (!formData.title || !formData.price || !formData.make || !formData.vin) {
         throw new Error('Please fill in all required fields')
       }
@@ -370,135 +319,10 @@ export default function CreateListing() {
     return <div className="text-center py-8">Loading...</div>
   }
 
-  // Show verification requirement if user is not verified
-  if (isVerified === false && !showVerification) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-2xl mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              🛡️
-            </div>
-            
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Identity Verification Required
-            </h1>
-            
-            <p className="text-gray-600 mb-6">
-              To maintain SafeTrade's military-grade security standards, all sellers must verify their identity 
-              before creating listings. This helps protect buyers and builds trust in our marketplace.
-            </p>
-
-            {/* Current verification status */}
-            {verificationStatus && (
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 mb-2">Current Status:</h3>
-                {verificationStatus.status === 'not_started' && (
-                  <p className="text-yellow-600">❌ Identity verification not started</p>
-                )}
-                {verificationStatus.status === 'pending_review' && (
-                  <p className="text-blue-600">⏳ Identity verification under review (typically 2-5 minutes)</p>
-                )}
-                {verificationStatus.status === 'failed' && (
-                  <p className="text-red-600">❌ Identity verification failed - please try again</p>
-                )}
-              </div>
-            )}
-
-            {/* Security features highlight */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
-              <h3 className="font-semibold text-blue-900 mb-2">🛡️ Why We Verify Sellers</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Prevent stolen vehicle listings</li>
-                <li>• Stop scammers and fraudulent sellers</li>
-                <li>• Build buyer confidence and trust</li>
-                <li>• Comply with anti-money laundering laws</li>
-                <li>• Enable secure payment processing</li>
-              </ul>
-            </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={() => setShowVerification(true)}
-                className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
-              >
-                Start Identity Verification (FREE)
-              </button>
-              
-              <div className="text-sm text-gray-500">
-                <p>✅ Quick 2-minute process</p>
-                <p>✅ Government ID + liveness check</p>
-                <p>✅ Bank-level encryption & security</p>
-              </div>
-              
-              <button
-                onClick={() => router.push('/listings')}
-                className="text-gray-600 hover:text-gray-800 underline text-sm"
-              >
-                Browse listings instead
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Show verification modal if requested
-  if (showVerification && user?.id) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Identity Verification</h1>
-              <button
-                onClick={() => setShowVerification(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <FreeIdentityVerification
-              userId={user.id}
-              onComplete={handleVerificationComplete}
-              onError={handleVerificationError}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Show loading state while checking verification
-  if (isVerified === null) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking verification status...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Main listing creation form (only shows if verified)
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-md p-6">
-          {/* Verification status badge */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <span className="text-green-600 mr-2">✅</span>
-              <span className="text-green-800 font-medium">Identity Verified - Trusted Seller</span>
-            </div>
-            <p className="text-green-700 text-sm mt-1">
-              Your identity has been verified. Buyers will see you as a trusted seller.
-            </p>
-          </div>
-
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             List Your Motorcycle
           </h1>
@@ -511,7 +335,7 @@ export default function CreateListing() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Title * {formData.title && vinVerification.result?.vehicleInfo && (
-                    <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                    <span className="text-green-600 text-xs">✓ Auto-filled</span>
                   )}
                 </label>
                 <input
@@ -527,7 +351,7 @@ export default function CreateListing() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Price * {formData.price && vinVerification.result?.vehicleInfo?.msrp && (
-                    <span className="text-green-600 text-xs">✅ Suggested based on MSRP</span>
+                    <span className="text-green-600 text-xs">✓ Suggested based on MSRP</span>
                   )}
                 </label>
                 <div className="relative">
@@ -612,7 +436,7 @@ export default function CreateListing() {
                           <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <strong>✅ VIN Verified</strong>
+                          <strong>✓ VIN Verified</strong>
                         </div>
                         <div className="text-sm mt-1">
                           Valid VIN • NICB Real-time Check: CLEAN
@@ -688,7 +512,7 @@ export default function CreateListing() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Make * {formData.make && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
                     )}
                   </label>
                   <select
@@ -726,7 +550,7 @@ export default function CreateListing() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Model {formData.model && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
                     )}
                   </label>
                   <input
@@ -743,7 +567,7 @@ export default function CreateListing() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Year {formData.year && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
                     )}
                   </label>
                   <input
@@ -773,7 +597,7 @@ export default function CreateListing() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Condition {formData.condition && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Suggested by age</span>
+                      <span className="text-green-600 text-xs">✓ Suggested by age</span>
                     )}
                   </label>
                   <select
@@ -866,7 +690,7 @@ export default function CreateListing() {
             <div className="flex space-x-4">
               <button
                 type="submit"
-                disabled={loading || !isVerified}
+                disabled={loading}
                 className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               >
                 {loading ? 'Creating Listing...' : 'Create Listing'}

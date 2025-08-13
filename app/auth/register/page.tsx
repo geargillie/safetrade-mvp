@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import PhoneVerification from '@/components/PhoneVerification'
+import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,8 @@ export default function Register() {
   const [lastName, setLastName] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [step, setStep] = useState<'register' | 'verify_email' | 'verify_phone' | 'complete'>('register')
+  const [userId, setUserId] = useState<string | null>(null)
+  const [step, setStep] = useState<'register' | 'verify_email' | 'verify_phone' | 'verify_identity' | 'complete'>('register')
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +39,8 @@ export default function Register() {
       if (error) throw error
 
       if (data.user) {
+        setUserId(data.user.id)
+        
         // Create user profile - use upsert to handle duplicates
         const { error: profileError } = await supabase
           .from('user_profiles')
@@ -86,6 +90,7 @@ export default function Register() {
       }
 
       if (session?.user?.email_confirmed_at) {
+        setUserId(session.user.id)
         setStep('verify_phone')
         setMessage('Email verified! Now let\'s verify your phone.')
       } else {
@@ -101,12 +106,66 @@ export default function Register() {
   }
 
   const handlePhoneVerified = () => {
+    setStep('verify_identity')
+    setMessage('Phone verified! Now let\'s verify your identity for secure trading.')
+  }
+
+  const handleIdentityVerified = (result: any) => {
+    console.log('Identity verification completed:', result)
+    if (result.verified) {
+      setStep('complete')
+      setMessage('Identity verified successfully!')
+    } else {
+      setMessage(`Identity verification: ${result.message}`)
+      // Still allow completion even if identity verification failed/pending
+      setTimeout(() => setStep('complete'), 3000)
+    }
+  }
+
+  const handleIdentityError = (error: string) => {
+    console.error('Identity verification error:', error)
+    setMessage(`Identity verification error: ${error}`)
+    // Allow user to skip identity verification for now and complete later
+  }
+
+  const skipIdentityVerification = () => {
     setStep('complete')
+    setMessage('You can complete identity verification later in your profile settings.')
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-2xl w-full space-y-8">
+        
+        {/* Progress indicator */}
+        <div className="flex items-center justify-center mb-8">
+          {['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].map((stepName, index) => {
+            const stepLabels = ['Sign Up', 'Email', 'Phone', 'Identity', 'Complete'];
+            const currentIndex = ['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].indexOf(step);
+            const isActive = index === currentIndex;
+            const isCompleted = index < currentIndex;
+            
+            return (
+              <div key={stepName} className="flex items-center">
+                <div className={`flex items-center ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
+                  <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                    isActive 
+                      ? 'border-blue-600 bg-blue-50' 
+                      : isCompleted
+                      ? 'border-green-600 bg-green-50'
+                      : 'border-gray-200 bg-gray-50'
+                  }`}>
+                    {isCompleted ? '✓' : index + 1}
+                  </div>
+                  <span className="ml-2 text-sm font-medium hidden sm:block">{stepLabels[index]}</span>
+                </div>
+                {index < stepLabels.length - 1 && (
+                  <div className="w-8 h-0.5 bg-gray-200 mx-2"></div>
+                )}
+              </div>
+            );
+          })}
+        </div>
         
         {step === 'register' && (
           <>
@@ -115,7 +174,7 @@ export default function Register() {
                 Join SafeTrade
               </h2>
               <p className="mt-2 text-center text-sm text-gray-600">
-                Create your verified account
+                Create your verified account for secure trading
               </p>
             </div>
             
@@ -158,6 +217,17 @@ export default function Register() {
                   placeholder="Password (min 6 characters)"
                   minLength={6}
                 />
+              </div>
+
+              {/* Security features highlight */}
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h3 className="font-semibold text-blue-900 mb-2">🛡️ SafeTrade Security Features</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Triple-layer identity verification</li>
+                  <li>• Real-time stolen vehicle detection</li>
+                  <li>• AI-powered scam protection</li>
+                  <li>• Secure meeting location protocols</li>
+                </ul>
               </div>
 
               <button
@@ -203,10 +273,53 @@ export default function Register() {
         {step === 'verify_phone' && (
           <div className="space-y-4">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Almost Done!</h2>
-              <p className="text-gray-600">Now let's verify your phone number for security</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Phone</h2>
+              <p className="text-gray-600">We'll send you a code to verify your phone number</p>
             </div>
             <PhoneVerification onVerified={handlePhoneVerified} />
+          </div>
+        )}
+
+        {step === 'verify_identity' && userId && (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Identity</h2>
+              <p className="text-gray-600">
+                Complete identity verification to unlock secure trading features
+              </p>
+            </div>
+            
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <span className="text-yellow-600">ℹ️</span>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Optional but Recommended
+                  </h3>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    Identity verification helps build trust with other traders and unlocks advanced features. 
+                    You can skip this step and complete it later in your profile.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <FreeIdentityVerification
+              userId={userId}
+              onComplete={handleIdentityVerified}
+              onError={handleIdentityError}
+            />
+
+            <div className="text-center">
+              <button
+                onClick={skipIdentityVerification}
+                className="text-sm text-gray-600 hover:text-gray-800 underline"
+              >
+                Skip for now (complete later)
+              </button>
+            </div>
           </div>
         )}
 
@@ -218,18 +331,49 @@ export default function Register() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Welcome to SafeTrade!</h2>
-            <p className="text-gray-600">Your account is verified and ready to use.</p>
-            <Link 
-              href="/dashboard"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Go to Dashboard
-            </Link>
+            <p className="text-gray-600">Your account is set up and ready to use.</p>
+            
+            {/* Show verification status */}
+            <div className="bg-gray-50 rounded-lg p-4 text-left max-w-md mx-auto">
+              <h3 className="font-medium text-gray-900 mb-2">Account Status:</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center">
+                  <span className="text-green-600 mr-2">✅</span>
+                  <span>Email verified</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-green-600 mr-2">✅</span>
+                  <span>Phone verified</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-yellow-600 mr-2">⏳</span>
+                  <span>Identity verification (complete in profile)</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <Link 
+                href="/listings"
+                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
+              >
+                Start Browsing Listings
+              </Link>
+              
+              <div>
+                <Link 
+                  href="/profile"
+                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                >
+                  Complete identity verification in profile
+                </Link>
+              </div>
+            </div>
           </div>
         )}
 
         {message && (
-          <div className={`text-sm ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
+          <div className={`text-sm ${message.includes('Error') || message.includes('error') ? 'text-red-600' : 'text-green-600'} text-center bg-gray-50 p-3 rounded-md`}>
             {message}
           </div>
         )}

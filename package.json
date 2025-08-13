@@ -13,10 +13,17 @@
     "@heroicons/react": "^2.2.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/supabase-js": "^2.54.0",
+    "@tensorflow-models/face-landmarks-detection": "^1.0.6",
+    "@tensorflow/tfjs": "^4.22.0",
+    "face-api.js": "^0.22.2",
     "next": "15.4.6",
+    "opencv4nodejs-prebuilt-install": "^4.1.209",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
+    "react-webcam": "^7.2.0",
+    "sharp": "^0.34.3",
+    "tesseract.js": "^6.0.1",
     "twilio": "^5.8.0",
     "zod": "^4.0.17"
   },
@@ -25,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-webcam": "^1.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
