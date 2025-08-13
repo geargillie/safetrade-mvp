@@ -91,25 +91,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-center">
-        <div>
-          <div className="text-3xl font-bold text-blue-600 mb-2">100%</div>
-          <div className="text-gray-600 text-sm">Verified Sellers</div>
-        </div>
-        <div>
-          <div className="text-3xl font-bold text-green-600 mb-2">0</div>
-          <div className="text-gray-600 text-sm">Stolen Vehicles</div>
-        </div>
-        <div>
-          <div className="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
-          <div className="text-gray-600 text-sm">Fraud Prevention</div>
-        </div>
-        <div>
-          <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
-          <div className="text-gray-600 text-sm">Monitoring</div>
-        </div>
-      </div>
     </Layout>
   );
 }

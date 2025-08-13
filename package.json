@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.54.0",
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
     "@tensorflow/tfjs": "^4.22.0",
+    "aws-sdk": "^2.1692.0",
     "face-api.js": "^0.22.2",
     "next": "15.4.6",
     "opencv4nodejs-prebuilt-install": "^4.1.209",
