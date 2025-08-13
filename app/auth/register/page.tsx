@@ -4,6 +4,8 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import Layout from '@/components/Layout'
+import PageHeader from '@/components/PageHeader'
 import PhoneVerification from '@/components/PhoneVerification'
 import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 
@@ -133,9 +135,14 @@ export default function Register() {
     setMessage('You can complete identity verification later in your profile settings.')
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Join SafeTrade' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-2xl w-full space-y-8">
+    <Layout showNavigation={false} maxWidth="2xl" className="py-12">
+      <div className="space-y-8">
         
         {/* Progress indicator */}
         <div className="flex items-center justify-center mb-8">
@@ -166,229 +173,229 @@ export default function Register() {
             );
           })}
         </div>
-        
-        {step === 'register' && (
-          <>
-            <div>
-              <h2 className="text-center text-3xl font-extrabold text-gray-900">
-                Join SafeTrade
-              </h2>
-              <p className="mt-2 text-center text-sm text-gray-600">
-                Create your verified account for secure trading
-              </p>
-            </div>
-            
-            <form className="mt-8 space-y-6" onSubmit={handleRegister}>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="First name"
-                  />
-                  <input
-                    type="text"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Last name"
-                  />
-                </div>
-                
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Email address"
-                />
-                
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Password (min 6 characters)"
-                  minLength={6}
-                />
-              </div>
 
-              {/* Security features highlight */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h3 className="font-semibold text-blue-900 mb-2">🛡️ SafeTrade Security Features</h3>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Triple-layer identity verification</li>
-                  <li>• Real-time stolen vehicle detection</li>
-                  <li>• AI-powered scam protection</li>
-                  <li>• Secure meeting location protocols</li>
-                </ul>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-              >
-                {loading ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </form>
-          </>
-        )}
-
-        {step === 'verify_email' && (
-          <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900">Check Your Email</h2>
-            <p className="text-gray-600">
-              We sent a confirmation link to <strong>{email}</strong>
-            </p>
-            <p className="text-sm text-gray-500">
-              Click the link in your email, then come back here to continue.
-            </p>
-            <div className="space-y-2">
-              <button
-                onClick={checkEmailVerification}
-                disabled={loading}
-                className="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                {loading ? 'Checking...' : 'I\'ve Confirmed My Email'}
-              </button>
+        <div className="bg-white rounded-lg shadow-md p-8">
+          {step === 'register' && (
+            <>
+              <PageHeader
+                title="Join SafeTrade"
+                subtitle="Create your verified account for secure motorcycle trading"
+                icon="🛡️"
+              />
               
-              {/* Temporary skip button for testing */}
-              <button
-                onClick={() => setStep('verify_phone')}
-                className="w-full bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 text-sm"
-              >
-                Skip for Testing (Remove Later)
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 'verify_phone' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Phone</h2>
-              <p className="text-gray-600">We'll send you a code to verify your phone number</p>
-            </div>
-            <PhoneVerification onVerified={handlePhoneVerified} />
-          </div>
-        )}
-
-        {step === 'verify_identity' && userId && (
-          <div className="space-y-4">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Identity</h2>
-              <p className="text-gray-600">
-                Complete identity verification to unlock secure trading features
-              </p>
-            </div>
-            
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  <span className="text-yellow-600">ℹ️</span>
+              <form className="space-y-6" onSubmit={handleRegister}>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="First name"
+                    />
+                    <input
+                      type="text"
+                      required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Last name"
+                    />
+                  </div>
+                  
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Email address"
+                  />
+                  
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Password (min 6 characters)"
+                    minLength={6}
+                  />
                 </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-yellow-800">
-                    Optional but Recommended
-                  </h3>
-                  <p className="text-sm text-yellow-700 mt-1">
-                    Identity verification helps build trust with other traders and unlocks advanced features. 
-                    You can skip this step and complete it later in your profile.
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            <FreeIdentityVerification
-              userId={userId}
-              onComplete={handleIdentityVerified}
-              onError={handleIdentityError}
-            />
+                {/* Security features highlight */}
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-900 mb-2">🛡️ SafeTrade Security Features</h3>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Triple-layer identity verification</li>
+                    <li>• Real-time stolen vehicle detection</li>
+                    <li>• AI-powered scam protection</li>
+                    <li>• Secure meeting location protocols</li>
+                  </ul>
+                </div>
 
-            <div className="text-center">
-              <button
-                onClick={skipIdentityVerification}
-                className="text-sm text-gray-600 hover:text-gray-800 underline"
-              >
-                Skip for now (complete later)
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 'complete' && (
-          <div className="text-center space-y-4">
-            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900">Welcome to SafeTrade!</h2>
-            <p className="text-gray-600">Your account is set up and ready to use.</p>
-            
-            {/* Show verification status */}
-            <div className="bg-gray-50 rounded-lg p-4 text-left max-w-md mx-auto">
-              <h3 className="font-medium text-gray-900 mb-2">Account Status:</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center">
-                  <span className="text-green-600 mr-2">✅</span>
-                  <span>Email verified</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-green-600 mr-2">✅</span>
-                  <span>Phone verified</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-yellow-600 mr-2">⏳</span>
-                  <span>Identity verification (complete in profile)</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              <Link 
-                href="/listings"
-                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-              >
-                Start Browsing Listings
-              </Link>
-              
-              <div>
-                <Link 
-                  href="/profile"
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                 >
-                  Complete identity verification in profile
-                </Link>
+                  {loading ? 'Creating Account...' : 'Create Account'}
+                </button>
+              </form>
+            </>
+          )}
+
+          {step === 'verify_email' && (
+            <div className="text-center space-y-4">
+              <PageHeader
+                title="Check Your Email"
+                subtitle={`We sent a confirmation link to ${email}`}
+                icon="📧"
+              />
+              <p className="text-sm text-gray-500">
+                Click the link in your email, then come back here to continue.
+              </p>
+              <div className="space-y-2">
+                <button
+                  onClick={checkEmailVerification}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {loading ? 'Checking...' : 'I\'ve Confirmed My Email'}
+                </button>
+                
+                {/* Temporary skip button for testing */}
+                <button
+                  onClick={() => setStep('verify_phone')}
+                  className="w-full bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 text-sm"
+                >
+                  Skip for Testing (Remove Later)
+                </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {message && (
-          <div className={`text-sm ${message.includes('Error') || message.includes('error') ? 'text-red-600' : 'text-green-600'} text-center bg-gray-50 p-3 rounded-md`}>
-            {message}
-          </div>
-        )}
+          {step === 'verify_phone' && (
+            <div className="space-y-4">
+              <PageHeader
+                title="Verify Your Phone"
+                subtitle="We'll send you a code to verify your phone number"
+                icon="📱"
+              />
+              <PhoneVerification onVerified={handlePhoneVerified} />
+            </div>
+          )}
 
-        {step === 'register' && (
-          <div className="text-center">
-            <span className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign in
-              </Link>
-            </span>
-          </div>
-        )}
+          {step === 'verify_identity' && userId && (
+            <div className="space-y-4">
+              <PageHeader
+                title="Verify Your Identity"
+                subtitle="Complete identity verification to unlock secure trading features"
+                icon="🆔"
+              />
+              
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <span className="text-yellow-600">ℹ️</span>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-yellow-800">
+                      Optional but Recommended
+                    </h3>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Identity verification helps build trust with other traders and unlocks advanced features. 
+                      You can skip this step and complete it later in your profile.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <FreeIdentityVerification
+                userId={userId}
+                onComplete={handleIdentityVerified}
+                onError={handleIdentityError}
+              />
+
+              <div className="text-center">
+                <button
+                  onClick={skipIdentityVerification}
+                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                >
+                  Skip for now (complete later)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 'complete' && (
+            <div className="text-center space-y-4">
+              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Welcome to SafeTrade!</h2>
+              <p className="text-gray-600">Your account is set up and ready to use.</p>
+              
+              {/* Show verification status */}
+              <div className="bg-gray-50 rounded-lg p-4 text-left max-w-md mx-auto">
+                <h3 className="font-medium text-gray-900 mb-2">Account Status:</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center">
+                    <span className="text-green-600 mr-2">✅</span>
+                    <span>Email verified</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-600 mr-2">✅</span>
+                    <span>Phone verified</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-yellow-600 mr-2">⏳</span>
+                    <span>Identity verification (complete in profile)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <Link 
+                  href="/listings"
+                  className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 font-medium"
+                >
+                  Start Browsing Listings
+                </Link>
+                
+                <div>
+                  <Link 
+                    href="/profile"
+                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Complete identity verification in profile
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {message && (
+            <div className={`text-sm ${message.includes('Error') || message.includes('error') ? 'text-red-600' : 'text-green-600'} text-center bg-gray-50 p-3 rounded-md mt-4`}>
+              {message}
+            </div>
+          )}
+
+          {step === 'register' && (
+            <div className="text-center mt-6">
+              <span className="text-sm text-gray-600">
+                Already have an account?{' '}
+                <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
+                  Sign in
+                </Link>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Layout>
   )
 }
