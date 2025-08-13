@@ -77,74 +77,7 @@ export default function Layout({
         </div>
       </main>
 
-      {/* Footer */}
-      {showNavigation && <Footer />}
+      {/* Footer - Removed */}
     </div>
-  );
-}
-
-// Footer Component
-function Footer() {
-  return (
-    <footer className="bg-white border-t border-gray-200 mt-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🛡️</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">SafeTrade</span>
-            </div>
-            <p className="text-gray-600 text-sm mb-4">
-              The most secure marketplace for buying and selling motorcycles. 
-              Military-grade identity verification and real-time stolen vehicle detection.
-            </p>
-            <div className="flex space-x-4">
-              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
-                ✅ Identity Verified Sellers
-              </span>
-              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-                🛡️ NICB Protected
-              </span>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Marketplace</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li><a href="/listings" className="hover:text-gray-900">Browse Motorcycles</a></li>
-              <li><a href="/listings/create" className="hover:text-gray-900">Sell Your Bike</a></li>
-              <li><a href="/auth/register" className="hover:text-gray-900">Join SafeTrade</a></li>
-              <li><a href="/how-it-works" className="hover:text-gray-900">How It Works</a></li>
-            </ul>
-          </div>
-
-          {/* Security */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Security</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li><a href="/security" className="hover:text-gray-900">Security Features</a></li>
-              <li><a href="/verification" className="hover:text-gray-900">Identity Verification</a></li>
-              <li><a href="/safety-tips" className="hover:text-gray-900">Safety Tips</a></li>
-              <li><a href="/support" className="hover:text-gray-900">Support</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-200 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-xs text-gray-500">
-            © 2024 SafeTrade. All rights reserved. Protecting motorcycle buyers and sellers.
-          </p>
-          <div className="flex space-x-4 mt-4 sm:mt-0">
-            <a href="/privacy" className="text-xs text-gray-500 hover:text-gray-900">Privacy Policy</a>
-            <a href="/terms" className="text-xs text-gray-500 hover:text-gray-900">Terms of Service</a>
-            <a href="/contact" className="text-xs text-gray-500 hover:text-gray-900">Contact</a>
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }
