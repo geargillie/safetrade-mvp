@@ -29,6 +29,7 @@ interface Listing {
   condition: string
   city: string
   zip_code: string
+  status?: 'available' | 'in_talks' | 'sold'
   created_at: string
   vin_verified: boolean
   seller_id: string
@@ -49,6 +50,8 @@ export default function ListingDetailPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [showExactLocation, setShowExactLocation] = useState(false)
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [showStatusSelector, setShowStatusSelector] = useState(false)
 
   useEffect(() => {
     checkUser()
@@ -56,6 +59,21 @@ export default function ListingDetailPage() {
       loadListing(params.id as string)
     }
   }, [params.id])
+
+  // Close status selector when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showStatusSelector) {
+        const target = event.target as Element
+        if (!target.closest('.status-selector-container')) {
+          setShowStatusSelector(false)
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showStatusSelector])
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -124,6 +142,44 @@ export default function ListingDetailPage() {
     })
   }
 
+  const updateListingStatus = async (newStatus: 'available' | 'in_talks' | 'sold') => {
+    if (!listing || !user || user.id !== listing.seller_id) return
+    
+    try {
+      setIsUpdatingStatus(true)
+      
+      const { error } = await supabase
+        .from('listings')
+        .update({ status: newStatus })
+        .eq('id', listing.id)
+      
+      if (error) throw error
+      
+      setListing({ ...listing, status: newStatus })
+      setShowStatusSelector(false)
+    } catch (err: unknown) {
+      console.error('Error updating status:', err)
+      const error = err as { message?: string }
+      alert('Failed to update status: ' + (error.message || 'Unknown error'))
+    } finally {
+      setIsUpdatingStatus(false)
+    }
+  }
+
+  const getStatusDisplay = (status?: string) => {
+    switch (status) {
+      case 'available':
+      case 'active': // legacy status support
+        return { text: 'Available', color: 'green', icon: '✅' }
+      case 'in_talks':
+        return { text: 'In Talks', color: 'yellow', icon: '💬' }
+      case 'sold':
+        return { text: 'Sold', color: 'red', icon: '🔴' }
+      default:
+        return { text: 'Available', color: 'green', icon: '✅' }
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -187,11 +243,83 @@ export default function ListingDetailPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Title and Status Section */}
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                {listing.year} {listing.make} {listing.model}
+              </h1>
+              <p className="text-xl text-gray-600">{listing.title}</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              {/* Status Badge */}
+              <div className={`flex items-center px-4 py-2 rounded-full font-medium text-sm ${
+                getStatusDisplay(listing.status).color === 'green' ? 'bg-green-100 text-green-800' :
+                getStatusDisplay(listing.status).color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-red-100 text-red-800'
+              }`}>
+                <span className="mr-2">{getStatusDisplay(listing.status).icon}</span>
+                {getStatusDisplay(listing.status).text}
+              </div>
+              
+              {/* Status Management for Seller */}
+              {user && user.id === listing.seller_id && (
+                <div className="relative status-selector-container">
+                  <button
+                    onClick={() => setShowStatusSelector(!showStatusSelector)}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center"
+                    disabled={isUpdatingStatus}
+                  >
+                    {isUpdatingStatus ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-600 border-t-transparent mr-2"></div>
+                    ) : (
+                      <span className="mr-2">⚙️</span>
+                    )}
+                    Change Status
+                  </button>
+                  
+                  {showStatusSelector && (
+                    <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[160px]">
+                      <div className="p-2">
+                        <button
+                          onClick={() => updateListingStatus('available')}
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                          disabled={listing.status === 'available'}
+                        >
+                          <span className="mr-2">✅</span>
+                          Available
+                        </button>
+                        <button
+                          onClick={() => updateListingStatus('in_talks')}
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                          disabled={listing.status === 'in_talks'}
+                        >
+                          <span className="mr-2">💬</span>
+                          In Talks
+                        </button>
+                        <button
+                          onClick={() => updateListingStatus('sold')}
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                          disabled={listing.status === 'sold'}
+                        >
+                          <span className="mr-2">🔴</span>
+                          Sold
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Image Gallery */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
               {listing.images && listing.images.length > 0 ? (
                 <>
                   {/* Main Image */}
@@ -246,8 +374,16 @@ export default function ListingDetailPage() {
             </div>
 
             {/* Vehicle Details */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vehicle Details</h2>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Vehicle Details</h2>
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-black text-green-600">
+                    {formatPrice(listing.price)}
+                  </span>
+                  <div className="text-sm text-gray-500">Asking Price</div>
+                </div>
+              </div>
               
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
@@ -331,8 +467,11 @@ export default function ListingDetailPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Description</h2>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="mr-3">📝</span>
+                Description
+              </h2>
               <div className="prose prose-gray max-w-none">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                   {listing.description || 'No description provided.'}
@@ -343,54 +482,105 @@ export default function ListingDetailPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Price & Action */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 sticky top-8">
+            {/* Quick Actions */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sticky top-8">
               <div className="text-center mb-6">
-                <div className="text-4xl font-black text-gray-900 mb-2">
-                  {formatPrice(listing.price)}
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white text-2xl">🏍️</span>
                 </div>
-                <p className="text-gray-600">
-                  {listing.year} {listing.make} {listing.model}
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Ready to Purchase?</h3>
+                <p className="text-sm text-gray-600">
+                  Connect with the seller securely
                 </p>
               </div>
 
               {user ? (
                 user.id === listing.seller_id ? (
                   <div className="space-y-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 text-center">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-blue-600 text-xl">👤</span>
+                      </div>
                       <p className="text-blue-800 font-medium">This is your listing</p>
+                      <p className="text-blue-600 text-sm mt-1">Manage your motorcycle sale</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      <Link
+                        href={`/listings/${listing.id}/edit`}
+                        className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all font-semibold text-center block shadow-lg"
+                      >
+                        ✏️ Edit Listing
+                      </Link>
+                      <Link
+                        href="/messages"
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-center block shadow-lg"
+                      >
+                        💬 View Messages
+                      </Link>
+                    </div>
+                  </div>
+                ) : listing.status === 'sold' ? (
+                  <div className="space-y-4">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                      <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-red-600 text-xl">🔴</span>
+                      </div>
+                      <p className="text-red-800 font-medium">This motorcycle has been sold</p>
+                      <p className="text-red-600 text-sm mt-1">No longer available for purchase</p>
                     </div>
                     <Link
-                      href={`/listings/${listing.id}/edit`}
+                      href="/listings"
                       className="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-semibold text-center block"
                     >
-                      Edit Listing
+                      🔍 Browse Other Motorcycles
                     </Link>
                   </div>
                 ) : (
-                  <MessageButton
-                    listing={{
-                      id: listing.id,
-                      title: listing.title,
-                      price: listing.price,
-                      seller_id: listing.seller_id
-                    }}
-                    currentUserId={user.id}
-                  />
+                  <div className="space-y-4">
+                    {listing.status === 'in_talks' && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                        <p className="text-yellow-800 text-sm font-medium">🗣️ Seller is in talks with buyers</p>
+                        <p className="text-yellow-600 text-xs mt-1">Still available - contact to show interest</p>
+                      </div>
+                    )}
+                    <MessageButton
+                      listing={{
+                        id: listing.id,
+                        title: listing.title,
+                        price: listing.price,
+                        seller_id: listing.seller_id
+                      }}
+                      currentUserId={user.id}
+                    />
+                  </div>
                 )
               ) : (
-                <Link
-                  href="/auth/login"
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-center block"
-                >
-                  Sign In to Message Seller
-                </Link>
+                <div className="space-y-4">
+                  {listing.status === 'sold' ? (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                      <p className="text-red-800 font-medium">This motorcycle has been sold</p>
+                    </div>
+                  ) : (
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 text-center mb-4">
+                      <p className="text-blue-800 text-sm">Sign in to contact the seller securely</p>
+                    </div>
+                  )}
+                  <Link
+                    href="/auth/login"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold text-center block shadow-lg"
+                  >
+                    🔐 Sign In to Message Seller
+                  </Link>
+                </div>
               )}
             </div>
 
             {/* Seller Info */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Seller Information</h3>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="mr-3">👤</span>
+                Seller Information
+              </h3>
               
               <div className="flex items-center space-x-4 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
@@ -431,8 +621,11 @@ export default function ListingDetailPage() {
             </div>
 
             {/* Safety Tips */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
-              <h3 className="text-lg font-bold text-yellow-800 mb-4">Safety Tips</h3>
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-6 shadow-lg">
+              <h3 className="text-lg font-bold text-yellow-800 mb-4 flex items-center">
+                <span className="mr-2">🛡️</span>
+                Safety Tips
+              </h3>
               <ul className="space-y-2 text-sm text-yellow-700">
                 <li className="flex items-start">
                   <svg className="w-4 h-4 mr-2 mt-0.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">

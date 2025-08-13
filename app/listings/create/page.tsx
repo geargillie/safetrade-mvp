@@ -358,7 +358,8 @@ export default function CreateListing() {
           condition: formData.condition,
           city: formData.city,
           zip_code: formData.zipCode,
-          vin_verified: vinVerification.result?.isValid && !vinVerification.result?.isStolen
+          vin_verified: vinVerification.result?.isValid && !vinVerification.result?.isStolen,
+          status: 'available'
         })
         .select()
 
