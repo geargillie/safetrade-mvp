@@ -1,0 +1,712 @@
+// app/listings/create/page.tsx
+'use client'
+
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
+import ImageUpload from '@/components/ImageUpload'
+
+export default function CreateListing() {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    price: '',
+    make: '',
+    model: '',
+    year: '',
+    mileage: '',
+    vin: '',
+    condition: '',
+    city: '',
+    zipCode: ''
+  })
+
+  const [images, setImages] = useState<string[]>([])
+  const [vinVerification, setVinVerification] = useState<{
+    loading: boolean
+    result: any
+    error: string
+  }>({ loading: false, result: null, error: '' })
+
+  useEffect(() => {
+    checkUser()
+  }, [])
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      router.push('/auth/login')
+      return
+    }
+    
+    // Check if user profile exists
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+    
+    // If profile doesn't exist, create it
+    if (!profile && !profileError) {
+      console.log('Creating missing profile for user:', user.id)
+      const { error: insertError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: user.id,
+          first_name: user.user_metadata?.first_name || 'User',
+          last_name: user.user_metadata?.last_name || ''
+        })
+      
+      if (insertError) {
+        console.error('Error creating profile:', insertError)
+        setMessage('Error: Could not create user profile. Please contact support.')
+        return
+      }
+    }
+    
+    setUser(user)
+  }
+
+  const suggestPrice = (msrp: number, year: string | number) => {
+    if (!msrp || !year || year === 'Unknown') return ''
+    
+    const vehicleYear = typeof year === 'string' ? parseInt(year) : year
+    const currentYear = new Date().getFullYear()
+    const age = currentYear - vehicleYear
+    
+    // Motorcycle depreciation calculation
+    let depreciationRate = 0
+    
+    if (age <= 1) depreciationRate = 0.10
+    else if (age <= 2) depreciationRate = 0.20
+    else if (age <= 3) depreciationRate = 0.30
+    else if (age <= 4) depreciationRate = 0.40
+    else if (age <= 5) depreciationRate = 0.50
+    else depreciationRate = 0.50 + ((age - 5) * 0.05)
+    
+    depreciationRate = Math.min(depreciationRate, 0.80)
+    
+    const suggestedPrice = Math.round(msrp * (1 - depreciationRate))
+    return Math.round(suggestedPrice / 500) * 500
+  }
+
+  const suggestCondition = (year: string | number) => {
+    if (!year || year === 'Unknown') return ''
+    
+    const vehicleYear = typeof year === 'string' ? parseInt(year) : year
+    const currentYear = new Date().getFullYear()
+    const age = currentYear - vehicleYear
+    
+    if (age <= 2) return 'Excellent'
+    if (age <= 5) return 'Very Good'
+    if (age <= 10) return 'Good'
+    if (age <= 15) return 'Fair'
+    return 'Fair'
+  }
+
+  const generateVehicleDescription = (vehicleInfo: any) => {
+    if (!vehicleInfo || vehicleInfo.error) return ''
+    
+    const parts = []
+    
+    if (vehicleInfo.year && vehicleInfo.make && vehicleInfo.model) {
+      parts.push(`This ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`)
+    }
+    
+    if (vehicleInfo.engineSize) {
+      parts.push(`features a ${vehicleInfo.engineSize} engine`)
+    }
+    
+    if (vehicleInfo.transmission) {
+      parts.push(`with ${vehicleInfo.transmission.toLowerCase()} transmission`)
+    }
+    
+    if (vehicleInfo.bodyStyle) {
+      parts.push(`Built as a ${vehicleInfo.bodyStyle.toLowerCase()}`)
+    }
+    
+    if (vehicleInfo.fuelType) {
+      parts.push(`running on ${vehicleInfo.fuelType.toLowerCase()}`)
+    }
+    
+    if (vehicleInfo.color) {
+      parts.push(`Available in ${vehicleInfo.color.toLowerCase()}`)
+    }
+    
+    if (vehicleInfo.msrp) {
+      parts.push(`Original MSRP: $${vehicleInfo.msrp.toLocaleString()}`)
+    }
+    
+    parts.push(`\n\n✅ Vehicle information verified through ${vehicleInfo.sources?.join(' & ') || 'official databases'}`)
+    parts.push('✅ VIN checked against NICB stolen vehicle database')
+    
+    return parts.join('. ') + '.'
+  }
+
+  const handleVinVerification = async (vin: string) => {
+    if (vin.length !== 17) return
+    
+    setVinVerification({ loading: true, result: null, error: '' })
+    
+    try {
+      const response = await fetch('/api/verify-vin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vin })
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'VIN verification failed')
+      }
+      
+      if (data.success) {
+        setVinVerification({ 
+          loading: false, 
+          result: data.data, 
+          error: '' 
+        })
+        
+        // Enhanced auto-fill with all available vehicle data
+        if (data.data.vehicleInfo && !data.data.vehicleInfo.error) {
+          const vehicleInfo = data.data.vehicleInfo
+          
+          const suggestedPrice = suggestPrice(vehicleInfo.msrp, vehicleInfo.year)
+          
+          // Use functional update to preserve the current VIN value
+          setFormData(prevFormData => {
+            const newFormData = {
+              ...prevFormData,
+              // Basic vehicle info (preserve existing VIN from current state)
+              make: vehicleInfo.make && vehicleInfo.make !== 'Unknown' ? vehicleInfo.make : prevFormData.make,
+              model: vehicleInfo.model && vehicleInfo.model !== 'Unknown' ? vehicleInfo.model : prevFormData.model,
+              year: vehicleInfo.year && vehicleInfo.year !== 'Unknown' ? vehicleInfo.year.toString() : prevFormData.year,
+              
+              // Auto-generate title if we have good data
+              title: (vehicleInfo.year && vehicleInfo.make && vehicleInfo.model && 
+                     vehicleInfo.year !== 'Unknown' && vehicleInfo.make !== 'Unknown' && vehicleInfo.model !== 'Unknown')
+                ? `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}${vehicleInfo.trim ? ` ${vehicleInfo.trim}` : ''}`
+                : prevFormData.title,
+              
+              // Enhanced description with vehicle details (only if empty)
+              description: prevFormData.description || generateVehicleDescription(vehicleInfo),
+              
+              // Smart condition suggestion (only if empty)
+              condition: prevFormData.condition || suggestCondition(vehicleInfo.year),
+              
+              // Suggested price (only if empty)
+              price: prevFormData.price || (suggestedPrice ? suggestedPrice.toString() : ''),
+              
+              // Keep existing VIN from the parameter (most current value)
+              vin: vin, // Use the vin parameter instead of prevFormData.vin
+              city: prevFormData.city,
+              zipCode: prevFormData.zipCode,
+              mileage: prevFormData.mileage
+            }
+            
+            return newFormData
+          })
+          
+          // Show user what was auto-filled with details
+          const filledFields = []
+          if (vehicleInfo.make && vehicleInfo.make !== 'Unknown') filledFields.push('make')
+          if (vehicleInfo.model && vehicleInfo.model !== 'Unknown') filledFields.push('model')
+          if (vehicleInfo.year && vehicleInfo.year !== 'Unknown') filledFields.push('year')
+          if (suggestCondition(vehicleInfo.year)) filledFields.push('condition')
+          if (vehicleInfo.msrp) filledFields.push('suggested price')
+          
+          if (filledFields.length > 0) {
+            setMessage(`✅ Auto-filled: ${filledFields.join(', ')} from ${vehicleInfo.sources?.join(' & ') || 'vehicle databases'}`)
+            setTimeout(() => setMessage(''), 5000)
+          }
+        }
+      } else {
+        setVinVerification({ 
+          loading: false, 
+          result: null, 
+          error: data.message || 'Verification failed' 
+        })
+      }
+    } catch (error: any) {
+      setVinVerification({ 
+        loading: false, 
+        result: null, 
+        error: error.message 
+      })
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    try {
+      if (!formData.title || !formData.price || !formData.make || !formData.vin) {
+        throw new Error('Please fill in all required fields')
+      }
+
+      if (!vinVerification.result || !vinVerification.result.isValid) {
+        throw new Error('Please wait for VIN verification to complete and ensure VIN is valid')
+      }
+
+      if (vinVerification.result.isStolen) {
+        throw new Error('Cannot list stolen vehicles')
+      }
+
+      const { data, error } = await supabase
+        .from('listings')
+        .insert({
+          seller_id: user.id,
+          title: formData.title,
+          description: formData.description,
+          price: parseFloat(formData.price),
+          make: formData.make,
+          model: formData.model,
+          year: formData.year ? parseInt(formData.year) : null,
+          mileage: formData.mileage ? parseInt(formData.mileage) : null,
+          vin: formData.vin.toUpperCase(),
+          condition: formData.condition,
+          city: formData.city,
+          zip_code: formData.zipCode,
+          vin_verified: vinVerification.result?.isValid && !vinVerification.result?.isStolen
+        })
+        .select()
+
+      if (error) throw error
+
+      // Save images if listing was created successfully
+      if (data && data[0] && images.length > 0) {
+        const listingId = data[0].id
+        
+        // Insert images with proper order
+        const imageInserts = images.map((imageUrl, index) => ({
+          listing_id: listingId,
+          image_url: imageUrl,
+          is_primary: index === 0, // First image is primary
+          sort_order: index
+        }))
+        
+        const { error: imageError } = await supabase
+          .from('listing_images')
+          .insert(imageInserts)
+        
+        if (imageError) {
+          console.error('Failed to save images:', imageError)
+          // Don't fail the whole listing creation for image errors
+        }
+      }
+
+      setMessage('Listing created successfully!')
+      setTimeout(() => {
+        router.push('/listings')
+      }, 2000)
+
+    } catch (error: any) {
+      setMessage(`Error: ${error.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!user) {
+    return <div className="text-center py-8">Loading...</div>
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            List Your Motorcycle
+          </h1>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Basic Info */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title * {formData.title && vinVerification.result?.vehicleInfo && (
+                    <span className="text-green-600 text-xs">✓ Auto-filled</span>
+                  )}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="2020 Honda CBR600RR - Low Miles"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price * {formData.price && vinVerification.result?.vehicleInfo?.msrp && (
+                    <span className="text-green-600 text-xs">✓ Suggested based on MSRP</span>
+                  )}
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <input
+                    type="number"
+                    required
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="10000"
+                  />
+                </div>
+                {vinVerification.result?.vehicleInfo?.msrp && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Original MSRP: ${vinVerification.result.vehicleInfo.msrp.toLocaleString()}
+                  </p>
+                )}
+              </div>
+
+              {/* VIN Verification */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  VIN (17 characters) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.vin}
+                  onChange={(e) => {
+                    const newVin = e.target.value.toUpperCase()
+                    setFormData({ ...formData, vin: newVin })
+                    
+                    // Only trigger verification when VIN is exactly 17 characters
+                    if (newVin.length === 17) {
+                      handleVinVerification(newVin)
+                    } else if (newVin.length < 17) {
+                      // Clear verification results if VIN is incomplete
+                      setVinVerification({ loading: false, result: null, error: '' })
+                    }
+                  }}
+                  onBlur={(e) => {
+                    // Trigger verification on blur if VIN is 17 characters
+                    const vin = e.target.value.toUpperCase()
+                    if (vin.length === 17 && !vinVerification.result && !vinVerification.loading) {
+                      handleVinVerification(vin)
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="1HD1KB4137Y123456"
+                  maxLength={17}
+                />
+                
+                {/* VIN Verification Status */}
+                {vinVerification.loading && (
+                  <div className="mt-2 flex items-center text-blue-600">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="text-sm">Checking real-time NICB stolen vehicle database...</span>
+                  </div>
+                )}
+                
+                {vinVerification.result && (
+                  <div className="mt-2 space-y-2">
+                    {vinVerification.result.isStolen ? (
+                      <div className="bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                          <strong>STOLEN VEHICLE ALERT</strong>
+                        </div>
+                        <div className="text-sm mt-1">
+                          NICB REAL-TIME STOLEN VEHICLE CHECK FAILED - This vehicle has been reported stolen in the National Insurance Crime Bureau database. Listing is blocked for your protection.
+                        </div>
+                      </div>
+                    ) : vinVerification.result.isValid ? (
+                      <div className="bg-green-100 border border-green-300 text-green-700 px-3 py-2 rounded-md">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <strong>✓ VIN Verified</strong>
+                        </div>
+                        <div className="text-sm mt-1">
+                          Valid VIN • NICB Real-time Check: CLEAN
+                          {vinVerification.result.vehicleInfo && !vinVerification.result.vehicleInfo.error && (
+                            <div className="mt-2 p-2 bg-blue-50 rounded border-l-4 border-blue-400">
+                              <div className="font-medium text-blue-800">Vehicle Information:</div>
+                              <div className="text-blue-700 text-xs space-y-1 mt-1">
+                                {vinVerification.result.vehicleInfo.year && vinVerification.result.vehicleInfo.make && vinVerification.result.vehicleInfo.model && (
+                                  <div><strong>Vehicle:</strong> {vinVerification.result.vehicleInfo.year} {vinVerification.result.vehicleInfo.make} {vinVerification.result.vehicleInfo.model}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.bodyStyle && (
+                                  <div><strong>Body Style:</strong> {vinVerification.result.vehicleInfo.bodyStyle}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.engineSize && (
+                                  <div><strong>Engine:</strong> {vinVerification.result.vehicleInfo.engineSize}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.transmission && (
+                                  <div><strong>Transmission:</strong> {vinVerification.result.vehicleInfo.transmission}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.fuelType && (
+                                  <div><strong>Fuel Type:</strong> {vinVerification.result.vehicleInfo.fuelType}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.color && (
+                                  <div><strong>Color:</strong> {vinVerification.result.vehicleInfo.color}</div>
+                                )}
+                                {vinVerification.result.vehicleInfo.msrp && (
+                                  <div><strong>Original MSRP:</strong> ${vinVerification.result.vehicleInfo.msrp.toLocaleString()}</div>
+                                )}
+                                <div><strong>Data Sources:</strong> {vinVerification.result.vehicleInfo.sources?.join(', ') || 'NHTSA, NICB'}</div>
+                              </div>
+                            </div>
+                          )}
+                          {vinVerification.result.warnings && vinVerification.result.warnings.length > 0 && (
+                            <div className="text-yellow-600 mt-1">
+                              ⚠️ {vinVerification.result.warnings.join(', ')}
+                            </div>
+                          )}
+                          <div className="text-xs text-gray-500 mt-1">
+                            Source: {vinVerification.result.stolenCheck?.details?.source || 'NICB'} • 
+                            Checked: {new Date(vinVerification.result.stolenCheck?.lastChecked || '').toLocaleTimeString()}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-yellow-100 border border-yellow-300 text-yellow-700 px-3 py-2 rounded-md">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          <strong>VIN Warning</strong>
+                        </div>
+                        <div className="text-sm mt-1">
+                          {vinVerification.result.alerts?.map((alert: any) => alert.message).join(', ')}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {vinVerification.error && (
+                  <div className="mt-2 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md text-sm">
+                    Error: {vinVerification.error}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Vehicle Details */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Vehicle Details</h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Make * {formData.make && vinVerification.result?.vehicleInfo && (
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
+                    )}
+                  </label>
+                  <select
+                    required
+                    value={formData.make}
+                    onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Make</option>
+                    <option value="Harley-Davidson">Harley-Davidson</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Yamaha">Yamaha</option>
+                    <option value="Suzuki">Suzuki</option>
+                    <option value="Kawasaki">Kawasaki</option>
+                    <option value="Ducati">Ducati</option>
+                    <option value="BMW">BMW</option>
+                    <option value="KTM">KTM</option>
+                    <option value="Triumph">Triumph</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Aprilia">Aprilia</option>
+                    <option value="Benelli">Benelli</option>
+                    <option value="Buell">Buell</option>
+                    <option value="Can-Am">Can-Am</option>
+                    <option value="Husqvarna">Husqvarna</option>
+                    <option value="Moto Guzzi">Moto Guzzi</option>
+                    <option value="MV Agusta">MV Agusta</option>
+                    <option value="Polaris">Polaris</option>
+                    <option value="Royal Enfield">Royal Enfield</option>
+                    <option value="Victory">Victory</option>
+                    <option value="Zero">Zero</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Model {formData.model && vinVerification.result?.vehicleInfo && (
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.model}
+                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="CBR600RR"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Year {formData.year && vinVerification.result?.vehicleInfo && (
+                      <span className="text-green-600 text-xs">✓ Auto-filled</span>
+                    )}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.year}
+                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="2020"
+                    min="1980"
+                    max={new Date().getFullYear() + 1}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mileage
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.mileage}
+                    onChange={(e) => setFormData({ ...formData, mileage: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="15000"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Condition {formData.condition && vinVerification.result?.vehicleInfo && (
+                      <span className="text-green-600 text-xs">✓ Suggested by age</span>
+                    )}
+                  </label>
+                  <select
+                    value={formData.condition}
+                    onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Very Good">Very Good</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Location</h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    City
+                  </label>
+                  <select
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select City</option>
+                    <option value="Newark">Newark</option>
+                    <option value="Jersey City">Jersey City</option>
+                    <option value="Paterson">Paterson</option>
+                    <option value="Elizabeth">Elizabeth</option>
+                    <option value="Edison">Edison</option>
+                    <option value="Trenton">Trenton</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Zip Code
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.zipCode}
+                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="07101"
+                    maxLength={5}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Images */}
+            <div className="space-y-4">
+              <ImageUpload
+                onImagesUploaded={setImages}
+                maxImages={8}
+                existingImages={images}
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Describe your motorcycle's condition, features, modifications, etc."
+              />
+            </div>
+
+            {message && (
+              <div className={`p-3 rounded text-sm ${
+                message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+              }`}>
+                {message}
+              </div>
+            )}
+
+            <div className="flex space-x-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+              >
+                {loading ? 'Creating Listing...' : 'Create Listing'}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => router.push('/listings')}
+                className="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
