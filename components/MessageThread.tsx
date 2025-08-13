@@ -4,6 +4,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useConversationMessages } from '@/hooks/useMessaging'
 import type { Conversation } from '@/hooks/useMessaging'
+import MeetingAgreement from './MeetingAgreement'
+import Link from 'next/link'
 
 interface MessageThreadProps {
   conversation: Conversation
@@ -12,6 +14,7 @@ interface MessageThreadProps {
 
 export default function MessageThread({ conversation, currentUserId }: MessageThreadProps) {
   const [newMessage, setNewMessage] = useState('')
+  const [showMeetingAgreement, setShowMeetingAgreement] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   
   const { messages, loading, sending, error, sendMessage } = useConversationMessages(
@@ -55,6 +58,19 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
   }
 
   const otherUser = getOtherUser()
+  const isCurrentUserBuyer = conversation.buyer_id === currentUserId
+
+  const handleMeetingLocationSelect = async (location: string, datetime: string) => {
+    // Send a system message about the meeting arrangement
+    const meetingMessage = `📍 **Meeting Arranged**\n\n**Location:** ${location}\n**Date & Time:** ${datetime}\n\n✅ Both parties have agreed to meet. Please arrive on time and prioritize safety!`
+    
+    try {
+      await sendMessage(meetingMessage)
+      setShowMeetingAgreement(false)
+    } catch (err) {
+      console.error('Failed to send meeting message:', err)
+    }
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -78,7 +94,67 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
             </p>
           </div>
         </div>
+        
+        {/* Buy Agreement Section */}
+        <div className="border-b border-gray-200 bg-blue-50">
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Link 
+                href={`/listings/${conversation.listing_id}`}
+                className="text-sm text-blue-600 hover:text-blue-800 underline"
+              >
+                📋 View Full Listing
+              </Link>
+              {isCurrentUserBuyer && !showMeetingAgreement && (
+                <button
+                  onClick={() => setShowMeetingAgreement(true)}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
+                >
+                  🤝 I Want to Buy This
+                </button>
+              )}
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-gray-600">Asking Price</div>
+              <div className="text-lg font-bold text-green-600">
+                ${conversation.listing_price?.toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Meeting Agreement Modal */}
+      {showMeetingAgreement && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold">Purchase Agreement</h2>
+                <button
+                  onClick={() => setShowMeetingAgreement(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="p-4">
+              <MeetingAgreement
+                listingId={conversation.listing_id}
+                conversationId={conversation.id}
+                listingTitle={conversation.listing_title}
+                listingPrice={conversation.listing_price}
+                listingCity="Newark" // TODO: Get from listing
+                listingZipCode="07101" // TODO: Get from listing
+                isSellerView={!isCurrentUserBuyer}
+                onSelectMeetingLocation={handleMeetingLocationSelect}
+                onCancel={() => setShowMeetingAgreement(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">

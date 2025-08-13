@@ -4,6 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getLocationDisplay } from '@/lib/locationUtils';
 
 interface Listing {
   id: string;
@@ -14,6 +15,7 @@ interface Listing {
   year?: number;
   mileage?: number;
   city?: string;
+  zip_code?: string;
   vin_verified?: boolean;
   condition?: string;
   created_at: string;
@@ -91,7 +93,7 @@ export default function ListingCard({ listing, showVerificationBadge = true }: L
           {listing.city && (
             <div className="flex items-center">
               <span className="mr-1">📍</span>
-              <span>{listing.city}</span>
+              <span>{getLocationDisplay(listing.city, listing.zip_code)}</span>
             </div>
           )}
         </div>

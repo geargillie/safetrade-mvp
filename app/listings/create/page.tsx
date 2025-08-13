@@ -827,7 +827,19 @@ export default function CreateListing() {
 
             {/* Location */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Location</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold text-gray-900">Location</h3>
+                <div className="text-sm text-green-600 flex items-center">
+                  🛡️ Your address stays private
+                </div>
+              </div>
+              
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-green-800">
+                  <strong>Privacy Protected:</strong> We only collect your city and ZIP code. 
+                  Your exact address is never stored or shared. Buyers will see your general area until you choose to meet.
+                </p>
+              </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
