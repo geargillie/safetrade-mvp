@@ -77,38 +77,56 @@ export default function CreateListing() {
     }
     
     // Check if user profile exists
+    console.log('Checking for existing profile for user:', user.id)
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('id')
       .eq('id', user.id)
       .single()
     
+    console.log('Profile check result:', { profile, profileError })
+    
     // If profile doesn't exist, create it
     if (!profile || (profileError && typeof profileError === 'object' && profileError !== null && 'code' in profileError && (profileError as { code: string }).code === 'PGRST116')) {
       console.log('Creating missing profile for user:', user.id)
-      const { error: insertError } = await supabase
+      console.log('User metadata:', user.user_metadata)
+      
+      const profileData = {
+        id: user.id,
+        first_name: user.user_metadata?.first_name || 'User',
+        last_name: user.user_metadata?.last_name || '',
+        phone_verified: false,
+        id_document_verified: false,
+        trust_score: 0,
+        identity_verified: false,
+        verification_level: null,
+        verified_at: null,
+        phone: null,
+        city: null,
+        zip_code: null
+      }
+      
+      console.log('Profile data to insert:', profileData)
+      
+      // Use upsert instead of insert to handle conflicts
+      const { data: insertResult, error: insertError } = await supabase
         .from('user_profiles')
-        .insert({
-          id: user.id,
-          first_name: user.user_metadata?.first_name || 'User',
-          last_name: user.user_metadata?.last_name || '',
-          phone_verified: false,
-          id_document_verified: false,
-          trust_score: 0,
-          identity_verified: false,
-          verification_level: null,
-          verified_at: null,
-          phone: null,
-          city: null,
-          zip_code: null
-        })
+        .upsert(profileData, { onConflict: 'id' })
+        .select()
       
       if (insertError) {
         console.error('Error creating profile:', insertError)
+        console.error('Error details:', {
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
+          code: insertError.code
+        })
         setMessage('Error: Could not create user profile. Please contact support.')
         return
       }
-      console.log('Profile created successfully for user:', user.id)
+      
+      console.log('Profile created successfully:', insertResult)
     } else if (profileError && typeof profileError === 'object' && profileError !== null && 'code' in profileError && (profileError as { code: string }).code !== 'PGRST116') {
       console.error('Error checking profile:', profileError)
       setMessage('Error: Could not check user profile. Please contact support.')
