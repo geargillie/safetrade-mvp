@@ -91,7 +91,16 @@ export default function CreateListing() {
         .insert({
           id: user.id,
           first_name: user.user_metadata?.first_name || 'User',
-          last_name: user.user_metadata?.last_name || ''
+          last_name: user.user_metadata?.last_name || '',
+          phone_verified: false,
+          id_document_verified: false,
+          trust_score: 0,
+          identity_verified: false,
+          verification_level: null,
+          verified_at: null,
+          phone: null,
+          city: null,
+          zip_code: null
         })
       
       if (insertError) {
