@@ -15,7 +15,7 @@ export default function CreateListing() {
   const [message, setMessage] = useState('')
   const [isVerified, setIsVerified] = useState<boolean | null>(null)
   const [showVerification, setShowVerification] = useState(false)
-  const [verificationStatus, setVerificationStatus] = useState<{ verified: boolean; status: string } | null>(null)
+  const [verificationStatus, setVerificationStatus] = useState<{ verified: boolean; status: string; method?: string } | null>(null)
   const [verificationMethod, setVerificationMethod] = useState<'basic' | 'enhanced' | null>(null)
   const [canSkip, setCanSkip] = useState(false)
   
@@ -721,7 +721,7 @@ export default function CreateListing() {
                 <span className="text-yellow-800 font-medium">Unverified Seller - Limited Features</span>
               </div>
               <p className="text-yellow-700 text-sm mt-1">
-                You're creating a listing without identity verification. Your listing will be marked as "unverified" and may receive fewer inquiries.
+                You&apos;re creating a listing without identity verification. Your listing will be marked as &quot;unverified&quot; and may receive fewer inquiries.
               </p>
               <div className="mt-2">
                 <button
