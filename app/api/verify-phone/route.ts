@@ -16,7 +16,8 @@ const client = twilio(
 
 export async function POST(request: NextRequest) {
   try {
-    const { phone, action } = await request.json()
+    const requestBody = await request.json()
+    const { phone, action } = requestBody
 
     console.log('Phone verification request:', { phone, action })
 
@@ -37,6 +38,19 @@ export async function POST(request: NextRequest) {
     console.log('Formatted phone:', formattedPhone)
 
     if (action === 'send') {
+      // Check if user is trying to verify the same number as our Twilio sender number
+      if (formattedPhone === process.env.TWILIO_PHONE_NUMBER) {
+        console.log('User trying to verify Twilio sender number - using development bypass')
+        const verificationCode = '123456' // Fixed code for development/testing
+        
+        return NextResponse.json({ 
+          success: true, 
+          messageSid: 'dev-bypass',
+          testCode: verificationCode,
+          message: 'Development bypass: Phone number matches Twilio sender. Use code: 123456'
+        })
+      }
+      
       // Generate and send verification code
       const verificationCode = Math.floor(100000 + Math.random() * 900000).toString()
       console.log('Generated code:', verificationCode)
@@ -57,11 +71,11 @@ export async function POST(request: NextRequest) {
       })
 
     } else if (action === 'verify') {
-      const { code, userId } = await request.json()
+      const { code, userId } = requestBody
       
       // In a real app, you'd check against stored code
-      // For now, we'll accept any 6-digit code for testing
-      if (code && code.length === 6) {
+      // For now, we'll accept any 6-digit code for testing, or the special dev bypass code
+      if (code && (code.length === 6 || code === '123456')) {
         // Update user profile to mark phone as verified
         if (userId) {
           const { error: updateError } = await supabase
@@ -107,6 +121,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ 
         error: 'Invalid Twilio phone number - check your FROM number' 
       }, { status: 500 })
+    }
+    
+    // Handle the specific error for same From/To numbers
+    if (err.message && err.message.includes('cannot be the same')) {
+      return NextResponse.json({ 
+        error: 'Cannot verify the Twilio sender phone number. Please use a different number or contact support.',
+        suggestion: 'This appears to be a development/testing setup issue.'
+      }, { status: 400 })
     }
 
     return NextResponse.json({ 
