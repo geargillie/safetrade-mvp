@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/ImageUpload'
 import FreeIdentityVerification from '@/components/FreeIdentityVerification'
+import EnhancedIDVerification from '@/components/EnhancedIDVerification'
 
 export default function CreateListing() {
   const router = useRouter()
@@ -15,6 +16,8 @@ export default function CreateListing() {
   const [isVerified, setIsVerified] = useState<boolean | null>(null)
   const [showVerification, setShowVerification] = useState(false)
   const [verificationStatus, setVerificationStatus] = useState<{ verified: boolean; status: string } | null>(null)
+  const [verificationMethod, setVerificationMethod] = useState<'basic' | 'enhanced' | null>(null)
+  const [canSkip, setCanSkip] = useState(false)
   
   const [formData, setFormData] = useState({
     title: '',
@@ -106,18 +109,41 @@ export default function CreateListing() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      const response = await fetch(`/api/identity/free-verify?userId=${userId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setVerificationStatus(data)
-        setIsVerified(data.verified)
-        
-        if (!data.verified && data.status === 'not_started') {
-          // User hasn't started verification yet
-          setShowVerification(false) // Don't auto-show, let them click
+      // Check both basic and enhanced verification status
+      const [basicResponse, enhancedResponse] = await Promise.all([
+        fetch(`/api/identity/free-verify?userId=${userId}`),
+        fetch(`/api/identity/enhanced-verify?userId=${userId}`)
+      ])
+      
+      let isVerified = false
+      let verificationData = null
+      
+      // Check enhanced verification first (higher priority)
+      if (enhancedResponse.ok) {
+        const enhancedData = await enhancedResponse.json()
+        if (enhancedData.verified) {
+          isVerified = true
+          verificationData = { ...enhancedData, method: 'enhanced' }
         }
-      } else {
-        setIsVerified(false)
+      }
+      
+      // If not enhanced verified, check basic verification
+      if (!isVerified && basicResponse.ok) {
+        const basicData = await basicResponse.json()
+        if (basicData.verified) {
+          isVerified = true
+          verificationData = { ...basicData, method: 'basic' }
+        } else {
+          verificationData = basicData
+        }
+      }
+      
+      setVerificationStatus(verificationData)
+      setIsVerified(isVerified)
+      
+      if (!isVerified && verificationData?.status === 'not_started') {
+        // User hasn't started verification yet
+        setShowVerification(false) // Don't auto-show, let them click
       }
     } catch (error) {
       console.error('Error checking verification status:', error)
@@ -326,8 +352,8 @@ export default function CreateListing() {
         throw new Error('Please log in to create a listing')
       }
 
-      // Check verification status again before submission
-      if (!isVerified) {
+      // Check verification status again before submission (allow skip if enabled)
+      if (!isVerified && !canSkip) {
         throw new Error('Identity verification required to create listings')
       }
 
@@ -465,12 +491,24 @@ export default function CreateListing() {
                 <p>✅ Bank-level encryption & security</p>
               </div>
               
-              <button
-                onClick={() => router.push('/listings')}
-                className="text-gray-600 hover:text-gray-800 underline text-sm"
-              >
-                Browse listings instead
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setCanSkip(true)
+                    setIsVerified(null) // This will show the create listing form
+                  }}
+                  className="w-full text-yellow-600 hover:text-yellow-800 underline text-sm bg-yellow-50 py-2 rounded"
+                >
+                  ⚠️ Skip Verification & Create Listing Anyway
+                </button>
+                
+                <button
+                  onClick={() => router.push('/listings')}
+                  className="text-gray-600 hover:text-gray-800 underline text-sm"
+                >
+                  Browse listings instead
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -485,28 +523,164 @@ export default function CreateListing() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Identity Verification</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {verificationMethod ? (
+                  verificationMethod === 'enhanced' ? 'Enhanced Verification' : 'Basic Verification'
+                ) : (
+                  'Choose Your Verification Level'
+                )}
+              </h1>
               <button
-                onClick={() => setShowVerification(false)}
+                onClick={() => {
+                  setShowVerification(false)
+                  setVerificationMethod(null)
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✕
               </button>
             </div>
             
-            <FreeIdentityVerification
-              userId={user.id}
-              onComplete={handleVerificationComplete}
-              onError={handleVerificationError}
-            />
+            {!verificationMethod ? (
+              <div className="space-y-6">
+                <p className="text-gray-600 text-center mb-6">
+                  Select the verification method that works best for you
+                </p>
+                
+                {/* Verification method selection */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Enhanced Verification Option */}
+                  <div 
+                    className="border-2 border-blue-200 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-colors bg-gradient-to-br from-blue-50 to-purple-50"
+                    onClick={() => setVerificationMethod('enhanced')}
+                  >
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        🔐
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Enhanced Verification</h3>
+                      <p className="text-sm text-gray-600 mb-4">Real-time liveness detection + face matching</p>
+                      
+                      <div className="bg-white rounded-lg p-3 mb-4">
+                        <div className="text-xs text-gray-700 space-y-1 text-left">
+                          <p>✅ Real-time liveness detection</p>
+                          <p>✅ Face matching with ID photo</p>
+                          <p>✅ Advanced fraud protection</p>
+                          <p>✅ Highest security level</p>
+                          <p>✅ Instant verification</p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
+                        RECOMMENDED
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Basic Verification Option */}
+                  <div 
+                    className="border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-gray-400 transition-colors"
+                    onClick={() => setVerificationMethod('basic')}
+                  >
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        🆔
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Basic Verification</h3>
+                      <p className="text-sm text-gray-600 mb-4">Document upload verification</p>
+                      
+                      <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                        <div className="text-xs text-gray-700 space-y-1 text-left">
+                          <p>✅ Government ID upload</p>
+                          <p>✅ Document authenticity check</p>
+                          <p>✅ Basic fraud protection</p>
+                          <p>⚠️ No liveness detection</p>
+                          <p>⚠️ No face matching</p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                        BASIC
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <span className="text-yellow-600">ℹ️</span>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-yellow-800">
+                        Optional but Recommended
+                      </h3>
+                      <p className="text-sm text-yellow-700 mt-1">
+                        Identity verification helps build trust with buyers and unlocks advanced features. 
+                        You can also skip this step and create listings with limited functionality.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    onClick={() => {
+                      setCanSkip(true)
+                      setShowVerification(false)
+                      setIsVerified(null) // This will show the create listing form
+                    }}
+                    className="text-sm text-gray-600 hover:text-gray-800 underline"
+                  >
+                    Skip for now (create listing without verification)
+                  </button>
+                </div>
+              </div>
+            ) : verificationMethod === 'enhanced' ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Enhanced Verification</h3>
+                  <button
+                    onClick={() => setVerificationMethod(null)}
+                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    ← Choose Different Method
+                  </button>
+                </div>
+                
+                <EnhancedIDVerification
+                  userId={user.id}
+                  onComplete={handleVerificationComplete}
+                  onError={handleVerificationError}
+                />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Basic Verification</h3>
+                  <button
+                    onClick={() => setVerificationMethod(null)}
+                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    ← Choose Different Method
+                  </button>
+                </div>
+                
+                <FreeIdentityVerification
+                  userId={user.id}
+                  onComplete={handleVerificationComplete}
+                  onError={handleVerificationError}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
     )
   }
 
-  // Show loading state while checking verification
-  if (isVerified === null) {
+  // Show loading state while checking verification (unless user can skip)
+  if (isVerified === null && !canSkip) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -523,15 +697,42 @@ export default function CreateListing() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-md p-6">
           {/* Verification status badge */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <span className="text-green-600 mr-2">✅</span>
-              <span className="text-green-800 font-medium">Identity Verified - Trusted Seller</span>
+          {isVerified ? (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <span className="text-green-600 mr-2">✅</span>
+                <span className="text-green-800 font-medium">
+                  Identity Verified - Trusted Seller
+                  {verificationStatus?.method === 'enhanced' && (
+                    <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-normal">
+                      ENHANCED
+                    </span>
+                  )}
+                </span>
+              </div>
+              <p className="text-green-700 text-sm mt-1">
+                Your identity has been verified{verificationStatus?.method === 'enhanced' ? ' with advanced biometric security' : ''}. Buyers will see you as a trusted seller.
+              </p>
             </div>
-            <p className="text-green-700 text-sm mt-1">
-              Your identity has been verified. Buyers will see you as a trusted seller.
-            </p>
-          </div>
+          ) : canSkip ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <span className="text-yellow-600 mr-2">⚠️</span>
+                <span className="text-yellow-800 font-medium">Unverified Seller - Limited Features</span>
+              </div>
+              <p className="text-yellow-700 text-sm mt-1">
+                You're creating a listing without identity verification. Your listing will be marked as "unverified" and may receive fewer inquiries.
+              </p>
+              <div className="mt-2">
+                <button
+                  onClick={() => setShowVerification(true)}
+                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                >
+                  Complete verification now to unlock full features
+                </button>
+              </div>
+            </div>
+          ) : null}
 
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             List Your Motorcycle
@@ -912,10 +1113,10 @@ export default function CreateListing() {
             <div className="flex space-x-4">
               <button
                 type="submit"
-                disabled={loading || !isVerified}
+                disabled={loading || (!isVerified && !canSkip)}
                 className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {loading ? 'Creating Listing...' : 'Create Listing'}
+                {loading ? 'Creating Listing...' : canSkip && !isVerified ? 'Create Unverified Listing' : 'Create Listing'}
               </button>
               
               <button
