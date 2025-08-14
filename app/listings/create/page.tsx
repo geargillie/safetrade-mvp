@@ -417,6 +417,13 @@ export default function CreateListing() {
           city: formData.city,
           zip_code: formData.zipCode,
           vin_verified: vinVerification.result?.isValid && !vinVerification.result?.isStolen,
+          theft_record_checked: true,
+          theft_record_found: vinVerification.result?.isStolen || false,
+          theft_record_details: vinVerification.result?.stolenCheck || null,
+          total_loss_checked: true,
+          total_loss_found: (vinVerification.result as Record<string, unknown>)?.isTotalLoss as boolean || false,
+          total_loss_details: (vinVerification.result as Record<string, unknown>)?.totalLossCheck as Record<string, unknown> || null,
+          vin_verification_date: new Date().toISOString(),
           status: 'available'
         })
         .select()

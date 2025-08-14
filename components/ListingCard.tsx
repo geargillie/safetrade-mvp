@@ -21,6 +21,13 @@ interface Listing {
   created_at: string;
   seller_id: string;
   status?: 'available' | 'in_talks' | 'sold';
+  theft_record_checked?: boolean;
+  theft_record_found?: boolean;
+  theft_record_details?: Record<string, unknown>;
+  total_loss_checked?: boolean;
+  total_loss_found?: boolean;
+  total_loss_details?: Record<string, unknown>;
+  vin_verification_date?: string;
   listing_images?: { image_url: string; is_primary?: boolean }[];
   user_profiles?: { identity_verified?: boolean; first_name?: string; last_name?: string };
 }
@@ -78,6 +85,26 @@ export default function ListingCard({ listing }: ListingCardProps) {
           {listing.vin_verified && (
             <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
               ✅ VIN Verified
+            </span>
+          )}
+          {listing.theft_record_checked && !listing.theft_record_found && (
+            <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+              🛡️ No Theft Record
+            </span>
+          )}
+          {listing.theft_record_found && (
+            <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+              ⚠️ Theft Record Found
+            </span>
+          )}
+          {listing.total_loss_checked && !listing.total_loss_found && (
+            <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+              🔍 Clean History
+            </span>
+          )}
+          {listing.total_loss_found && (
+            <span className="bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+              📋 Total Loss Record
             </span>
           )}
           {sellerVerified && (
