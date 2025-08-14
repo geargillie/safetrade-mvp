@@ -84,7 +84,7 @@ export default function CreateListing() {
       .single()
     
     // If profile doesn't exist, create it
-    if (!profile && !profileError) {
+    if (!profile || profileError?.code === 'PGRST116') {
       console.log('Creating missing profile for user:', user.id)
       const { error: insertError } = await supabase
         .from('user_profiles')
@@ -99,6 +99,11 @@ export default function CreateListing() {
         setMessage('Error: Could not create user profile. Please contact support.')
         return
       }
+      console.log('Profile created successfully for user:', user.id)
+    } else if (profileError && profileError.code !== 'PGRST116') {
+      console.error('Error checking profile:', profileError)
+      setMessage('Error: Could not check user profile. Please contact support.')
+      return
     }
     
     setUser(user)
