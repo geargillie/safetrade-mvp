@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
         city: "Newark",
         zip_code: "07102",
         type: "police_station",
-        features: ["24_7", "security_cameras", "police_presence", "parking_available"]
+        features: ["24_7", "security_cameras", "police_presence", "parking_available"],
+        verified: true
       },
       {
         name: "The Mills at Jersey Gardens - Main Parking",
@@ -24,7 +25,8 @@ export async function POST(request: NextRequest) {
         city: "Elizabeth", 
         zip_code: "07201",
         type: "mall",
-        features: ["security_cameras", "well_lit", "busy_area", "parking_available"]
+        features: ["security_cameras", "well_lit", "busy_area", "parking_available"],
+        verified: true
       },
       {
         name: "Walmart Supercenter - Newark",
@@ -32,7 +34,8 @@ export async function POST(request: NextRequest) {
         city: "Newark",
         zip_code: "07114", 
         type: "parking_lot",
-        features: ["security_cameras", "well_lit", "busy_area", "parking_available"]
+        features: ["security_cameras", "well_lit", "busy_area", "parking_available"],
+        verified: true
       },
       {
         name: "Branch Brook Park - Visitor Center",
@@ -40,7 +43,8 @@ export async function POST(request: NextRequest) {
         city: "Newark",
         zip_code: "07104",
         type: "public",
-        features: ["well_lit", "busy_area", "parking_available", "daytime_only"]
+        features: ["well_lit", "busy_area", "parking_available", "daytime_only"],
+        verified: true
       },
       {
         name: "Newark Penn Station - Main Entrance",
@@ -48,7 +52,8 @@ export async function POST(request: NextRequest) {
         city: "Newark",
         zip_code: "07102",
         type: "public",
-        features: ["24_7", "security_cameras", "busy_area", "police_presence"]
+        features: ["24_7", "security_cameras", "busy_area", "police_presence"],
+        verified: true
       },
       {
         name: "Target - Brick City Plaza",
@@ -56,7 +61,8 @@ export async function POST(request: NextRequest) {
         city: "Newark",
         zip_code: "07103",
         type: "parking_lot",
-        features: ["security_cameras", "well_lit", "busy_area", "parking_available"]
+        features: ["security_cameras", "well_lit", "busy_area", "parking_available"],
+        verified: true
       },
       {
         name: "Jersey City Police Department",
@@ -64,7 +70,8 @@ export async function POST(request: NextRequest) {
         city: "Jersey City",
         zip_code: "07302",
         type: "police_station",
-        features: ["24_7", "security_cameras", "police_presence", "parking_available"]
+        features: ["24_7", "security_cameras", "police_presence", "parking_available"],
+        verified: true
       },
       {
         name: "Newport Centre Mall",
@@ -72,7 +79,8 @@ export async function POST(request: NextRequest) {
         city: "Jersey City",
         zip_code: "07310", 
         type: "mall",
-        features: ["security_cameras", "well_lit", "busy_area", "parking_available"]
+        features: ["security_cameras", "well_lit", "busy_area", "parking_available"],
+        verified: true
       },
       {
         name: "Paterson Police Department",
@@ -80,7 +88,8 @@ export async function POST(request: NextRequest) {
         city: "Paterson",
         zip_code: "07505",
         type: "police_station", 
-        features: ["24_7", "security_cameras", "police_presence", "parking_available"]
+        features: ["24_7", "security_cameras", "police_presence", "parking_available"],
+        verified: true
       },
       {
         name: "Eastgate Shopping Center",
@@ -88,17 +97,18 @@ export async function POST(request: NextRequest) {
         city: "Paterson",
         zip_code: "07503",
         type: "parking_lot",
-        features: ["security_cameras", "well_lit", "busy_area", "parking_available"]
+        features: ["security_cameras", "well_lit", "busy_area", "parking_available"],
+        verified: true
       }
     ];
+
+    // Delete existing data to re-seed with verified locations
+    await supabase.from('safe_zones').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
     // Insert safe zones
     const { data, error } = await supabase
       .from('safe_zones')
-      .upsert(safeZones, { 
-        onConflict: 'name',
-        ignoreDuplicates: false
-      })
+      .insert(safeZones)
       .select();
 
     if (error) {
