@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useConversationMessages } from '@/hooks/useMessaging'
 import type { Conversation } from '@/hooks/useMessaging'
 import MeetingAgreement from './MeetingAgreement'
+import SafeZoneMeetingAgreement from './SafeZoneMeetingAgreement'
 import Link from 'next/link'
 
 interface MessageThreadProps {
@@ -15,6 +16,7 @@ interface MessageThreadProps {
 export default function MessageThread({ conversation, currentUserId }: MessageThreadProps) {
   const [newMessage, setNewMessage] = useState('')
   const [showMeetingAgreement, setShowMeetingAgreement] = useState(false)
+  const [useSafeZone, setUseSafeZone] = useState(true) // Default to safe zone mode
   const messagesEndRef = useRef<HTMLDivElement>(null)
   
   const { messages, loading, sending, error, sendMessage } = useConversationMessages(
@@ -76,6 +78,29 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
     }
   }
 
+  const handleSafeZoneAgreementComplete = async (agreementData: {
+    agreedPrice: number
+    safeZoneId?: string
+    customLocation?: string
+    datetime: string
+    privacyRevealed: boolean
+  }) => {
+    // Send a system message about the safe zone agreement
+    const location = agreementData.safeZoneId ? 'Secure SafeTrade Location' : agreementData.customLocation
+    const priceInfo = agreementData.agreedPrice !== conversation.listing_price 
+      ? `**Agreed Price:** $${agreementData.agreedPrice.toLocaleString()} (was $${conversation.listing_price.toLocaleString()})\n`
+      : `**Price:** $${conversation.listing_price.toLocaleString()}\n`
+    
+    const safeZoneMessage = `🛡️ **SafeTrade Secure Transaction Confirmed**\n\n**Vehicle:** ${conversation.listing_title}\n${priceInfo}**Secure Meeting:** ${location}\n**Date & Time:** ${agreementData.datetime}\n\n🔒 **Privacy Protection:** ${agreementData.privacyRevealed ? 'Contact details revealed' : 'Contact details protected'}\n\n✅ Both parties have confirmed the secure transaction. Meeting location verified safe!\n\n🛡️ **SafeTrade Protection:**\n• Verified secure meeting location\n• Identity-verified participants\n• Encrypted communication\n• Transaction monitoring`
+    
+    try {
+      await sendMessage(safeZoneMessage)
+      setShowMeetingAgreement(false)
+    } catch (err) {
+      console.error('Failed to send safe zone message:', err)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -110,12 +135,26 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
                 📋 View Full Listing
               </Link>
               {isCurrentUserBuyer && !showMeetingAgreement && (
-                <button
-                  onClick={() => setShowMeetingAgreement(true)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
-                >
-                  🤝 I Want to Buy This
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => {
+                      setUseSafeZone(true)
+                      setShowMeetingAgreement(true)
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
+                  >
+                    🛡️ Secure SafeTrade Purchase
+                  </button>
+                  <button
+                    onClick={() => {
+                      setUseSafeZone(false)
+                      setShowMeetingAgreement(true)
+                    }}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
+                  >
+                    🤝 Standard Purchase
+                  </button>
+                </div>
               )}
             </div>
             <div className="text-right">
@@ -131,10 +170,12 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
       {/* Meeting Agreement Modal */}
       {showMeetingAgreement && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">Purchase Agreement</h2>
+                <h2 className="text-lg font-bold">
+                  {useSafeZone ? '🛡️ SafeTrade Secure Purchase' : '🤝 Standard Purchase Agreement'}
+                </h2>
                 <button
                   onClick={() => setShowMeetingAgreement(false)}
                   className="text-gray-400 hover:text-gray-600"
@@ -144,17 +185,34 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
               </div>
             </div>
             <div className="p-4">
-              <MeetingAgreement
-                listingId={conversation.listing_id}
-                conversationId={conversation.id}
-                listingTitle={conversation.listing_title}
-                listingPrice={conversation.listing_price}
-                listingCity="Newark" // TODO: Get from listing
-                listingZipCode="07101" // TODO: Get from listing
-                isSellerView={!isCurrentUserBuyer}
-                onSelectMeetingLocation={handleMeetingLocationSelect}
-                onCancel={() => setShowMeetingAgreement(false)}
-              />
+              {useSafeZone ? (
+                <SafeZoneMeetingAgreement
+                  listingId={conversation.listing_id}
+                  conversationId={conversation.id}
+                  listingTitle={conversation.listing_title}
+                  listingPrice={conversation.listing_price}
+                  listingCity="Newark" // TODO: Get from listing
+                  listingZipCode="07101" // TODO: Get from listing
+                  buyerId={conversation.buyer_id}
+                  sellerId={conversation.seller_id}
+                  currentUserId={currentUserId}
+                  isSellerView={!isCurrentUserBuyer}
+                  onAgreementComplete={handleSafeZoneAgreementComplete}
+                  onCancel={() => setShowMeetingAgreement(false)}
+                />
+              ) : (
+                <MeetingAgreement
+                  listingId={conversation.listing_id}
+                  conversationId={conversation.id}
+                  listingTitle={conversation.listing_title}
+                  listingPrice={conversation.listing_price}
+                  listingCity="Newark" // TODO: Get from listing
+                  listingZipCode="07101" // TODO: Get from listing
+                  isSellerView={!isCurrentUserBuyer}
+                  onSelectMeetingLocation={handleMeetingLocationSelect}
+                  onCancel={() => setShowMeetingAgreement(false)}
+                />
+              )}
             </div>
           </div>
         </div>
