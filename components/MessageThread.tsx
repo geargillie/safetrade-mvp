@@ -37,7 +37,18 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
       await sendMessage(newMessage)
       setNewMessage('')
     } catch (err: unknown) {
-      alert('Failed to send message: ' + (err instanceof Error ? err.message : String(err)))
+      console.error('Message send error:', err)
+      let errorMessage = 'Failed to send message'
+      
+      if (err instanceof Error) {
+        errorMessage = err.message
+      } else if (typeof err === 'string') {
+        errorMessage = err
+      } else if (err && typeof err === 'object' && 'message' in err) {
+        errorMessage = (err as any).message
+      }
+      
+      alert(errorMessage)
     }
   }
 

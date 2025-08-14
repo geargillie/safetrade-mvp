@@ -93,7 +93,25 @@ export const useMessaging = (currentUserId: string) => {
       return data
     } catch (err: any) {
       console.error('Error creating conversation:', err)
-      throw err
+      
+      // Create a more helpful error message
+      let errorMessage = 'Failed to create conversation'
+      if (err?.message) {
+        errorMessage = err.message
+      } else if (err?.error) {
+        errorMessage = err.error
+      } else if (typeof err === 'string') {
+        errorMessage = err
+      }
+      
+      // Check for specific error types
+      if (errorMessage.includes('row-level security')) {
+        errorMessage = 'Permission denied. Please log in and try again.'
+      } else if (errorMessage.includes('foreign key')) {
+        errorMessage = 'Invalid listing or user data. Please refresh and try again.'
+      }
+      
+      throw new Error(errorMessage)
     }
   }, [loadConversations])
 
@@ -299,7 +317,27 @@ export const useConversationMessages = (conversationId: string, currentUserId: s
       console.error('Error sending message:', err)
       // Remove temp message on error
       setMessages(prev => prev.filter(msg => !msg.id.startsWith('temp-')))
-      throw err
+      
+      // Create a more helpful error message
+      let errorMessage = 'Failed to send message'
+      if (err?.message) {
+        errorMessage = err.message
+      } else if (err?.error) {
+        errorMessage = err.error
+      } else if (typeof err === 'string') {
+        errorMessage = err
+      }
+      
+      // Check for specific error types
+      if (errorMessage.includes('row-level security')) {
+        errorMessage = 'Permission denied. Please log in again and try again.'
+      } else if (errorMessage.includes('conversation_id')) {
+        errorMessage = 'Invalid conversation. Please refresh and try again.'
+      } else if (errorMessage.includes('foreign key')) {
+        errorMessage = 'Data consistency error. Please refresh and try again.'
+      }
+      
+      throw new Error(errorMessage)
     } finally {
       setSending(false)
     }
