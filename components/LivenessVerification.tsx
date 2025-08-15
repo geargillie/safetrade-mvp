@@ -102,6 +102,7 @@ export default function LivenessVerification({
 
   const processLivenessVerification = async (imageData: string) => {
     setLoading(true);
+    console.log('🚀 Starting liveness verification for user:', userId);
     
     try {
       const response = await fetch('/api/verify-liveness', {
@@ -115,20 +116,32 @@ export default function LivenessVerification({
       });
 
       const result = await response.json();
+      console.log('📊 Liveness verification result:', { 
+        status: response.status, 
+        verified: result.verified,
+        score: result.score,
+        error: result.error 
+      });
       
       if (response.ok) {
-        setCurrentStep('complete');
-        onComplete({
-          verified: result.verified,
-          score: result.score,
-          message: result.message
-        });
+        if (result.verified) {
+          setCurrentStep('complete');
+          onComplete({
+            verified: result.verified,
+            score: result.score,
+            message: result.message
+          });
+        } else {
+          // Verification completed but failed
+          onError(result.message || 'Liveness verification failed. Please try again with better lighting.');
+        }
       } else {
-        onError(result.error || 'Verification failed');
+        console.error('❌ Liveness verification API error:', result);
+        onError(result.error || `Verification failed (${response.status})`);
       }
     } catch (error) {
-      console.error('Liveness verification error:', error);
-      onError('Network error. Please try again.');
+      console.error('❌ Liveness verification network error:', error);
+      onError('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }

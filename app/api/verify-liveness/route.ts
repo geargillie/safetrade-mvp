@@ -28,12 +28,61 @@ export async function POST(request: NextRequest) {
     }
 
     const { userId, imageData, timestamp } = await request.json();
+    console.log('🔍 Liveness verification request:', { userId, hasImageData: !!imageData, timestamp });
 
     if (!userId || !imageData) {
+      console.error('❌ Missing required data:', { userId: !!userId, imageData: !!imageData });
       return NextResponse.json(
         { error: 'Missing required verification data' },
         { status: 400 }
       );
+    }
+
+    // Check if user exists in auth.users (this should always exist for authenticated users)
+    const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
+    if (authError || !authUser.user) {
+      console.error('❌ User not found in auth.users:', { userId, authError });
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    console.log('✅ User found in auth:', { 
+      userId: authUser.user.id, 
+      email: authUser.user.email 
+    });
+
+    // Ensure user profile exists (create if needed for foreign key constraint)
+    const { data: existingProfile } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    if (!existingProfile) {
+      console.log('👤 Creating user profile for verification...');
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: userId,
+          email: authUser.user.email,
+          first_name: authUser.user.user_metadata?.first_name || '',
+          last_name: authUser.user.user_metadata?.last_name || '',
+          identity_verified: false,
+          created_at: new Date().toISOString()
+        });
+
+      if (profileError) {
+        console.error('❌ Failed to create user profile:', profileError);
+        return NextResponse.json(
+          { error: 'Failed to initialize user profile' },
+          { status: 500 }
+        );
+      }
+      console.log('✅ User profile created successfully');
+    } else {
+      console.log('✅ User profile already exists');
     }
 
     // Simple liveness verification logic
@@ -63,6 +112,14 @@ export async function POST(request: NextRequest) {
       completed_at: new Date().toISOString()
     };
 
+    console.log('📝 Inserting verification data:', {
+      user_id: verificationData.user_id,
+      onfido_applicant_id: verificationData.onfido_applicant_id,
+      status: verificationData.status,
+      onfido_result: verificationData.onfido_result,
+      verification_data_method: verificationData.verification_data.method
+    });
+
     const { data, error } = await supabase
       .from('identity_verifications')
       .insert(verificationData)
@@ -70,11 +127,51 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Database error:', error);
+      console.error('❌ Database error inserting verification:', error);
+      console.error('❌ Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      
+      // Handle specific error cases
+      if (error.code === '23503') {
+        return NextResponse.json(
+          { error: 'User account not properly set up. Please contact support.' },
+          { status: 400 }
+        );
+      }
+      
       return NextResponse.json(
         { error: 'Failed to save verification result' },
         { status: 500 }
       );
+    }
+
+    console.log('✅ Verification saved successfully:', { 
+      verificationId: data.id,
+      verified,
+      score: livenessScore 
+    });
+
+    // Update user profile if verification successful
+    if (verified) {
+      const { error: updateError } = await supabase
+        .from('user_profiles')
+        .update({
+          identity_verified: true,
+          verification_level: 'liveness_verified',
+          verified_at: new Date().toISOString()
+        })
+        .eq('id', userId);
+
+      if (updateError) {
+        console.error('⚠️ Failed to update user profile:', updateError);
+        // Don't fail the request, just log the warning
+      } else {
+        console.log('✅ User profile updated with verification status');
+      }
     }
 
     return NextResponse.json({
