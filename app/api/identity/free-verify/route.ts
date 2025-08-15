@@ -81,8 +81,20 @@ function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing Supabase environment variables');
+  // Debug logging for production troubleshooting
+  console.log('Environment check:', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseServiceKey,
+    urlPrefix: supabaseUrl?.substring(0, 20) + '...' || 'undefined',
+    keyPrefix: supabaseServiceKey?.substring(0, 10) + '...' || 'undefined'
+  });
+
+  if (!supabaseUrl) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL environment variable is missing');
+  }
+  
+  if (!supabaseServiceKey) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is missing');
   }
 
   return createClient(supabaseUrl, supabaseServiceKey);

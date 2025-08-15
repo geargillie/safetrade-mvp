@@ -154,7 +154,9 @@ export default function StreamlinedVerification({
       });
 
       if (!response.ok) {
-        throw new Error('Verification failed');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || `Verification failed (${response.status})`;
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -174,7 +176,12 @@ export default function StreamlinedVerification({
       }
     } catch (error) {
       console.error('Basic verification error:', error);
-      onError('Verification failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (errorMessage.includes('environment variable') || errorMessage.includes('Service temporarily unavailable')) {
+        onError('Service temporarily unavailable. Please try again later.');
+      } else {
+        onError('Verification failed. Please try again.');
+      }
       setCurrentStep('select');
     } finally {
       setLoading(false);
@@ -205,7 +212,9 @@ export default function StreamlinedVerification({
       });
 
       if (!response.ok) {
-        throw new Error('Enhanced verification failed');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || `Enhanced verification failed (${response.status})`;
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -225,7 +234,12 @@ export default function StreamlinedVerification({
       }
     } catch (error) {
       console.error('Enhanced verification error:', error);
-      onError('Enhanced verification failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (errorMessage.includes('environment variable') || errorMessage.includes('Service temporarily unavailable')) {
+        onError('Service temporarily unavailable. Please try again later.');
+      } else {
+        onError('Enhanced verification failed. Please try again.');
+      }
       setCurrentStep('select');
     } finally {
       setLoading(false);
