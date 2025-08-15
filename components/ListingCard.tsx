@@ -102,6 +102,32 @@ export default function ListingCard({ listing }: ListingCardProps) {
                 🔍 VIN Verified
               </div>
             )}
+            {listing.theft_record_checked && (
+              <div style={{
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.75rem',
+                fontWeight: '500',
+                color: 'white',
+                backgroundColor: listing.theft_record_found ? 'var(--error)' : 'var(--success)',
+                borderRadius: '0.25rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>
+                {listing.theft_record_found ? '🚨 Theft Record' : '🛡️ Clean Record'}
+              </div>
+            )}
+            {listing.total_loss_checked && (
+              <div style={{
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.75rem',
+                fontWeight: '500',
+                color: 'white',
+                backgroundColor: listing.total_loss_found ? 'var(--warning)' : 'var(--success)',
+                borderRadius: '0.25rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>
+                {listing.total_loss_found ? '⚠️ Total Loss' : '💚 No Loss Record'}
+              </div>
+            )}
             {sellerVerified && (
               <div style={{
                 padding: '0.25rem 0.5rem',
