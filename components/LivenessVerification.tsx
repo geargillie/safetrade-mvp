@@ -155,20 +155,49 @@ export default function LivenessVerification({
   };
 
   const captureImage = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) return;
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('❌ Missing video or canvas ref');
+      return;
+    }
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
     const context = canvas.getContext('2d');
     
-    if (!context) return;
+    if (!context) {
+      console.error('❌ Could not get canvas context');
+      return;
+    }
 
+    // Ensure video has valid dimensions
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      console.error('❌ Video has no dimensions:', { width: video.videoWidth, height: video.videoHeight });
+      onError('Camera not ready. Please try again.');
+      return;
+    }
+
+    console.log('📹 Video dimensions:', { width: video.videoWidth, height: video.videoHeight });
+    
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0);
     
     const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
     setCapturedImage(imageDataUrl);
+    
+    // Validate captured image before processing
+    console.log('📸 Captured image details:', {
+      length: imageDataUrl.length,
+      starts: imageDataUrl.substring(0, 50),
+      isValidFormat: imageDataUrl.startsWith('data:image/'),
+      hasBase64: imageDataUrl.includes(',')
+    });
+    
+    if (!imageDataUrl.startsWith('data:image/') || imageDataUrl.length < 1000) {
+      console.error('❌ Invalid captured image format');
+      onError('Failed to capture image properly. Please try again.');
+      return;
+    }
     
     // Stop camera stream
     if (stream) {

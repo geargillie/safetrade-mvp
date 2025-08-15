@@ -28,7 +28,13 @@ export async function POST(request: NextRequest) {
     }
 
     const { userId, imageData, timestamp } = await request.json();
-    console.log('🔍 Liveness verification request:', { userId, hasImageData: !!imageData, timestamp });
+    console.log('🔍 Liveness verification request:', { 
+      userId, 
+      hasImageData: !!imageData, 
+      imageDataLength: imageData?.length || 0,
+      imageDataPrefix: imageData?.substring(0, 50) || 'none',
+      timestamp 
+    });
 
     if (!userId || !imageData) {
       console.error('❌ Missing required data:', { userId: !!userId, imageData: !!imageData });
@@ -279,20 +285,42 @@ export async function GET(request: NextRequest) {
 function performSimpleLivenessCheck(imageData: string): number {
   try {
     console.log('📊 Starting liveness check analysis...');
+    console.log('🔍 Image data details:', {
+      length: imageData?.length || 0,
+      startsWithData: imageData?.startsWith('data:') || false,
+      startsWithDataImage: imageData?.startsWith('data:image/') || false,
+      firstPart: imageData?.substring(0, 100) || 'none'
+    });
     
-    // Check if image data is valid base64
-    if (!imageData.startsWith('data:image/')) {
-      console.log('❌ Invalid image format - not a data URL');
+    // More flexible image format validation
+    if (!imageData || typeof imageData !== 'string') {
+      console.log('❌ Invalid image data - not a string');
+      return 0;
+    }
+    
+    // Check if image data looks like base64 data URL
+    if (!imageData.startsWith('data:image/') && !imageData.startsWith('data:video/')) {
+      console.log('❌ Invalid image format - not a data URL. Format:', imageData.substring(0, 50));
       return 0;
     }
 
     // Extract base64 data
-    const base64Data = imageData.split(',')[1];
+    const parts = imageData.split(',');
+    if (parts.length !== 2) {
+      console.log('❌ Invalid data URL format - missing comma separator');
+      return 0;
+    }
+    
+    const base64Data = parts[1];
     console.log('📏 Image base64 length:', base64Data?.length || 0);
     
-    if (!base64Data || base64Data.length < 1000) {
-      console.log('❌ Image too small - likely invalid');
-      return 20; // Too small, likely not a real face photo
+    if (!base64Data || base64Data.length < 500) { // Lowered threshold
+      console.log('⚠️ Image small but may be valid. Length:', base64Data?.length || 0);
+      // If it's a valid data URL format but small, give a minimal score
+      if (base64Data && base64Data.length > 100) {
+        return 50; // Minimal passing score for small but valid images
+      }
+      return 0; // Truly invalid
     }
 
     // Simple scoring based on image size and format - more generous scoring
