@@ -140,6 +140,7 @@ export default function StreamlinedVerification({
   const performBasicVerification = async (documentImage: string) => {
     setCurrentStep('processing');
     setLoading(true);
+    console.log('🔍 Starting basic verification for user:', userId);
 
     try {
       const response = await fetch('/api/identity/free-verify', {
@@ -171,18 +172,19 @@ export default function StreamlinedVerification({
           method: 'basic'
         });
       } else {
-        onError(result.message || 'Verification failed');
+        console.error('Basic verification failed:', result);
         setCurrentStep('select');
+        onError(result.message || 'Verification failed');
       }
     } catch (error) {
       console.error('Basic verification error:', error);
+      setCurrentStep('select'); // Reset step immediately on error
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       if (errorMessage.includes('environment variable') || errorMessage.includes('Service temporarily unavailable')) {
         onError('Service temporarily unavailable. Please try again later.');
       } else {
         onError('Verification failed. Please try again.');
       }
-      setCurrentStep('select');
     } finally {
       setLoading(false);
     }
@@ -192,6 +194,7 @@ export default function StreamlinedVerification({
   const performEnhancedVerification = async (data: VerificationData) => {
     setCurrentStep('processing');
     setLoading(true);
+    console.log('🔒 Starting enhanced verification for user:', userId);
 
     try {
       // Simple liveness score calculation
@@ -229,18 +232,19 @@ export default function StreamlinedVerification({
           method: 'enhanced'
         });
       } else {
-        onError(result.message || 'Enhanced verification failed');
+        console.error('Enhanced verification failed:', result);
         setCurrentStep('select');
+        onError(result.message || 'Enhanced verification failed');
       }
     } catch (error) {
       console.error('Enhanced verification error:', error);
+      setCurrentStep('select'); // Reset step immediately on error
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       if (errorMessage.includes('environment variable') || errorMessage.includes('Service temporarily unavailable')) {
         onError('Service temporarily unavailable. Please try again later.');
       } else {
         onError('Enhanced verification failed. Please try again.');
       }
-      setCurrentStep('select');
     } finally {
       setLoading(false);
     }
@@ -653,7 +657,7 @@ export default function StreamlinedVerification({
         {currentStep === 'select' && renderSelectStep()}
         {currentStep === 'capture' && renderCaptureStep()}
         {currentStep === 'processing' && renderProcessingStep()}
-        {currentStep === 'complete' && renderCompleteStep()}
+        {currentStep === 'complete' && !loading && renderCompleteStep()}
       </div>
     </div>
   );

@@ -163,6 +163,13 @@ export default function CreateListing() {
       setVerificationStatus({ verified: true, status: result.status || 'verified' })
       setShowVerification(false)
       setMessage('Verification completed successfully! You can now create listings.')
+    } else {
+      // Handle verification failure case
+      console.error('Verification completed but not verified:', result)
+      setIsVerified(false)
+      setVerificationStatus({ verified: false, status: result.status || 'failed' })
+      setMessage(`Verification failed: ${result.message || 'Please try again.'}`)
+      // Keep verification modal open so user can retry
     }
   }
 
