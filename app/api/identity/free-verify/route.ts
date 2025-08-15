@@ -45,7 +45,7 @@ function calculateVerificationScore(data: VerificationData): { score: number; re
 }
 
 // Simulate basic fraud detection
-function performFraudCheck(data: VerificationData): { riskLevel: 'low' | 'medium' | 'high'; flags: string[] } {
+function performFraudCheck(data: VerificationData & { isBasicVerification?: boolean }): { riskLevel: 'low' | 'medium' | 'high'; flags: string[] } {
   const flags: string[] = [];
   let riskLevel: 'low' | 'medium' | 'high' = 'low';
 
@@ -54,16 +54,18 @@ function performFraudCheck(data: VerificationData): { riskLevel: 'low' | 'medium
   const now = new Date();
   const timeDiff = now.getTime() - timestamp.getTime();
 
-  // Flag if verification was completed too quickly (less than 30 seconds)
-  if (timeDiff < 30000) {
+  // Flag if verification was completed too quickly (less than 10 seconds for basic, 30 for enhanced)
+  const timeThreshold = data.isBasicVerification ? 10000 : 30000;
+  if (timeDiff < timeThreshold) {
     flags.push('Verification completed unusually quickly');
-    riskLevel = 'medium';
+    riskLevel = data.isBasicVerification ? 'low' : 'medium'; // Be more lenient for basic
   }
 
-  // Check image sizes for potential manipulation
-  if (data.documentImage && data.documentImage.length < 20000) {
+  // Check image sizes for potential manipulation (more lenient for basic verification)
+  const minDocumentSize = data.isBasicVerification ? 10000 : 20000;
+  if (data.documentImage && data.documentImage.length < minDocumentSize) {
     flags.push('Document image quality may be insufficient');
-    riskLevel = 'medium';
+    riskLevel = data.isBasicVerification ? 'low' : 'medium';
   }
 
   // In a real implementation, you'd check for:
@@ -115,7 +117,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
-    const { userId, documentImage, selfieImage, livenessImages, extractedData } = data;
+    const { userId, documentImage, selfieImage, livenessImages, extractedData, verificationMethod } = data;
 
     if (!userId || !documentImage || !selfieImage) {
       return NextResponse.json(
@@ -127,22 +129,39 @@ export async function POST(request: NextRequest) {
     // Calculate verification score
     const { score, reasons } = calculateVerificationScore(data);
     
-    // Perform basic fraud detection
-    const { riskLevel, flags } = performFraudCheck(data);
+    // Perform basic fraud detection (more lenient for basic verification)
+    const { riskLevel, flags } = performFraudCheck({ ...data, isBasicVerification: verificationMethod === 'basic' });
+
+    // Log detailed verification analysis
+    console.log('🔍 Free verification analysis:', {
+      userId,
+      score,
+      reasons,
+      riskLevel,
+      flags,
+      imageInfo: {
+        documentSize: data.documentImage?.length || 0,
+        selfieSize: data.selfieImage?.length || 0,
+        documentProvided: !!data.documentImage,
+        selfieProvided: !!data.selfieImage
+      }
+    });
 
     // Determine verification status based on score and risk
     let status = 'failed';
     let verified = false;
 
-    if (score >= 80 && riskLevel !== 'high') {
+    if (score >= 60 && riskLevel !== 'high') {
       status = 'verified';
       verified = true;
-    } else if (score >= 60 && riskLevel === 'low') {
+    } else if (score >= 45 && riskLevel === 'low') {
       status = 'verified';
       verified = true;
-    } else if (score >= 40) {
+    } else if (score >= 30) {
       status = 'manual_review';
     }
+
+    console.log(`📊 Free verification decision: ${status} (verified: ${verified}) - Score: ${score}, Risk: ${riskLevel}`);
 
     // Store verification record
     const { data: verificationRecord, error: insertError } = await supabase

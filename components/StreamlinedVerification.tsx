@@ -149,8 +149,9 @@ export default function StreamlinedVerification({
         body: JSON.stringify({
           userId,
           documentImage,
-          selfieImage: documentImage, // Use document as selfie for basic
-          timestamp: new Date().toISOString()
+          selfieImage: documentImage, // Use document as selfie for basic verification
+          timestamp: new Date().toISOString(),
+          verificationMethod: 'basic' // Flag to indicate this is basic verification
         }),
       });
 

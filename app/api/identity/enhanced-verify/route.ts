@@ -231,6 +231,28 @@ export async function POST(request: NextRequest) {
     const finalRiskLevel = fraudRiskLevel === 'high' || riskLevel === 'high' ? 'high' :
                           fraudRiskLevel === 'medium' || riskLevel === 'medium' ? 'medium' : 'low';
 
+    // Log detailed verification analysis
+    console.log('🔒 Enhanced verification analysis:', {
+      userId,
+      score,
+      securityScore,
+      reasons,
+      riskLevel,
+      fraudRiskLevel,
+      finalRiskLevel,
+      flags,
+      imageInfo: {
+        documentSize: verificationData.documentImage?.length || 0,
+        selfieSize: verificationData.selfieImage?.length || 0,
+        documentProvided: !!verificationData.documentImage,
+        selfieProvided: !!verificationData.selfieImage
+      },
+      scores: {
+        livenessScore: verificationData.livenessScore,
+        faceMatchScore: verificationData.faceMatchScore
+      }
+    });
+
     // Determine verification status based on combined scores and risk
     let status = 'failed';
     let verified = false;
