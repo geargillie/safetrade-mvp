@@ -9,8 +9,7 @@ import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PageHeader from '@/components/PageHeader'
 import PhoneVerification from '@/components/PhoneVerification'
-import FreeIdentityVerification from '@/components/FreeIdentityVerification'
-import EnhancedIDVerification from '@/components/EnhancedIDVerification'
+import StreamlinedVerification from '@/components/StreamlinedVerification'
 
 function RegisterContent() {
   const searchParams = useSearchParams()
@@ -22,7 +21,7 @@ function RegisterContent() {
   const [message, setMessage] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
   const [step, setStep] = useState<'register' | 'verify_email' | 'verify_phone' | 'verify_identity' | 'complete'>('register')
-  const [verificationMethod, setVerificationMethod] = useState<'basic' | 'enhanced' | null>(null)
+  const [verificationMethod, setVerificationMethod] = useState<'start' | null>(null)
 
   // Check user registration progress on component mount
   useEffect(() => {
@@ -517,64 +516,23 @@ function RegisterContent() {
               />
               
               {!verificationMethod ? (
-                <div className="space-y-4">
-                  {/* Verification method selection */}
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {/* Enhanced Verification Option */}
-                    <div 
-                      className="border-2 border-blue-200 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-colors bg-gradient-to-br from-blue-50 to-purple-50"
-                      onClick={() => setVerificationMethod('enhanced')}
-                    >
-                      <div className="text-center">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                          🔐
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Enhanced Verification</h3>
-                        <p className="text-sm text-gray-600 mb-4">Real-time liveness detection + face matching</p>
-                        
-                        <div className="bg-white rounded-lg p-3 mb-4">
-                          <div className="text-xs text-gray-700 space-y-1 text-left">
-                            <p>✅ Real-time liveness detection</p>
-                            <p>✅ Face matching with ID photo</p>
-                            <p>✅ Advanced fraud protection</p>
-                            <p>✅ Highest security level</p>
-                            <p>✅ Instant verification</p>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
-                          RECOMMENDED
-                        </div>
-                      </div>
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-white text-2xl">🛡️</span>
                     </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Identity Verification</h3>
+                    <p className="text-sm text-gray-600 mb-6">
+                      Complete identity verification to build trust and unlock all trading features. 
+                      Our streamlined process supports both basic and enhanced verification methods.
+                    </p>
                     
-                    {/* Basic Verification Option */}
-                    <div 
-                      className="border-2 border-gray-200 rounded-lg p-6 cursor-pointer hover:border-gray-400 transition-colors"
-                      onClick={() => setVerificationMethod('basic')}
+                    <button
+                      onClick={() => setVerificationMethod('start')}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors mb-4"
                     >
-                      <div className="text-center">
-                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                          🆔
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Basic Verification</h3>
-                        <p className="text-sm text-gray-600 mb-4">Document upload verification</p>
-                        
-                        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                          <div className="text-xs text-gray-700 space-y-1 text-left">
-                            <p>✅ Government ID upload</p>
-                            <p>✅ Document authenticity check</p>
-                            <p>✅ Basic fraud protection</p>
-                            <p>⚠️ No liveness detection</p>
-                            <p>⚠️ No face matching</p>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
-                          BASIC
-                        </div>
-                      </div>
-                    </div>
+                      Start Verification
+                    </button>
                   </div>
                   
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -603,43 +561,25 @@ function RegisterContent() {
                     </button>
                   </div>
                 </div>
-              ) : verificationMethod === 'enhanced' ? (
+              ) : verificationMethod ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Enhanced Verification</h3>
+                    <h3 className="text-lg font-semibold">Identity Verification</h3>
                     <button
                       onClick={() => setVerificationMethod(null)}
                       className="text-sm text-blue-600 hover:text-blue-800 underline"
                     >
-                      ← Choose Different Method
+                      ← Back to Options
                     </button>
                   </div>
                   
-                  <EnhancedIDVerification
+                  <StreamlinedVerification
                     userId={userId}
                     onComplete={handleIdentityVerified}
                     onError={handleIdentityError}
                   />
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Basic Verification</h3>
-                    <button
-                      onClick={() => setVerificationMethod(null)}
-                      className="text-sm text-blue-600 hover:text-blue-800 underline"
-                    >
-                      ← Choose Different Method
-                    </button>
-                  </div>
-                  
-                  <FreeIdentityVerification
-                    userId={userId}
-                    onComplete={handleIdentityVerified}
-                    onError={handleIdentityError}
-                  />
-                </div>
-              )}
+              ) : null}
             </div>
           )}
 

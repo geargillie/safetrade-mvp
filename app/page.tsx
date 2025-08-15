@@ -1,10 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
 
 export default function HomePage() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setIsAuthenticated(!!user);
+  };
+
+  const handleStartSelling = () => {
+    if (isAuthenticated) {
+      router.push('/listings/create');
+    } else {
+      router.push('/auth/register');
+    }
+  };
+
   return (
     <Layout showNavigation={true}>
       {/* Hero Section - Clean Minimalistic Design */}
@@ -29,9 +51,9 @@ export default function HomePage() {
               <Link href="/listings" className="btn btn-primary btn-lg">
                 Browse Listings
               </Link>
-              <Link href="/auth/register" className="btn btn-secondary btn-lg">
-                Start Selling
-              </Link>
+              <button onClick={handleStartSelling} className="btn btn-secondary btn-lg">
+                {isAuthenticated === null ? 'Start Selling' : isAuthenticated ? 'Create Listing' : 'Start Selling'}
+              </button>
             </div>
 
             {/* Trust Indicators */}
