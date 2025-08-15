@@ -47,15 +47,22 @@ export default function ConversationList({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8" style={{
+          borderWidth: '2px',
+          borderColor: 'var(--neutral-200)',
+          borderTopColor: 'var(--brand-primary)'
+        }}></div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-700">Error loading conversations: {error}</p>
+      <div className="p-4 rounded-lg" style={{
+        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+        border: '1px solid rgba(220, 38, 38, 0.2)'
+      }}>
+        <p style={{color: 'var(--error)'}}>Error loading conversations: {error}</p>
       </div>
     )
   }
@@ -63,11 +70,16 @@ export default function ConversationList({
   if (conversations.length === 0) {
     return (
       <div className="text-center py-12">
-        <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--neutral-300)'}}>
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No conversations yet</h3>
-        <p className="text-gray-500">
+        <h3 style={{
+          fontSize: '1.125rem',
+          fontWeight: '600',
+          color: 'var(--neutral-900)',
+          marginBottom: '0.5rem'
+        }}>No conversations yet</h3>
+        <p style={{color: 'var(--neutral-500)'}}>
           When you message someone about a listing, it will appear here.
         </p>
       </div>
@@ -84,50 +96,108 @@ export default function ConversationList({
           <div
             key={conversation.id}
             onClick={() => onSelectConversation(conversation)}
-            className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-              isSelected 
-                ? 'bg-blue-50 border-l-4 border-blue-600' 
-                : 'hover:bg-gray-50 border-l-4 border-transparent'
-            }`}
+            className="conversation-card cursor-pointer transition-all duration-200"
+            style={{
+              ...(isSelected 
+                ? { 
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    borderColor: 'var(--brand-primary)',
+                    borderLeftWidth: '4px',
+                    borderLeftStyle: 'solid'
+                  }
+                : { 
+                    borderLeftWidth: '4px',
+                    borderLeftStyle: 'solid',
+                    borderLeftColor: 'transparent'
+                  })
+            }}
+            onMouseEnter={(e) => {
+              if (!isSelected) {
+                (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--neutral-50)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isSelected) {
+                (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+              }
+            }}
           >
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-gray-900 truncate">
+                <h4 style={{
+                  fontWeight: '600',
+                  color: 'var(--neutral-900)',
+                  fontSize: '1rem',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
                   {conversation.listing_title}
                 </h4>
-                <p className="text-sm text-gray-600">
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)',
+                  margin: '0.25rem 0 0 0'
+                }}>
                   {otherUser.role}: {otherUser.name}
                 </p>
               </div>
               
               <div className="flex flex-col items-end ml-4">
                 {conversation.unread_count > 0 && (
-                  <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mb-1">
+                  <span className="badge" style={{
+                    backgroundColor: 'var(--brand-primary)',
+                    color: 'white',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    padding: '0.25rem 0.5rem',
+                    marginBottom: '0.25rem'
+                  }}>
                     {conversation.unread_count}
                   </span>
                 )}
-                <span className="text-xs text-gray-500">
+                <span style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--neutral-500)'
+                }}>
                   {formatTime(conversation.last_message_at || conversation.created_at)}
                 </span>
               </div>
             </div>
             
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center">
               <div className="flex-1 min-w-0">
                 {conversation.last_message ? (
-                  <p className="text-gray-600 truncate">
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--neutral-600)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}>
                     {conversation.last_message}
                   </p>
                 ) : (
-                  <p className="text-gray-400 italic">No messages yet</p>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--neutral-400)',
+                    fontStyle: 'italic'
+                  }}>No messages yet</p>
                 )}
               </div>
               
               <div className="text-right ml-4">
-                <p className="text-gray-500 font-medium">
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-500)',
+                  fontWeight: '500'
+                }}>
                   ${conversation.listing_price?.toLocaleString()}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--neutral-400)'
+                }}>
                   {conversation.listing_year} {conversation.listing_make}
                 </p>
               </div>

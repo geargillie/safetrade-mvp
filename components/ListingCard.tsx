@@ -46,9 +46,9 @@ export default function ListingCard({ listing }: ListingCardProps) {
   const sellerVerified = listing.user_profiles?.identity_verified || false;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+    <div className="card-minimal">
       {/* Image */}
-      <div className="relative h-52 bg-gradient-to-br from-gray-100 to-gray-200 group">
+      <div className="relative h-52 group" style={{background: 'linear-gradient(135deg, var(--neutral-100), var(--neutral-200))'}}>
         {primaryImage ? (
           <Image
             src={primaryImage.image_url}
@@ -63,65 +63,67 @@ export default function ListingCard({ listing }: ListingCardProps) {
         )}
         
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
+        <div className="absolute inset-0 flex items-center justify-center transition-all duration-300" style={{backgroundColor: 'rgba(0, 0, 0, 0)', transition: 'background-color 0.3s'}}>
+          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{fontWeight: '500'}}>
             View Details
           </span>
         </div>
         
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col space-y-2">
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
           {listing.status === 'in_talks' && (
-            <span className="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-warning" style={{color: 'white', backgroundColor: 'var(--warning)', boxShadow: 'var(--shadow-md)'}}>
               💬 In Talks
-            </span>
+            </div>
           )}
           {listing.status === 'sold' && (
-            <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-error" style={{color: 'white', backgroundColor: 'var(--error)', boxShadow: 'var(--shadow-md)'}}>
               🔴 Sold
-            </span>
+            </div>
           )}
           {/* Note: 'available' and 'active' statuses don't show badges as they're the default state */}
           {listing.vin_verified && (
-            <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
               ✅ VIN Verified
-            </span>
+            </div>
           )}
           {listing.theft_record_checked && !listing.theft_record_found && (
-            <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
               🛡️ No Theft Record
-            </span>
+            </div>
           )}
           {listing.theft_record_found && (
-            <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-error" style={{color: 'white', backgroundColor: 'var(--error)', boxShadow: 'var(--shadow-md)'}}>
               ⚠️ Theft Record Found
-            </span>
+            </div>
           )}
           {listing.total_loss_checked && !listing.total_loss_found && (
-            <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
               🔍 Clean History
-            </span>
+            </div>
           )}
           {listing.total_loss_found && (
-            <span className="bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-warning" style={{color: 'white', backgroundColor: 'var(--warning)', boxShadow: 'var(--shadow-md)'}}>
               📋 Total Loss Record
-            </span>
+            </div>
           )}
           {sellerVerified && (
-            <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+            <div className="badge badge-info" style={{color: 'white', backgroundColor: 'var(--info)', boxShadow: 'var(--shadow-md)'}}>
               🛡️ Verified Seller
-            </span>
+            </div>
           )}
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-5">
+      <div style={{padding: '1.5rem'}}>
         <div className="mb-3">
-          <h3 className="text-lg font-bold text-gray-900 leading-tight">
+          <h3 className="text-heading-md" style={{lineHeight: '1.3'}}>
             <Link 
               href={`/listings/${listing.id}`}
-              className="hover:text-blue-600 transition-colors"
+              className="transition-colors" style={{color: 'var(--neutral-900)'}} 
+              onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--brand-primary)'}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--neutral-900)'}
             >
               {listing.title}
             </Link>
@@ -129,37 +131,37 @@ export default function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {/* Vehicle Details */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">Year & Make</span>
-            <span className="font-medium text-gray-900">{listing.year} {listing.make}</span>
+        <div className="mb-4" style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+          <div className="flex items-center justify-between text-body-sm">
+            <span style={{color: 'var(--neutral-500)'}}>Year & Make</span>
+            <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{listing.year} {listing.make}</span>
           </div>
           {listing.mileage && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500">Mileage</span>
-              <span className="font-medium text-gray-900">{listing.mileage.toLocaleString()} mi</span>
+            <div className="flex items-center justify-between text-body-sm">
+              <span style={{color: 'var(--neutral-500)'}}>Mileage</span>
+              <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{listing.mileage.toLocaleString()} mi</span>
             </div>
           )}
           {listing.city && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500">Location</span>
-              <span className="font-medium text-gray-900">{getLocationDisplay(listing.city, listing.zip_code)}</span>
+            <div className="flex items-center justify-between text-body-sm">
+              <span style={{color: 'var(--neutral-500)'}}>Location</span>
+              <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{getLocationDisplay(listing.city, listing.zip_code)}</span>
             </div>
           )}
         </div>
 
         {/* Price */}
         <div className="mb-4">
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-heading-lg" style={{color: 'var(--success)'}}>
             ${listing.price?.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-500">Asking price</div>
+          <div className="text-body-sm" style={{color: 'var(--neutral-500)'}}>Asking price</div>
         </div>
 
         {/* Action Button */}
         <Link
           href={`/listings/${listing.id}`}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors text-center block"
+          className="btn btn-primary w-full text-center block"
         >
           View Details & Contact
         </Link>

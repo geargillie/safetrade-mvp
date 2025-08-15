@@ -115,33 +115,57 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="p-4" style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid var(--neutral-200)'
+      }}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 style={{
+              fontSize: '1.125rem',
+              fontWeight: '600',
+              color: 'var(--neutral-900)',
+              margin: '0 0 0.25rem 0'
+            }}>
               {conversation.listing_title}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p style={{
+              fontSize: '0.875rem',
+              color: 'var(--neutral-600)',
+              margin: '0'
+            }}>
               Conversation with {otherUser.name} ({otherUser.role})
             </p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-gray-900">
+            <p style={{
+              fontSize: '1.125rem',
+              fontWeight: '700',
+              color: 'var(--neutral-900)',
+              margin: '0 0 0.25rem 0'
+            }}>
               ${conversation.listing_price?.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-500">
+            <p style={{
+              fontSize: '0.875rem',
+              color: 'var(--neutral-500)',
+              margin: '0'
+            }}>
               {conversation.listing_year} {conversation.listing_make} {conversation.listing_model}
             </p>
           </div>
         </div>
         
         {/* Buy Agreement Section */}
-        <div className="border-b border-gray-200 bg-blue-50">
+        <div style={{
+          borderBottom: '1px solid var(--neutral-200)',
+          backgroundColor: 'rgba(0, 0, 0, 0.02)'
+        }}>
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link 
                 href={`/listings/${conversation.listing_id}`}
-                className="text-sm text-blue-600 hover:text-blue-800 underline"
+                className="link" style={{fontSize: '0.875rem'}}
               >
                 📋 View Full Listing
               </Link>
@@ -152,7 +176,11 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
                       setUseSafeZone(true)
                       setShowMeetingAgreement(true)
                     }}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
+                    className="btn btn-primary" style={{
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
+                    }}
                   >
                     🛡️ Secure SafeTrade Purchase
                   </button>
@@ -161,7 +189,20 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
                       setUseSafeZone(false)
                       setShowMeetingAgreement(true)
                     }}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
+                    className="btn" style={{
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      backgroundColor: 'var(--success)',
+                      color: 'white',
+                      borderColor: 'var(--success)'
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(5, 150, 105, 0.8)';
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--success)';
+                    }}
                   >
                     🤝 Standard Purchase
                   </button>
@@ -230,21 +271,28 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{backgroundColor: 'var(--neutral-50)'}}>
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8" style={{
+              borderWidth: '2px',
+              borderColor: 'var(--neutral-200)',
+              borderTopColor: 'var(--brand-primary)'
+            }}></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-            <p className="text-red-700">Error loading messages: {error}</p>
+          <div className="p-4 rounded-lg" style={{
+            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+            border: '1px solid rgba(220, 38, 38, 0.2)'
+          }}>
+            <p style={{color: 'var(--error)'}}>Error loading messages: {error}</p>
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
-            <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--neutral-300)'}}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            <p className="text-gray-500">No messages yet. Start the conversation!</p>
+            <p style={{color: 'var(--neutral-500)'}}>No messages yet. Start the conversation!</p>
           </div>
         ) : (
           messages.map((message) => (
@@ -255,18 +303,32 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
               }`}
             >
               <div
-                className={`max-w-xs md:max-w-md px-4 py-3 rounded-2xl ${
-                  message.sender_id === currentUserId
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-900 border border-gray-200'
-                }`}
+                className="max-w-xs md:max-w-md px-4 py-3 rounded-2xl"
+                style={{
+                  ...(message.sender_id === currentUserId
+                    ? { 
+                        backgroundColor: 'var(--brand-primary)', 
+                        color: 'white' 
+                      }
+                    : { 
+                        backgroundColor: 'white', 
+                        color: 'var(--neutral-900)', 
+                        border: '1px solid var(--neutral-200)' 
+                      })
+                }}
               >
-                <p className="text-sm leading-relaxed">{message.content}</p>
-                <p className={`text-xs mt-1 ${
-                  message.sender_id === currentUserId 
-                    ? 'text-blue-100' 
-                    : 'text-gray-500'
-                }`}>
+                <p style={{
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5',
+                  margin: '0 0 0.25rem 0'
+                }}>{message.content}</p>
+                <p style={{
+                  fontSize: '0.75rem',
+                  margin: '0',
+                  color: message.sender_id === currentUserId 
+                    ? 'rgba(255, 255, 255, 0.7)' 
+                    : 'var(--neutral-500)'
+                }}>
                   {formatTime(message.created_at)}
                   {!message.is_read && message.sender_id === currentUserId && (
                     <span className="ml-1">·</span>
@@ -280,7 +342,10 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
       </div>
 
       {/* Message Input */}
-      <div className="bg-white border-t border-gray-200 p-4">
+      <div className="p-4" style={{
+        backgroundColor: 'white',
+        borderTop: '1px solid var(--neutral-200)'
+      }}>
         <form onSubmit={handleSendMessage} className="flex space-x-3">
           <div className="flex-1">
             <input
@@ -288,7 +353,21 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder={`Message ${otherUser.name}...`}
-              className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input"
+              style={{
+                padding: '0.75rem 1rem',
+                borderRadius: '9999px',
+                border: '1px solid var(--neutral-300)',
+                backgroundColor: 'white'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                (e.target as HTMLElement).style.boxShadow = 'none';
+              }}
               disabled={sending}
               maxLength={500}
             />
@@ -296,7 +375,25 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn rounded-full" 
+            style={{
+              backgroundColor: 'var(--brand-primary)',
+              color: 'white',
+              padding: '0.75rem 1.5rem',
+              borderColor: 'var(--brand-primary)',
+              opacity: (!newMessage.trim() || sending) ? '0.5' : '1',
+              cursor: (!newMessage.trim() || sending) ? 'not-allowed' : 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              if (!(!newMessage.trim() || sending)) {
+                (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--brand-primary-dark)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!(!newMessage.trim() || sending)) {
+                (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--brand-primary)';
+              }
+            }}
           >
             {sending ? (
               <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,7 +407,10 @@ export default function MessageThread({ conversation, currentUserId }: MessageTh
           </button>
         </form>
         
-        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+        <div className="flex justify-between items-center mt-2" style={{
+          fontSize: '0.75rem',
+          color: 'var(--neutral-500)'
+        }}>
           <span>Press Enter to send</span>
           <span>{newMessage.length}/500</span>
         </div>

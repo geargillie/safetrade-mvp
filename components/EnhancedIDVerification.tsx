@@ -197,7 +197,7 @@ export default function EnhancedIDVerification({
     } finally {
       setLoading(false);
     }
-  }, [tfReady, stream, verificationData, captureFrame, onError]);
+  }, [tfReady, stream, verificationData, captureFrame, onError]); // performVerification defined later
 
   // Calculate liveness score based on frame variations
   const calculateLivenessScore = (frames: string[]): number => {
@@ -532,43 +532,73 @@ export default function EnhancedIDVerification({
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      {/* Progress indicator */}
-      <div className="flex items-center mb-8">
-        {['intro', 'document', 'liveness', 'complete'].map((step, index) => {
-          const stepNames = ['Start', 'Upload ID', 'Liveness Check', 'Verified'];
-          const currentIndex = currentStep === 'processing' ? 2 : ['intro', 'document', 'liveness', 'complete'].indexOf(currentStep);
-          const isActive = index === currentIndex;
-          const isCompleted = index < currentIndex;
-          
-          return (
-            <React.Fragment key={step}>
-              <div className={`flex items-center ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
-                  isActive 
-                    ? 'border-blue-600 bg-blue-50' 
-                    : isCompleted
-                    ? 'border-green-600 bg-green-50'
-                    : 'border-gray-200 bg-gray-50'
-                }`}>
-                  {isCompleted ? '✓' : index + 1}
-                </div>
-                <span className="ml-2 text-sm font-medium hidden sm:block">{stepNames[index]}</span>
-              </div>
-              {index < stepNames.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 ${isCompleted ? 'bg-green-200' : 'bg-gray-200'}`}></div>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
+    <div className="w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="card">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 style={{
+            fontSize: '1.75rem',
+            fontWeight: '700',
+            color: 'var(--neutral-900)',
+            margin: '0 0 0.5rem 0'
+          }}>
+            Enhanced Identity Verification
+          </h2>
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--neutral-600)',
+            margin: '0'
+          }}>
+            Secure biometric verification for trusted trading
+          </p>
+        </div>
 
-      {/* Step content */}
-      {currentStep === 'intro' && renderIntroStep()}
-      {currentStep === 'document' && renderDocumentStep()}
-      {currentStep === 'liveness' && renderLivenessStep()}
-      {currentStep === 'processing' && renderProcessingStep()}
-      {currentStep === 'complete' && renderCompleteStep()}
+        {/* Progress indicator */}
+        <div className="flex items-center mb-8">
+          {['intro', 'document', 'liveness', 'complete'].map((step, index) => {
+            const stepNames = ['Start', 'Upload ID', 'Liveness Check', 'Verified'];
+            const currentIndex = currentStep === 'processing' ? 2 : ['intro', 'document', 'liveness', 'complete'].indexOf(currentStep);
+            const isActive = index === currentIndex;
+            const isCompleted = index < currentIndex;
+            
+            return (
+              <React.Fragment key={step}>
+                <div className="flex items-center" style={{
+                  color: isActive ? 'var(--brand-primary)' : isCompleted ? 'var(--success)' : 'var(--neutral-400)'
+                }}>
+                  <div className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium" style={{
+                    borderColor: isActive 
+                      ? 'var(--brand-primary)' 
+                      : isCompleted
+                      ? 'var(--success)'
+                      : 'var(--neutral-200)',
+                    backgroundColor: isActive 
+                      ? 'rgba(0, 0, 0, 0.05)' 
+                      : isCompleted
+                      ? 'rgba(5, 150, 105, 0.1)'
+                      : 'var(--neutral-50)'
+                  }}>
+                    {isCompleted ? '✓' : index + 1}
+                  </div>
+                  <span className="ml-2 text-sm font-medium hidden sm:block">{stepNames[index]}</span>
+                </div>
+                {index < stepNames.length - 1 && (
+                  <div className="flex-1 h-0.5 mx-2" style={{
+                    backgroundColor: isCompleted ? 'rgba(5, 150, 105, 0.2)' : 'var(--neutral-200)'
+                  }}></div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        {/* Step content */}
+        {currentStep === 'intro' && renderIntroStep()}
+        {currentStep === 'document' && renderDocumentStep()}
+        {currentStep === 'liveness' && renderLivenessStep()}
+        {currentStep === 'processing' && renderProcessingStep()}
+        {currentStep === 'complete' && renderCompleteStep()}
+      </div>
     </div>
   );
 }

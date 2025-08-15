@@ -37,7 +37,7 @@ describe('Navigation', () => {
     await screen.findByText('Sign In')
     
     expect(screen.getByText('Sign In')).toBeInTheDocument()
-    expect(screen.getByText('Register')).toBeInTheDocument()
+    expect(screen.getByText('Sign Up')).toBeInTheDocument()
   })
 
   it('shows user menu when user is logged in', async () => {
@@ -58,10 +58,11 @@ describe('Navigation', () => {
     render(<Navigation />)
     
     // Wait for auth check to complete
-    await screen.findByText('John D')
+    await screen.findByText('John')
     
-    expect(screen.getByText('John D')).toBeInTheDocument()
-    expect(screen.getByText('List Motorcycle')).toBeInTheDocument()
+    expect(screen.getByText('John')).toBeInTheDocument()
+    expect(screen.getByText('Sell')).toBeInTheDocument()
+    expect(screen.getByText('Messages')).toBeInTheDocument()
   })
 
   it('handles logout correctly', async () => {
@@ -85,9 +86,8 @@ describe('Navigation', () => {
 
     render(<Navigation />)
     
-    // Wait for user to load and open dropdown
-    await screen.findByText('John D')
-    fireEvent.click(screen.getByText('John D'))
+    // Wait for user to load
+    await screen.findByText('John')
     
     // Click logout
     const logoutButton = screen.getByText('Sign Out')
@@ -104,7 +104,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
     
-    const mobileMenuButton = screen.getByLabelText(/open main menu/i)
+    const mobileMenuButton = screen.getByLabelText(/toggle menu/i)
     expect(mobileMenuButton).toBeInTheDocument()
   })
 
@@ -116,10 +116,10 @@ describe('Navigation', () => {
 
     render(<Navigation />)
     
-    const mobileMenuButton = screen.getByLabelText(/open main menu/i)
+    const mobileMenuButton = screen.getByLabelText(/toggle menu/i)
     fireEvent.click(mobileMenuButton)
     
-    // Check if mobile menu is expanded
-    expect(mobileMenuButton).toHaveAttribute('aria-expanded', 'true')
+    // Check if mobile menu content appears (should have multiple Home links now)
+    expect(screen.getAllByText('Home')).toHaveLength(2)
   })
 })

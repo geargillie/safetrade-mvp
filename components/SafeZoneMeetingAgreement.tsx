@@ -78,48 +78,49 @@ export default function SafeZoneMeetingAgreement({
 
   // Load existing deal agreement and safe zones
   useEffect(() => {
-    loadDealAgreement()
-    loadSafeZones()
-  }, [])
-
-  const loadDealAgreement = async () => {
-    try {
-      const response = await fetch(
-        `/api/safe-zone/deal-agreement?conversationId=${conversationId}&userId=${currentUserId}`
-      )
-      const data = await response.json()
-      
-      if (data.dealAgreement) {
-        setDealAgreement(data.dealAgreement)
-        setAgreedPrice(data.dealAgreement.agreed_price || listingPrice)
+    const loadDealAgreementInternal = async () => {
+      try {
+        const response = await fetch(
+          `/api/safe-zone/deal-agreement?conversationId=${conversationId}&userId=${currentUserId}`
+        )
+        const data = await response.json()
         
-        // Determine current step based on agreement state
-        if (data.privacyRevealed && data.dealAgreement.buyer_agreed && data.dealAgreement.seller_agreed) {
-          setStep('location')
-        } else if (data.dealAgreement[`${userRole}_agreed`]) {
-          setStep('waiting')
+        if (data.dealAgreement) {
+          setDealAgreement(data.dealAgreement)
+          setAgreedPrice(data.dealAgreement.agreed_price || listingPrice)
+          
+          // Determine current step based on agreement state
+          if (data.privacyRevealed && data.dealAgreement.buyer_agreed && data.dealAgreement.seller_agreed) {
+            setStep('location')
+          } else if (data.dealAgreement[`${userRole}_agreed`]) {
+            setStep('waiting')
+          }
         }
+      } catch (err) {
+        console.error('Error loading deal agreement:', err)
       }
-    } catch (err) {
-      console.error('Error loading deal agreement:', err)
     }
-  }
 
-  const loadSafeZones = async () => {
-    try {
-      const params = new URLSearchParams({ city: listingCity })
-      if (listingZipCode) params.append('zipCode', listingZipCode)
-      
-      const response = await fetch(`/api/safe-zone/locations?${params}`)
-      const data = await response.json()
-      
-      if (data.success) {
-        setSafeZones(data.safeZones || [])
+    const loadSafeZonesInternal = async () => {
+      try {
+        const params = new URLSearchParams({ city: listingCity })
+        if (listingZipCode) params.append('zipCode', listingZipCode)
+        
+        const response = await fetch(`/api/safe-zone/locations?${params}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setSafeZones(data.safeZones || [])
+        }
+      } catch (err) {
+        console.error('Error loading safe zones:', err)
       }
-    } catch (err) {
-      console.error('Error loading safe zones:', err)
     }
-  }
+
+    loadDealAgreementInternal()
+    loadSafeZonesInternal()
+  }, [conversationId, currentUserId, listingPrice, userRole, listingCity, listingZipCode])
+
 
   const handleInitialAgreement = async () => {
     setLoading(true)

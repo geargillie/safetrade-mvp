@@ -3,28 +3,29 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Navigation from './Navigation';
+import Footer from './Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
   showNavigation?: boolean;
+  showFooter?: boolean;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '7xl' | 'full';
   className?: string;
 }
 
 export default function Layout({ 
   children, 
-  showNavigation = true, 
+  showNavigation = false, 
+  showFooter = false,
   maxWidth = '7xl',
   className = ''
 }: LayoutProps) {
-  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: { first_name?: string } } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      await supabase.auth.getSession();
       setLoading(false);
     };
 
@@ -32,8 +33,7 @@ export default function Layout({
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
+      async () => {
         setLoading(false);
       }
     );
@@ -52,30 +52,30 @@ export default function Layout({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen flex flex-col ${!showNavigation ? 'items-center justify-center' : ''}`} style={{backgroundColor: 'var(--neutral-50)'}}>
       {/* Navigation */}
-      {showNavigation && (
-        <Navigation 
-          user={user || undefined} 
-          onSignOut={() => setUser(null)} 
-        />
-      )}
+      {showNavigation && <Navigation />}
 
       {/* Main Content */}
-      <main className={`${showNavigation ? 'pt-0' : ''} ${className}`}>
-        <div className={`${maxWidthClasses[maxWidth]} mx-auto px-4 sm:px-6 lg:px-8 py-8`}>
+      <main className={`flex-1 w-full ${!showNavigation ? 'flex items-center justify-center' : ''} ${showNavigation ? 'pt-0' : ''} ${className}`}>
+        <div className={`${showNavigation ? 'w-full' : maxWidthClasses[maxWidth]} mx-auto ${showNavigation ? 'px-4 sm:px-6 lg:px-8' : 'px-6 sm:px-8 lg:px-12'} ${showNavigation ? 'py-0' : 'py-8'} w-full`}>
           {loading ? (
             <div className="flex items-center justify-center min-h-64">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading...</p>
+              <div className="text-center animate-fade-in">
+                <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4" style={{borderWidth: '2px', borderColor: 'var(--neutral-200)', borderTopColor: 'var(--brand-primary)'}}></div>
+                <p className="text-body" style={{color: 'var(--neutral-600)'}}>Loading...</p>
               </div>
             </div>
           ) : (
-            children
+            <div className="animate-fade-in">
+              {children}
+            </div>
           )}
         </div>
       </main>
+
+      {/* Footer */}
+      {showFooter && <Footer />}
     </div>
   );
 }

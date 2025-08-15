@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
 import FreeIdentityVerification from '@/components/FreeIdentityVerification'
 import EnhancedIDVerification from '@/components/EnhancedIDVerification'
@@ -732,60 +733,143 @@ export default function CreateListing() {
 
   // Main listing creation form (only shows if verified)
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          {/* Verification status badge */}
-          {isVerified ? (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <span className="text-green-600 mr-2">✅</span>
-                <span className="text-green-800 font-medium">
-                  Identity Verified - Trusted Seller
-                  {verificationStatus?.method === 'enhanced' && (
-                    <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-normal">
-                      ENHANCED
-                    </span>
-                  )}
-                </span>
+    <div className="min-h-screen flex flex-col" style={{backgroundColor: 'var(--neutral-50)'}}>
+      {/* Navigation */}
+      <nav className="nav">
+        <div className="container">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-1 transition-all duration-200 hover:scale-105">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center shadow-sm" style={{backgroundColor: 'var(--brand-primary)'}}>
+                <span className="text-white text-xs font-bold">ST</span>
               </div>
-              <p className="text-green-700 text-sm mt-1">
-                Your identity has been verified{verificationStatus?.method === 'enhanced' ? ' with advanced biometric security' : ''}. Buyers will see you as a trusted seller.
-              </p>
-            </div>
-          ) : canSkip ? (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <span className="text-yellow-600 mr-2">⚠️</span>
-                <span className="text-yellow-800 font-medium">Unverified Seller - Limited Features</span>
+              <span className="hidden sm:block text-body" style={{color: 'var(--neutral-900)', fontWeight: '600'}}>SafeTrade</span>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="flex-1 w-full py-12">
+        <div className="w-full max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
+          {/* Page Header */}
+          <div className="text-center mb-12">
+            <h1 style={{
+              fontSize: 'clamp(2rem, 4vw, 2.5rem)', 
+              fontWeight: '700', 
+              color: 'var(--neutral-900)',
+              margin: '0 0 1rem 0',
+              letterSpacing: '-0.025em'
+            }}>
+              List Your Motorcycle
+            </h1>
+            <p style={{
+              fontSize: '1.1rem',
+              color: 'var(--neutral-600)',
+              margin: '0',
+              maxWidth: '480px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              lineHeight: '1.6'
+            }}>
+              Create a professional listing with verification and security
+            </p>
+          </div>
+
+          <div className="card" style={{
+            maxWidth: '100%',
+            borderRadius: '1rem',
+            padding: '2.5rem',
+            backgroundColor: 'white',
+            border: '1px solid var(--neutral-200)',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }}>
+            {/* Verification status badge */}
+            {isVerified ? (
+              <div className="badge badge-success mb-6" style={{
+                backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                border: '1px solid rgba(5, 150, 105, 0.2)',
+                padding: '1rem 1.5rem',
+                fontSize: '0.95rem',
+                width: '100%',
+                justifyContent: 'flex-start'
+              }}>
+                <div className="flex items-center">
+                  <span className="mr-2" style={{color: 'var(--success)'}}>✅</span>
+                  <span style={{color: 'var(--success)', fontWeight: '600'}}>
+                    Identity Verified - Trusted Seller
+                    {verificationStatus?.method === 'enhanced' && (
+                      <span className="ml-2 badge badge-info" style={{
+                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
+                        color: 'var(--info)',
+                        fontSize: '0.75rem',
+                        padding: '0.25rem 0.5rem'
+                      }}>
+                        ENHANCED
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <p style={{
+                  color: 'var(--success)',
+                  fontSize: '0.9rem',
+                  margin: '0.5rem 0 0 0',
+                  lineHeight: '1.4'
+                }}>
+                  Your identity has been verified{verificationStatus?.method === 'enhanced' ? ' with advanced biometric security' : ''}. Buyers will see you as a trusted seller.
+                </p>
               </div>
-              <p className="text-yellow-700 text-sm mt-1">
-                You&apos;re creating a listing without identity verification. Your listing will be marked as &quot;unverified&quot; and may receive fewer inquiries.
-              </p>
-              <div className="mt-2">
+            ) : canSkip ? (
+              <div className="badge badge-warning mb-6" style={{
+                backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                border: '1px solid rgba(217, 119, 6, 0.2)',
+                padding: '1rem 1.5rem',
+                fontSize: '0.95rem',
+                width: '100%',
+                justifyContent: 'flex-start'
+              }}>
+                <div className="flex items-center">
+                  <span className="mr-2" style={{color: 'var(--warning)'}}>⚠️</span>
+                  <span style={{color: 'var(--warning)', fontWeight: '600'}}>Unverified Seller - Limited Features</span>
+                </div>
+                <p style={{
+                  color: 'var(--warning)',
+                  fontSize: '0.9rem',
+                  margin: '0.5rem 0',
+                  lineHeight: '1.4'
+                }}>
+                  You&apos;re creating a listing without identity verification. Your listing will be marked as &quot;unverified&quot; and may receive fewer inquiries.
+                </p>
                 <button
                   onClick={() => setShowVerification(true)}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  className="link" style={{fontSize: '0.9rem'}}
                 >
                   Complete verification now to unlock full features
                 </button>
               </div>
-            </div>
-          ) : null}
-
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            List Your Motorcycle
-          </h1>
+            ) : null}
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-10">
             {/* Basic Info */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+            <div className="space-y-6">
+              <h3 style={{
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0',
+                paddingBottom: '0.75rem',
+                borderBottom: '2px solid var(--neutral-100)'
+              }}>Basic Information</h3>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.95rem',
+                  fontWeight: '500',
+                  color: 'var(--neutral-700)',
+                  marginBottom: '0.5rem'
+                }}>
                   Title * {formData.title && vinVerification.result?.vehicleInfo && (
-                    <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                    <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Auto-filled</span>
                   )}
                 </label>
                 <input
@@ -793,30 +877,83 @@ export default function CreateListing() {
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem 1rem',
+                    border: '1px solid var(--neutral-300)',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem',
+                    backgroundColor: 'white',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onFocus={(e) => {
+                    (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                    (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                    (e.target as HTMLElement).style.boxShadow = 'none';
+                  }}
                   placeholder="2020 Honda CBR600RR - Low Miles"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.95rem',
+                  fontWeight: '500',
+                  color: 'var(--neutral-700)',
+                  marginBottom: '0.5rem'
+                }}>
                   Price * {formData.price && vinVerification.result?.vehicleInfo?.msrp && (
-                    <span className="text-green-600 text-xs">✅ Suggested based on MSRP</span>
+                    <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Suggested based on MSRP</span>
                   )}
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <span style={{
+                    position: 'absolute',
+                    left: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'var(--neutral-500)',
+                    fontSize: '1rem',
+                    fontWeight: '500'
+                  }}>$</span>
                   <input
                     type="number"
                     required
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      paddingLeft: '2.5rem',
+                      paddingRight: '1rem',
+                      paddingTop: '0.875rem',
+                      paddingBottom: '0.875rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                     placeholder="10000"
                   />
                 </div>
                 {vinVerification.result?.vehicleInfo?.msrp && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p style={{
+                    fontSize: '0.8rem',
+                    color: 'var(--neutral-500)',
+                    marginTop: '0.5rem'
+                  }}>
                     Original MSRP: ${vinVerification.result.vehicleInfo.msrp.toLocaleString()}
                   </p>
                 )}
@@ -824,7 +961,13 @@ export default function CreateListing() {
 
               {/* VIN Verification */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.95rem',
+                  fontWeight: '500',
+                  color: 'var(--neutral-700)',
+                  marginBottom: '0.5rem'
+                }}>
                   VIN (17 characters) *
                 </label>
                 <input
@@ -843,14 +986,31 @@ export default function CreateListing() {
                       setVinVerification({ loading: false, result: null, error: '' })
                     }
                   }}
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem 1rem',
+                    border: '1px solid var(--neutral-300)',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem',
+                    backgroundColor: 'white',
+                    transition: 'all 0.2s ease',
+                    fontFamily: 'monospace',
+                    letterSpacing: '0.05em'
+                  }}
+                  onFocus={(e) => {
+                    (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                    (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                  }}
                   onBlur={(e) => {
                     // Trigger verification on blur if VIN is 17 characters
                     const vin = e.target.value.toUpperCase()
                     if (vin.length === 17 && !vinVerification.result && !vinVerification.loading) {
                       handleVinVerification(vin)
                     }
+                    // Reset border styling
+                    (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                    (e.target as HTMLElement).style.boxShadow = 'none';
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="1HD1KB4137Y123456"
                   maxLength={17}
                 />
@@ -955,21 +1115,50 @@ export default function CreateListing() {
             </div>
 
             {/* Vehicle Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Vehicle Details</h3>
+            <div className="space-y-6">
+              <h3 style={{
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0',
+                paddingBottom: '0.75rem',
+                borderBottom: '2px solid var(--neutral-100)'
+              }}>Vehicle Details</h3>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Make * {formData.make && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Auto-filled</span>
                     )}
                   </label>
                   <select
                     required
                     value={formData.make}
                     onChange={(e) => setFormData({ ...formData, make: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                   >
                     <option value="">Select Make</option>
                     <option value="Harley-Davidson">Harley-Davidson</option>
@@ -998,33 +1187,77 @@ export default function CreateListing() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Model {formData.model && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Auto-filled</span>
                     )}
                   </label>
                   <input
                     type="text"
                     value={formData.model}
                     onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                     placeholder="CBR600RR"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Year {formData.year && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Auto-filled</span>
+                      <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Auto-filled</span>
                     )}
                   </label>
                   <input
                     type="number"
                     value={formData.year}
                     onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                     placeholder="2020"
                     min="1980"
                     max={new Date().getFullYear() + 1}
@@ -1032,28 +1265,72 @@ export default function CreateListing() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Mileage
                   </label>
                   <input
                     type="number"
                     value={formData.mileage}
                     onChange={(e) => setFormData({ ...formData, mileage: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                     placeholder="15000"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Condition {formData.condition && vinVerification.result?.vehicleInfo && (
-                      <span className="text-green-600 text-xs">✅ Suggested by age</span>
+                      <span style={{color: 'var(--success)', fontSize: '0.8rem'}}> ✅ Suggested by age</span>
                     )}
                   </label>
                   <select
                     value={formData.condition}
                     onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                   >
                     <option value="">Select</option>
                     <option value="Excellent">Excellent</option>
@@ -1067,30 +1344,75 @@ export default function CreateListing() {
             </div>
 
             {/* Location */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-                <div className="text-sm text-green-600 flex items-center">
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: 'var(--neutral-900)',
+                  margin: '0 0 1.5rem 0',
+                  paddingBottom: '0.75rem',
+                  borderBottom: '2px solid var(--neutral-100)'
+                }}>Location</h3>
+                <div style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--success)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontWeight: '500'
+                }}>
                   🛡️ Your address stays private
                 </div>
               </div>
               
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-green-800">
+              <div style={{
+                backgroundColor: 'rgba(5, 150, 105, 0.05)',
+                border: '1px solid rgba(5, 150, 105, 0.2)',
+                borderRadius: '0.75rem',
+                padding: '1rem'
+              }}>
+                <p style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--success)',
+                  margin: '0',
+                  lineHeight: '1.5'
+                }}>
                   <strong>Privacy Protected:</strong> We only collect your city and ZIP code. 
                   Your exact address is never stored or shared. Buyers will see your general area until you choose to meet.
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     City
                   </label>
                   <select
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                   >
                     <option value="">Select City</option>
                     <option value="Newark">Newark</option>
@@ -1103,14 +1425,36 @@ export default function CreateListing() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.95rem',
+                    fontWeight: '500',
+                    color: 'var(--neutral-700)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Zip Code
                   </label>
                   <input
                     type="text"
                     value={formData.zipCode}
                     onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      border: '1px solid var(--neutral-300)',
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      backgroundColor: 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                      (e.target as HTMLElement).style.boxShadow = 'none';
+                    }}
                     placeholder="07101"
                     maxLength={5}
                   />
@@ -1119,7 +1463,16 @@ export default function CreateListing() {
             </div>
 
             {/* Images */}
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <h3 style={{
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0',
+                paddingBottom: '0.75rem',
+                borderBottom: '2px solid var(--neutral-100)'
+              }}>Photos</h3>
+              
               <ImageUpload
                 onImagesUploaded={setImages}
                 maxImages={8}
@@ -1128,47 +1481,111 @@ export default function CreateListing() {
             </div>
 
             {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Describe your motorcycle's condition, features, modifications, etc."
-              />
+            <div className="space-y-6">
+              <h3 style={{
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0',
+                paddingBottom: '0.75rem',
+                borderBottom: '2px solid var(--neutral-100)'
+              }}>Description</h3>
+              
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.95rem',
+                  fontWeight: '500',
+                  color: 'var(--neutral-700)',
+                  marginBottom: '0.5rem'
+                }}>
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={5}
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem 1rem',
+                    border: '1px solid var(--neutral-300)',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem',
+                    backgroundColor: 'white',
+                    transition: 'all 0.2s ease',
+                    resize: 'vertical'
+                  }}
+                  onFocus={(e) => {
+                    (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                    (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                    (e.target as HTMLElement).style.boxShadow = 'none';
+                  }}
+                  placeholder="Describe your motorcycle's condition, features, modifications, maintenance history, etc."
+                />
+              </div>
             </div>
 
             {message && (
-              <div className={`p-3 rounded text-sm ${
-                message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-              }`}>
+              <div style={{
+                padding: '1rem 1.5rem',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                backgroundColor: message.includes('Error') ? 'rgba(220, 38, 38, 0.1)' : 'rgba(5, 150, 105, 0.1)',
+                color: message.includes('Error') ? 'var(--error)' : 'var(--success)',
+                border: `1px solid ${message.includes('Error') ? 'rgba(220, 38, 38, 0.2)' : 'rgba(5, 150, 105, 0.2)'}`,
+                lineHeight: '1.5'
+              }}>
                 {message}
               </div>
             )}
 
-            <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-100">
               <button
                 type="submit"
                 disabled={loading || (!isVerified && !canSkip)}
-                className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                className="btn btn-primary" style={{
+                  padding: '1.125rem 2rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  flex: '1',
+                  minHeight: '48px',
+                  borderRadius: '0.75rem',
+                  opacity: (loading || (!isVerified && !canSkip)) ? '0.5' : '1',
+                  cursor: (loading || (!isVerified && !canSkip)) ? 'not-allowed' : 'pointer'
+                }}
               >
-                {loading ? 'Creating Listing...' : canSkip && !isVerified ? 'Create Unverified Listing' : 'Create Listing'}
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Creating Listing...
+                  </div>
+                ) : canSkip && !isVerified ? 'Create Unverified Listing' : 'Create Listing'}
               </button>
               
               <button
                 type="button"
                 onClick={() => router.push('/listings')}
-                className="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400"
+                className="btn btn-secondary" style={{
+                  padding: '1.125rem 2rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  flex: '1',
+                  minHeight: '48px',
+                  borderRadius: '0.75rem'
+                }}
               >
                 Cancel
               </button>
             </div>
           </form>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

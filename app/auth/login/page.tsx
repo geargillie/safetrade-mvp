@@ -27,7 +27,6 @@ export default function Login() {
       if (error) throw error
 
       setMessage('Login successful!')
-      // Redirect to listings page
       router.push('/listings')
     } catch (error: unknown) {
       const err = error as { message?: string }
@@ -38,63 +37,92 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Sign in to SafeTrade
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Access your verified account
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-4">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Email address"
-            />
-            
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Password"
-            />
-          </div>
-
-          {message && (
-            <div className={`text-sm ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
-              {message}
+    <div className="min-h-screen flex items-center justify-center py-12 px-4" style={{backgroundColor: 'var(--neutral-50)'}}>
+      <div className="w-full max-w-md animate-fade-in">
+        <div className="card">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{backgroundColor: 'var(--brand-primary)'}}>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{backgroundColor: 'white'}}>
+                <span className="text-sm font-bold" style={{color: 'var(--brand-primary)'}}>ST</span>
+              </div>
             </div>
-          )}
+            <h2 className="text-heading-lg mb-2">
+              Welcome back
+            </h2>
+            <p className="text-body">
+              Sign in to your verified SafeTrade account
+            </p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>
+                Email address
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input"
+                placeholder="Enter your email"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="password" className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input"
+                placeholder="Enter your password"
+              />
+            </div>
 
-          <div>
+            {message && (
+              <div className={`text-body-sm p-3 rounded-lg`} style={{
+                backgroundColor: message.includes('Error') 
+                  ? 'rgba(220, 38, 38, 0.1)' 
+                  : 'rgba(5, 150, 105, 0.1)',
+                color: message.includes('Error') 
+                  ? 'var(--error)' 
+                  : 'var(--success)'
+              }}>
+                {message}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="btn btn-primary w-full"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full animate-spin" style={{borderWidth: '2px', borderColor: 'rgba(255, 255, 255, 0.3)', borderTopColor: 'white'}}></div>
+                  Signing in...
+                </div>
+              ) : (
+                'Sign In'
+              )}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
-            <span className="text-sm text-gray-600">
+          <div className="mt-6 text-center">
+            <p className="text-body-sm" style={{color: 'var(--neutral-600)'}}>
               Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/auth/register" className="hover:underline" style={{color: 'var(--brand-primary)', fontWeight: '500'}}>
                 Create one here
               </Link>
-            </span>
+            </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

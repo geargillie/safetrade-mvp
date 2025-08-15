@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Layout from '@/components/Layout'
 import ConversationList from '@/components/ConversationList'
 import MessageThread from '@/components/MessageThread'
 import type { Conversation } from '@/hooks/useMessaging'
@@ -52,12 +53,14 @@ export default function MessagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading messages...</p>
+      <Layout>
+        <div className="flex items-center justify-center min-h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4" style={{borderWidth: '2px', borderColor: 'var(--neutral-200)', borderTopColor: 'var(--brand-primary)'}}></div>
+            <p className="text-body" style={{color: 'var(--neutral-600)'}}>Loading messages...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     )
   }
 
@@ -66,54 +69,73 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+    <Layout showNavigation={true}>
+      {/* Page Header */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 mb-8">
+        <div className="flex items-center justify-between py-6">
+          <div className="flex items-center gap-4">
             {isMobile && !showConversationList && (
               <button
                 onClick={handleBackToList}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 rounded-lg transition-all duration-200 border border-transparent h-7 w-7 flex items-center justify-center"
+                style={{color: 'var(--neutral-600)'}}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+                }}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
             )}
-            <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
+            <h1 style={{
+              fontSize: '2rem', 
+              fontWeight: '700', 
+              color: 'var(--neutral-900)',
+              margin: '0'
+            }}>
+              Messages
+            </h1>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">
+          <div className="flex items-center gap-4">
+            <span style={{
+              fontSize: '1rem',
+              color: 'var(--neutral-600)',
+              fontWeight: '500'
+            }}>
               {user.user_metadata?.first_name || 'User'}
             </span>
-            <button
-              onClick={() => router.push('/')}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto h-[calc(100vh-80px)]">
-        <div className="flex h-full">
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex h-[calc(100vh-200px)] rounded-lg overflow-hidden" style={{backgroundColor: 'white', border: '1px solid var(--neutral-200)'}}>
           {/* Conversation List */}
           <div className={`${
             isMobile 
               ? (showConversationList ? 'w-full' : 'hidden') 
-              : 'w-1/3 border-r border-gray-200'
-          } bg-white`}>
+              : 'w-1/3'
+          } ${!isMobile ? 'border-r' : ''}`} style={{borderColor: 'var(--neutral-200)', backgroundColor: 'white'}}>
             <div className="h-full overflow-y-auto">
-              <div className="p-4 border-b border-gray-200">
-                <h2 className="font-semibold text-gray-900">Conversations</h2>
+              <div className="p-6" style={{borderBottom: '1px solid var(--neutral-200)'}}>
+                <h2 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: 'var(--neutral-900)',
+                  margin: '0'
+                }}>
+                  Conversations
+                </h2>
               </div>
-              <div className="p-4">
+              <div className="p-6">
                 <ConversationList
                   currentUserId={user.id}
                   onSelectConversation={handleSelectConversation}
@@ -128,7 +150,7 @@ export default function MessagesPage() {
             isMobile 
               ? (showConversationList ? 'hidden' : 'w-full') 
               : 'flex-1'
-          } bg-white`}>
+          }`} style={{backgroundColor: 'white'}}>
             {selectedConversation ? (
               <MessageThread
                 conversation={selectedConversation}
@@ -137,13 +159,23 @@ export default function MessagesPage() {
             ) : (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-16 h-16 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--neutral-300)'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    color: 'var(--neutral-900)',
+                    marginBottom: '0.5rem'
+                  }}>
                     Select a conversation
                   </h3>
-                  <p className="text-gray-500 max-w-sm">
+                  <p style={{
+                    fontSize: '1rem',
+                    color: 'var(--neutral-500)',
+                    maxWidth: '320px',
+                    lineHeight: '1.5'
+                  }}>
                     Choose a conversation from the left to start messaging.
                   </p>
                 </div>
@@ -152,6 +184,6 @@ export default function MessagesPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

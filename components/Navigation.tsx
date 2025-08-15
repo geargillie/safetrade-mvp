@@ -5,247 +5,312 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-interface NavigationProps {
-  user?: { id: string; email?: string; user_metadata?: { first_name?: string } };
-  onSignOut?: () => void;
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    first_name?: string;
+    last_name?: string;
+  };
 }
 
-export default function Navigation({ user, onSignOut }: NavigationProps) {
+export default function Navigation() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      checkVerificationStatus();
-    }
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const checkVerificationStatus = async () => {
-    if (!user?.id) return;
+    checkUser();
     
-    try {
-      const response = await fetch(`/api/identity/free-verify?userId=${user.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setIsVerified(data.verified);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user as User);
+      } else {
+        setUser(null);
       }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user as User | null);
     } catch (error) {
-      console.error('Error checking verification:', error);
+      console.error('Error checking user:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    if (onSignOut) onSignOut();
-    router.push('/');
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      router.push('/');
+      setMobileMenuOpen(false);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const isActive = (path: string) => {
-    if (path === '/' && pathname === '/') return true;
-    if (path !== '/' && pathname.startsWith(path)) return true;
-    return false;
+    return pathname === path;
   };
 
-  const navigationLinks = [
-    { href: '/listings', label: 'Browse', icon: '🏍️' },
-    { href: '/listings/create', label: 'Sell', icon: '💰', requiresAuth: true },
-    { href: '/messages', label: 'Messages', icon: '💬', requiresAuth: true },
+  const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/listings', label: 'Browse' },
+    ...(user ? [
+      { href: '/listings/create', label: 'Sell' },
+      { href: '/messages', label: 'Messages' },
+    ] : []),
   ];
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and Brand */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🛡️</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">SafeTrade</span>
-              <span className="hidden sm:inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-                Secure Marketplace
-              </span>
-            </Link>
-          </div>
+    <nav className="nav">
+      <div className="container">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-1 transition-all duration-200 hover:scale-105"
+          >
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center shadow-sm" style={{backgroundColor: 'var(--brand-primary)'}}>
+              <span className="text-white text-xs font-bold">ST</span>
+            </div>
+            <span className="hidden sm:block text-body" style={{color: 'var(--neutral-900)', fontWeight: '600'}}>SafeTrade</span>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigationLinks.map((link) => {
-              if (link.requiresAuth && !user) return null;
-              
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive(link.href)
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <span>{link.icon}</span>
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="nav-button px-4 rounded-lg text-body font-medium transition-all duration-200 border h-7 flex items-center"
+                style={{
+                  ...(isActive(item.href) 
+                    ? { 
+                        backgroundColor: 'var(--brand-primary)', 
+                        color: 'white',
+                        borderColor: 'var(--brand-primary)',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)'
+                      }
+                    : { 
+                        color: 'var(--neutral-700)',
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent'
+                      })
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive(item.href)) {
+                    (e.target as HTMLElement).style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    (e.target as HTMLElement).style.borderColor = 'rgba(0, 0, 0, 0.2)';
+                    (e.target as HTMLElement).style.color = 'var(--brand-primary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive(item.href)) {
+                    (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.target as HTMLElement).style.borderColor = 'transparent';
+                    (e.target as HTMLElement).style.color = 'var(--neutral-700)';
+                  }
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            {user ? (
-              <div className="flex items-center space-x-3">
-                {/* Verification Status */}
-                <div className="hidden sm:flex items-center">
-                  {isVerified ? (
-                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium flex items-center">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></span>
-                      Verified
-                    </span>
-                  ) : (
-                    <Link
-                      href="/listings/create"
-                      className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium hover:bg-yellow-200 transition-colors"
-                    >
-                      Complete Verification
-                    </Link>
-                  )}
-                </div>
-
-                {/* User Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 focus:outline-none"
-                  >
-                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium">
-                        {user.user_metadata?.first_name?.[0] || user.email?.[0]?.toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="hidden sm:block text-sm font-medium">
-                      {user.user_metadata?.first_name || 'User'}
-                    </span>
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <span className="mr-2">👤</span>
-                        Profile & Settings
-                      </Link>
-                      <Link
-                        href="/listings?seller=me"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <span className="mr-2">📋</span>
-                        My Listings
-                      </Link>
-                      <Link
-                        href="/messages"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <span className="mr-2">💬</span>
-                        Messages
-                      </Link>
-                      <div className="border-t border-gray-100"></div>
-                      <button
-                        onClick={() => {
-                          setIsMenuOpen(false);
-                          handleSignOut();
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                      >
-                        <span className="mr-2">🚪</span>
-                        Sign Out
-                      </button>
-                    </div>
-                  )}
-                </div>
+          {/* Desktop Auth */}
+          <div className="hidden md:flex items-center gap-3">
+            {loading ? (
+              <div className="w-8 h-8 rounded-full animate-pulse" style={{backgroundColor: 'var(--neutral-200)'}}></div>
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/profile"
+                  className="px-3 rounded-lg text-body font-medium transition-all duration-200 border border-transparent h-7 flex items-center"
+                  style={{color: 'var(--neutral-600)'}}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
+                    (e.target as HTMLElement).style.color = 'var(--neutral-900)';
+                    (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.target as HTMLElement).style.color = 'var(--neutral-600)';
+                    (e.target as HTMLElement).style.borderColor = 'transparent';
+                  }}
+                >
+                  {user.user_metadata?.first_name || 'Profile'}
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="px-3 rounded-lg text-body font-medium transition-all duration-200 border border-transparent h-7 flex items-center"
+                  style={{color: 'var(--neutral-600)'}}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(220, 38, 38, 0.1)';
+                    (e.currentTarget as HTMLElement).style.color = 'var(--error)';
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(220, 38, 38, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = 'var(--neutral-600)';
+                    (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+                  }}
+                >
+                  Sign Out
+                </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Link
-                  href="/auth/login"
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              <div className="flex items-center gap-2">
+                <Link 
+                  href="/auth/login" 
+                  className="px-4 rounded-lg text-body font-medium transition-all duration-200 border border-transparent h-7 flex items-center"
+                  style={{color: 'var(--neutral-700)'}}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
+                    (e.target as HTMLElement).style.color = 'var(--neutral-900)';
+                    (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.target as HTMLElement).style.color = 'var(--neutral-700)';
+                    (e.target as HTMLElement).style.borderColor = 'transparent';
+                  }}
                 >
                   Sign In
                 </Link>
-                <Link
-                  href="/auth/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                <Link 
+                  href="/auth/register" 
+                  className="px-4 rounded-lg text-body font-medium transition-all duration-200 shadow-sm border h-7 flex items-center"
+                  style={{backgroundColor: 'var(--brand-primary)', color: 'white', borderColor: 'var(--brand-primary)'}}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'var(--brand-primary-dark)';
+                    (e.target as HTMLElement).style.borderColor = 'var(--brand-primary-dark)';
+                    (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'var(--brand-primary)';
+                    (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                    (e.target as HTMLElement).style.boxShadow = 'var(--shadow-sm)';
+                  }}
                 >
-                  Join SafeTrade
+                  Sign Up
                 </Link>
               </div>
             )}
+          </div>
 
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-1 rounded-lg transition-all duration-200 border border-transparent h-7 w-7 flex items-center justify-center"
+            style={{color: 'var(--neutral-600)'}}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
+              (e.currentTarget as HTMLElement).style.color = 'var(--neutral-900)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+              (e.currentTarget as HTMLElement).style.color = 'var(--neutral-600)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+            }}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-            </button>
-          </div>
+            )}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-2">
-            <div className="space-y-1">
-              {navigationLinks.map((link) => {
-                if (link.requiresAuth && !user) return null;
-                
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                      isActive(link.href)
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <span>{link.icon}</span>
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 animate-fade-in" style={{borderTop: '1px solid var(--neutral-200)'}}>
+            <div className="flex flex-col gap-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 mx-2 rounded-lg text-body font-medium transition-all duration-200 border"
+                  style={{
+                    ...(isActive(item.href) 
+                      ? { 
+                          backgroundColor: 'var(--brand-primary)', 
+                          color: 'white',
+                          borderColor: 'var(--brand-primary)',
+                          boxShadow: 'var(--shadow-sm)'
+                        }
+                      : { 
+                          color: 'var(--neutral-700)',
+                          backgroundColor: 'transparent',
+                          borderColor: 'transparent'
+                        })
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
               
-              {!user && (
-                <>
-                  <Link
-                    href="/auth/login"
-                    className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className="block px-3 py-2 text-base font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Join SafeTrade
-                  </Link>
-                </>
-              )}
+              <div className="pt-4 mt-2 mx-2" style={{borderTop: '1px solid var(--neutral-200)'}}>
+                {loading ? (
+                  <div className="px-4 py-3">
+                    <div className="w-20 h-4 rounded animate-pulse" style={{backgroundColor: 'var(--neutral-200)'}}></div>
+                  </div>
+                ) : user ? (
+                  <>
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-3 rounded-lg text-body font-medium transition-all duration-200 mb-2 border"
+                      style={{color: 'var(--neutral-700)', backgroundColor: 'var(--neutral-100)', borderColor: 'var(--neutral-300)'}}
+                    >
+                      {user.user_metadata?.first_name || 'Profile'}
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-4 py-3 rounded-lg text-body font-medium transition-all duration-200 border"
+                      style={{color: 'var(--error)', backgroundColor: 'rgba(220, 38, 38, 0.1)', borderColor: 'rgba(220, 38, 38, 0.2)'}}
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href="/auth/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-4 py-3 rounded-lg text-body font-medium text-center transition-all duration-200 border"
+                      style={{color: 'var(--neutral-700)', backgroundColor: 'var(--neutral-100)', borderColor: 'var(--neutral-300)'}}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/auth/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-4 py-3 rounded-lg text-body font-medium text-center transition-all duration-200 shadow-sm border"
+                      style={{backgroundColor: 'var(--brand-primary)', color: 'white', borderColor: 'var(--brand-primary)'}}
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

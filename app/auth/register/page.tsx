@@ -317,27 +317,27 @@ function RegisterContent() {
             
             return (
               <div key={stepName} className="flex items-center">
-                <div className={`flex items-center ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className={`flex items-center ${isActive ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'}`}>
                   <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                     isActive 
-                      ? 'border-blue-600 bg-blue-50' 
+                      ? 'border-primary bg-muted' 
                       : isCompleted
-                      ? 'border-green-600 bg-green-50'
-                      : 'border-gray-200 bg-gray-50'
+                      ? 'border-success bg-success/10'
+                      : 'border-border bg-muted'
                   }`}>
                     {isCompleted ? '✓' : index + 1}
                   </div>
                   <span className="ml-2 text-sm font-medium hidden sm:block">{stepLabels[index]}</span>
                 </div>
                 {index < stepLabels.length - 1 && (
-                  <div className="w-8 h-0.5 bg-gray-200 mx-2"></div>
+                  <div className="w-8 h-0.5 bg-border mx-2"></div>
                 )}
               </div>
             );
           })}
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="card max-w-2xl mx-auto">
           {step === 'register' && (
             <>
               <PageHeader
@@ -354,7 +354,7 @@ function RegisterContent() {
                       required
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                       placeholder="First name"
                     />
                     <input
@@ -362,7 +362,7 @@ function RegisterContent() {
                       required
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                       placeholder="Last name"
                     />
                   </div>
@@ -372,7 +372,7 @@ function RegisterContent() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="input"
                     placeholder="Email address"
                   />
                   
@@ -381,16 +381,16 @@ function RegisterContent() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="input"
                     placeholder="Password (min 6 characters)"
                     minLength={6}
                   />
                 </div>
 
                 {/* Security features highlight */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-blue-900 mb-2">🛡️ SafeTrade Security Features</h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                <div className="bg-muted rounded-lg p-4">
+                  <h3 className="font-semibold text-foreground mb-2">🛡️ SafeTrade Security Features</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Triple-layer identity verification</li>
                     <li>• Real-time stolen vehicle detection</li>
                     <li>• AI-powered scam protection</li>
@@ -401,7 +401,7 @@ function RegisterContent() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="btn-primary w-full"
                 >
                   {loading ? 'Creating Account...' : 'Create Account'}
                 </button>
@@ -427,7 +427,7 @@ function RegisterContent() {
                 <button
                   onClick={checkEmailVerification}
                   disabled={loading}
-                  className="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                  className="btn-primary w-full"
                 >
                   {loading ? 'Checking...' : 'I\'ve Confirmed My Email'}
                 </button>
@@ -435,7 +435,7 @@ function RegisterContent() {
                 <button
                   onClick={resendConfirmationEmail}
                   disabled={loading}
-                  className="w-full bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 disabled:opacity-50 text-sm"
+                  className="btn-secondary w-full"
                 >
                   {loading ? 'Sending...' : 'Resend Confirmation Email'}
                 </button>
@@ -475,7 +475,7 @@ function RegisterContent() {
                     setStep('verify_phone')
                     setMessage('Email verification skipped for testing. Now verify your phone.')
                   }}
-                  className="w-full bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 text-sm"
+                  className="btn-ghost w-full"
                 >
                   Skip Email Verification (Testing Only)
                 </button>
@@ -500,7 +500,7 @@ function RegisterContent() {
                     setStep('verify_identity')
                     setMessage('Phone verification skipped for testing. Now verify your identity.')
                   }}
-                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                  className="text-sm text-muted-foreground hover:text-foreground underline"
                 >
                   Skip phone verification (testing only)
                 </button>
@@ -597,7 +597,7 @@ function RegisterContent() {
                   <div className="text-center">
                     <button
                       onClick={skipIdentityVerification}
-                      className="text-sm text-gray-600 hover:text-gray-800 underline"
+                      className="text-sm text-muted-foreground hover:text-foreground underline"
                     >
                       Skip for now (complete later)
                     </button>
@@ -675,7 +675,7 @@ function RegisterContent() {
               <div className="space-y-3">
                 <Link 
                   href="/listings"
-                  className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 font-medium"
+                  className="btn-primary inline-block"
                 >
                   Start Browsing Listings
                 </Link>

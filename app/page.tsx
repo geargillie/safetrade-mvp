@@ -6,91 +6,143 @@ import Layout from '@/components/Layout';
 
 export default function HomePage() {
   return (
-    <Layout maxWidth="7xl">
-      {/* Hero Section */}
-      <div className="text-center mb-16">
-        <div className="mb-8">
-          <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl">🛡️</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            <span className="text-blue-600">Secure</span> 
-            <br />Motorcycle Marketplace
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            The only marketplace with identity verification, real-time stolen vehicle detection, 
-            and AI-powered scam protection. Trade motorcycles with complete confidence.
-          </p>
-        </div>
+    <Layout showNavigation={true}>
+      {/* Hero Section - Optimized Layout */}
+      <section className="relative" style={{minHeight: '90vh'}}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+            <div className="text-center">
+              
+              {/* Main Heading Block */}
+              <div className="mb-10">
+                <h1 className="animate-fade-in mb-6" style={{
+                  fontSize: 'clamp(2.75rem, 5.5vw, 4.25rem)', 
+                  lineHeight: '1.05', 
+                  fontWeight: '800',
+                  letterSpacing: '-0.025em',
+                  margin: '0'
+                }}>
+                  The Trusted Motorcycle
+                  <br />
+                  <span style={{color: 'var(--brand-primary)'}}>Trading Platform</span>
+                </h1>
+                <p style={{
+                  maxWidth: '580px', 
+                  fontSize: '1.3rem', 
+                  color: 'var(--neutral-600)', 
+                  lineHeight: '1.65',
+                  fontWeight: '400',
+                  margin: '0 auto'
+                }}>
+                  Buy and sell motorcycles with confidence. Verified sellers, VIN checks, secure transactions.
+                </p>
+              </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link 
-            href="/listings"
-            className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
-          >
-            <span>🏍️</span>
-            <span>Browse Motorcycles</span>
-          </Link>
-          <Link 
-            href="/auth/register"
-            className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors flex items-center justify-center space-x-2"
-          >
-            <span>🛡️</span>
-            <span>Join SafeTrade</span>
-          </Link>
-        </div>
+              {/* Primary Actions */}
+              <div className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-12 max-w-lg mx-auto">
+                <Link href="/listings" className="btn btn-primary w-full sm:flex-1" style={{
+                  padding: '1.125rem 2.25rem', 
+                  fontSize: '1.125rem', 
+                  fontWeight: '600',
+                  height: '60px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '200px',
+                  borderRadius: '0.75rem',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)'
+                }}>
+                  Browse Motorcycles
+                </Link>
+                <Link href="/auth/register" className="btn btn-secondary w-full sm:flex-1" style={{
+                  padding: '1.125rem 2.25rem', 
+                  fontSize: '1.125rem', 
+                  fontWeight: '600',
+                  height: '60px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '200px',
+                  borderRadius: '0.75rem'
+                }}>
+                  Start Selling
+                </Link>
+              </div>
 
-        {/* Trust Indicators */}
-        <div className="flex flex-wrap justify-center gap-4 text-sm">
-          <span className="bg-green-100 text-green-800 px-3 py-2 rounded-full font-medium">
-            ✅ Verified Sellers Only
-          </span>
-          <span className="bg-blue-100 text-blue-800 px-3 py-2 rounded-full font-medium">
-            🔍 Real-time NICB Checks
-          </span>
-          <span className="bg-purple-100 text-purple-800 px-3 py-2 rounded-full font-medium">
-            🤖 AI Scam Detection
-          </span>
-        </div>
-      </div>
+              {/* Trust Indicators */}
+              <div className="mb-10">
+                <div className="flex flex-wrap justify-center items-center gap-5 max-w-2xl mx-auto">
+                  <div className="badge badge-success" style={{
+                    padding: '0.875rem 1.375rem', 
+                    fontSize: '0.95rem', 
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    whiteSpace: 'nowrap',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 2px 8px rgba(5, 150, 105, 0.15)'
+                  }}>
+                    <span className="status-dot status-available" style={{width: '0.875rem', height: '0.875rem'}}></span>
+                    Verified Sellers
+                  </div>
+                  <div className="badge badge-info" style={{
+                    padding: '0.875rem 1.375rem', 
+                    fontSize: '0.95rem', 
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    whiteSpace: 'nowrap',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 2px 8px rgba(8, 145, 178, 0.15)'
+                  }}>
+                    <span className="status-dot" style={{backgroundColor: 'var(--info)', width: '0.875rem', height: '0.875rem'}}></span>
+                    VIN Checks
+                  </div>
+                  <div className="badge badge-neutral" style={{
+                    padding: '0.875rem 1.375rem', 
+                    fontSize: '0.95rem', 
+                    fontWeight: '500', 
+                    backgroundColor: 'rgba(0, 0, 0, 0.06)', 
+                    color: 'var(--neutral-700)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    whiteSpace: 'nowrap',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
+                  }}>
+                    <span className="status-dot" style={{backgroundColor: 'var(--warning)', width: '0.875rem', height: '0.875rem'}}></span>
+                    Secure Transactions
+                  </div>
+                </div>
+              </div>
 
-      {/* How It Works */}
-      <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 mb-16">
-        <h2 className="text-xl font-bold text-gray-900 text-center mb-6">How SafeTrade Works</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-white text-lg font-bold">1</span>
+              {/* Secondary Action */}
+              <div>
+                <Link href="/about" className="link" style={{
+                  fontWeight: '600', 
+                  fontSize: '1.0625rem',
+                  textDecoration: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.5rem',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                }}>
+                  Learn how SafeTrade works →
+                </Link>
+              </div>
+              
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">Verify Identity</h3>
-            <p className="text-gray-600 text-sm">
-              Quick 2-minute verification with government ID.
-            </p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-white text-lg font-bold">2</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">List or Browse</h3>
-            <p className="text-gray-600 text-sm">
-              Create listings with automatic VIN checks.
-            </p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-white text-lg font-bold">3</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">Trade Safely</h3>
-            <p className="text-gray-600 text-sm">
-              Secure communication and safe meetings.
-            </p>
           </div>
         </div>
-      </div>
-
+      </section>
     </Layout>
   );
 }
