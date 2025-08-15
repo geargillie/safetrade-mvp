@@ -132,15 +132,22 @@ export default function LivenessVerification({
             message: result.message
           });
         } else {
-          // Verification completed but failed
+          // Verification completed but failed - reset to allow retry
+          console.log('❌ Verification failed, resetting UI');
+          setCurrentStep('intro');
+          setCapturedImage(null);
           onError(result.message || 'Liveness verification failed. Please try again with better lighting.');
         }
       } else {
         console.error('❌ Liveness verification API error:', result);
+        setCurrentStep('intro');
+        setCapturedImage(null);
         onError(result.error || `Verification failed (${response.status})`);
       }
     } catch (error) {
       console.error('❌ Liveness verification network error:', error);
+      setCurrentStep('intro');
+      setCapturedImage(null);
       onError('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);

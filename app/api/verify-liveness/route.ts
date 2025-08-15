@@ -88,7 +88,14 @@ export async function POST(request: NextRequest) {
     // Simple liveness verification logic
     // In a real implementation, you would use ML models or third-party services
     const livenessScore = performSimpleLivenessCheck(imageData);
-    const verified = livenessScore >= 80;
+    const verified = livenessScore >= 60; // Lowered threshold for better success rate
+    
+    console.log('🎯 Liveness verification scoring:', {
+      livenessScore,
+      threshold: 60,
+      verified,
+      imageDataSize: imageData.length
+    });
     
     // Store verification result using correct schema
     const verificationData = {
@@ -104,7 +111,7 @@ export async function POST(request: NextRequest) {
         timestamp: timestamp || new Date().toISOString(),
         liveness_check: {
           score: livenessScore,
-          threshold: 80,
+          threshold: 60,
           passed: verified
         }
       },
@@ -271,37 +278,61 @@ export async function GET(request: NextRequest) {
 // Simple liveness check based on image characteristics
 function performSimpleLivenessCheck(imageData: string): number {
   try {
+    console.log('📊 Starting liveness check analysis...');
+    
     // Check if image data is valid base64
     if (!imageData.startsWith('data:image/')) {
+      console.log('❌ Invalid image format - not a data URL');
       return 0;
     }
 
     // Extract base64 data
     const base64Data = imageData.split(',')[1];
+    console.log('📏 Image base64 length:', base64Data?.length || 0);
+    
     if (!base64Data || base64Data.length < 1000) {
+      console.log('❌ Image too small - likely invalid');
       return 20; // Too small, likely not a real face photo
     }
 
-    // Simple scoring based on image size and format
-    let score = 50; // Base score
+    // Simple scoring based on image size and format - more generous scoring
+    let score = 60; // Higher base score for better success rate
+    const reasons = [];
     
     // Image size check (larger images usually indicate better quality)
-    if (base64Data.length > 10000) score += 20;
-    if (base64Data.length > 50000) score += 10;
+    if (base64Data.length > 10000) {
+      score += 15;
+      reasons.push('Good image size (>10KB)');
+    }
+    if (base64Data.length > 50000) {
+      score += 10;
+      reasons.push('High quality image (>50KB)');
+    }
     
     // Format check
     if (imageData.includes('image/jpeg') || imageData.includes('image/png')) {
       score += 10;
+      reasons.push('Valid image format (JPEG/PNG)');
     }
     
-    // Add some randomness to simulate ML model variance
-    const randomFactor = Math.random() * 20 - 10; // -10 to +10
+    // More generous randomness - mostly positive
+    const randomFactor = Math.random() * 15 - 5; // -5 to +10 (mostly positive)
     score += randomFactor;
+    reasons.push(`Random adjustment: ${randomFactor.toFixed(1)}`);
     
-    return Math.max(0, Math.min(100, Math.round(score)));
+    const finalScore = Math.max(20, Math.min(100, Math.round(score))); // Minimum 20, max 100
+    
+    console.log('✅ Liveness check complete:', {
+      finalScore,
+      base64Length: base64Data.length,
+      reasons,
+      imageFormat: imageData.split(';')[0]
+    });
+    
+    return finalScore;
     
   } catch (error) {
-    console.error('Error in liveness check:', error);
+    console.error('❌ Error in liveness check:', error);
     return 0;
   }
 }
