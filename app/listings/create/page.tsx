@@ -136,17 +136,33 @@ export default function CreateListing() {
     
     setUser(user)
     
+    // Debug: Check user profile verification status
+    const { data: userProfile } = await supabase
+      .from('user_profiles')
+      .select('identity_verified, verification_level, verified_at')
+      .eq('id', user.id)
+      .single()
+    
+    console.log('👤 User profile verification info:', userProfile)
+    
     // Check identity verification status
     await checkVerificationStatus(user.id)
   }
 
   const checkVerificationStatus = async (userId: string) => {
     try {
+      console.log('🔍 Checking verification status for user:', userId)
+      
       // Check both basic and enhanced verification status
       const [basicResponse, enhancedResponse] = await Promise.all([
         fetch(`/api/identity/free-verify?userId=${userId}`),
         fetch(`/api/identity/enhanced-verify?userId=${userId}`)
       ])
+      
+      console.log('📊 Response status:', {
+        basic: basicResponse.status,
+        enhanced: enhancedResponse.status
+      })
       
       let isVerified = false
       let verificationData = null
@@ -154,22 +170,37 @@ export default function CreateListing() {
       // Check enhanced verification first (higher priority)
       if (enhancedResponse.ok) {
         const enhancedData = await enhancedResponse.json()
+        console.log('🔒 Enhanced verification data:', enhancedData)
         if (enhancedData.verified) {
           isVerified = true
           verificationData = { ...enhancedData, method: 'enhanced' }
+          console.log('✅ User is ENHANCED verified!')
         }
+      } else {
+        console.log('❌ Enhanced verification response not OK:', enhancedResponse.status)
       }
       
       // If not enhanced verified, check basic verification
       if (!isVerified && basicResponse.ok) {
         const basicData = await basicResponse.json()
+        console.log('🆔 Basic verification data:', basicData)
         if (basicData.verified) {
           isVerified = true
           verificationData = { ...basicData, method: 'basic' }
+          console.log('✅ User is BASIC verified!')
         } else {
           verificationData = basicData
+          console.log('❌ User is NOT verified - basic data:', basicData)
         }
+      } else if (!isVerified) {
+        console.log('❌ Basic verification response not OK:', basicResponse.status)
       }
+      
+      console.log('🎯 Final verification result:', {
+        isVerified,
+        verificationData,
+        status: verificationData?.status
+      })
       
       setVerificationStatus(verificationData)
       setIsVerified(isVerified)
@@ -179,7 +210,7 @@ export default function CreateListing() {
         setShowVerification(false) // Don't auto-show, let them click
       }
     } catch (error) {
-      console.error('Error checking verification status:', error)
+      console.error('❌ Error checking verification status:', error)
       setIsVerified(false)
     }
   }
