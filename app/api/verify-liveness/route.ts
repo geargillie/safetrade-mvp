@@ -41,16 +41,26 @@ export async function POST(request: NextRequest) {
     const livenessScore = performSimpleLivenessCheck(imageData);
     const verified = livenessScore >= 80;
     
-    // Store verification result
+    // Store verification result using correct schema
     const verificationData = {
       user_id: userId,
-      verification_type: 'liveness',
-      image_data: imageData,
-      score: livenessScore,
-      verified: verified,
-      timestamp: timestamp,
+      onfido_applicant_id: `liveness_${userId}_${Date.now()}`, // Custom ID for liveness verification
       status: verified ? 'verified' : 'failed',
-      created_at: new Date().toISOString()
+      onfido_result: verified ? 'clear' : 'declined',
+      verification_data: {
+        method: 'liveness_verification',
+        score: livenessScore,
+        verified: verified,
+        image_data_provided: !!imageData,
+        timestamp: timestamp || new Date().toISOString(),
+        liveness_check: {
+          score: livenessScore,
+          threshold: 80,
+          passed: verified
+        }
+      },
+      created_at: new Date().toISOString(),
+      completed_at: new Date().toISOString()
     };
 
     const { data, error } = await supabase
@@ -109,12 +119,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get latest liveness verification for user
+    // Get latest liveness verification for user using correct schema
     const { data, error } = await supabase
       .from('identity_verifications')
       .select('*')
       .eq('user_id', userId)
-      .eq('verification_type', 'liveness')
+      .eq('verification_data->>method', 'liveness_verification')
       .order('created_at', { ascending: false })
       .limit(1)
       .single();
@@ -134,10 +144,21 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    const verificationData = data.verification_data as {
+      method?: string;
+      score?: number;
+      verified?: boolean;
+      liveness_check?: {
+        score: number;
+        threshold: number;
+        passed: boolean;
+      };
+    };
+    
     return NextResponse.json({
-      verified: data.verified,
+      verified: verificationData?.verified || data.status === 'verified',
       status: data.status,
-      score: data.score,
+      score: verificationData?.score,
       timestamp: data.created_at
     });
 
