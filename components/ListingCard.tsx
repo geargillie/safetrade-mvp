@@ -4,7 +4,6 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getLocationDisplay } from '@/lib/locationUtils';
 
 interface Listing {
   id: string;
@@ -46,126 +45,142 @@ export default function ListingCard({ listing }: ListingCardProps) {
   const sellerVerified = listing.user_profiles?.identity_verified || false;
 
   return (
-    <div className="card-minimal">
-      {/* Image */}
-      <div className="relative h-52 group" style={{background: 'linear-gradient(135deg, var(--neutral-100), var(--neutral-200))'}}>
-        {primaryImage ? (
-          <Image
-            src={primaryImage.image_url}
-            alt={listing.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-gray-400 text-6xl group-hover:scale-110 transition-transform duration-300">🏍️</span>
+    <Link href={`/listings/${listing.id}`} className="group block h-full">
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '1rem',
+        overflow: 'hidden',
+        border: '1px solid var(--neutral-200)',
+        transition: 'all 0.2s ease',
+        cursor: 'pointer',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
+        (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+        (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-200)';
+      }}>
+        {/* Image */}
+        <div className="relative" style={{
+          height: '200px',
+          backgroundColor: 'var(--neutral-50)',
+          overflow: 'hidden',
+          flexShrink: 0
+        }}>
+          {primaryImage ? (
+            <Image
+              src={primaryImage.image_url}
+              alt={listing.title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <span className="text-4xl" style={{color: 'var(--neutral-300)'}}>🏍️</span>
+            </div>
+          )}
+          
+          {/* Status Badges */}
+          <div className="absolute top-3 right-3 flex flex-col gap-2">
+            {listing.vin_verified && (
+              <div style={{
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.75rem',
+                fontWeight: '500',
+                color: 'white',
+                backgroundColor: 'var(--info)',
+                borderRadius: '0.25rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>
+                🔍 VIN Verified
+              </div>
+            )}
+            {sellerVerified && (
+              <div style={{
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.75rem',
+                fontWeight: '500',
+                color: 'white',
+                backgroundColor: 'var(--success)',
+                borderRadius: '0.25rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>
+                ✅ Verified Seller
+              </div>
+            )}
           </div>
-        )}
-        
-        {/* Overlay on hover */}
-        <div className="absolute inset-0 flex items-center justify-center transition-all duration-300" style={{backgroundColor: 'rgba(0, 0, 0, 0)', transition: 'background-color 0.3s'}}>
-          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{fontWeight: '500'}}>
-            View Details
-          </span>
         </div>
-        
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {listing.status === 'in_talks' && (
-            <div className="badge badge-warning" style={{color: 'white', backgroundColor: 'var(--warning)', boxShadow: 'var(--shadow-md)'}}>
-              💬 In Talks
-            </div>
-          )}
-          {listing.status === 'sold' && (
-            <div className="badge badge-error" style={{color: 'white', backgroundColor: 'var(--error)', boxShadow: 'var(--shadow-md)'}}>
-              🔴 Sold
-            </div>
-          )}
-          {/* Note: 'available' and 'active' statuses don't show badges as they're the default state */}
-          {listing.vin_verified && (
-            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
-              ✅ VIN Verified
-            </div>
-          )}
-          {listing.theft_record_checked && !listing.theft_record_found && (
-            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
-              🛡️ No Theft Record
-            </div>
-          )}
-          {listing.theft_record_found && (
-            <div className="badge badge-error" style={{color: 'white', backgroundColor: 'var(--error)', boxShadow: 'var(--shadow-md)'}}>
-              ⚠️ Theft Record Found
-            </div>
-          )}
-          {listing.total_loss_checked && !listing.total_loss_found && (
-            <div className="badge badge-success" style={{color: 'white', backgroundColor: 'var(--success)', boxShadow: 'var(--shadow-md)'}}>
-              🔍 Clean History
-            </div>
-          )}
-          {listing.total_loss_found && (
-            <div className="badge badge-warning" style={{color: 'white', backgroundColor: 'var(--warning)', boxShadow: 'var(--shadow-md)'}}>
-              📋 Total Loss Record
-            </div>
-          )}
-          {sellerVerified && (
-            <div className="badge badge-info" style={{color: 'white', backgroundColor: 'var(--info)', boxShadow: 'var(--shadow-md)'}}>
-              🛡️ Verified Seller
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* Content */}
-      <div style={{padding: '1.5rem'}}>
-        <div className="mb-3">
-          <h3 className="text-heading-md" style={{lineHeight: '1.3'}}>
-            <Link 
-              href={`/listings/${listing.id}`}
-              className="transition-colors" style={{color: 'var(--neutral-900)'}} 
-              onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--brand-primary)'}
-              onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--neutral-900)'}
-            >
-              {listing.title}
-            </Link>
+        {/* Content */}
+        <div style={{
+          padding: '1.25rem',
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+          minHeight: '160px'
+        }}>
+          {/* Title */}
+          <h3 style={{
+            fontSize: '1.125rem',
+            fontWeight: '600',
+            color: 'var(--neutral-900)',
+            margin: '0 0 0.75rem 0',
+            lineHeight: '1.4',
+            height: '2.8rem',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical'
+          }}>
+            {listing.title}
           </h3>
-        </div>
 
-        {/* Vehicle Details */}
-        <div className="mb-4" style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
-          <div className="flex items-center justify-between text-body-sm">
-            <span style={{color: 'var(--neutral-500)'}}>Year & Make</span>
-            <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{listing.year} {listing.make}</span>
-          </div>
-          {listing.mileage && (
-            <div className="flex items-center justify-between text-body-sm">
-              <span style={{color: 'var(--neutral-500)'}}>Mileage</span>
-              <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{listing.mileage.toLocaleString()} mi</span>
+          {/* Key Details */}
+          <div className="flex items-center justify-between mb-4">
+            <div style={{
+              fontSize: '0.875rem',
+              color: 'var(--neutral-600)'
+            }}>
+              {listing.year} • {listing.mileage?.toLocaleString()} mi
             </div>
-          )}
-          {listing.city && (
-            <div className="flex items-center justify-between text-body-sm">
-              <span style={{color: 'var(--neutral-500)'}}>Location</span>
-              <span style={{fontWeight: '500', color: 'var(--neutral-900)'}}>{getLocationDisplay(listing.city, listing.zip_code)}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Price */}
-        <div className="mb-4">
-          <div className="text-heading-lg" style={{color: 'var(--success)'}}>
-            ${listing.price?.toLocaleString()}
+            {listing.city && (
+              <div style={{
+                fontSize: '0.875rem',
+                color: 'var(--neutral-500)'
+              }}>
+                {listing.city}
+              </div>
+            )}
           </div>
-          <div className="text-body-sm" style={{color: 'var(--neutral-500)'}}>Asking price</div>
-        </div>
 
-        {/* Action Button */}
-        <Link
-          href={`/listings/${listing.id}`}
-          className="btn btn-primary w-full text-center block"
-        >
-          View Details & Contact
-        </Link>
+          {/* Price - Push to bottom */}
+          <div className="flex items-center justify-between mt-auto">
+            <div style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              color: 'var(--neutral-900)'
+            }}>
+              ${listing.price?.toLocaleString()}
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'var(--neutral-500)',
+              backgroundColor: 'var(--neutral-100)',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '0.25rem'
+            }}>
+              View Details →
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
-import PageHeader from '@/components/PageHeader';
-import FreeIdentityVerification from '@/components/FreeIdentityVerification';
+import LivenessVerification from '@/components/LivenessVerification';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -44,7 +43,7 @@ export default function ProfilePage() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      const response = await fetch(`/api/identity/free-verify?userId=${userId}`);
+      const response = await fetch(`/api/verify-liveness?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setVerificationStatus(data);
@@ -58,14 +57,14 @@ export default function ProfilePage() {
     }
   };
 
-  const handleVerificationComplete = (result: { verified?: boolean; status?: string }) => {
+  const handleVerificationComplete = (result: { verified: boolean; score: number; message: string }) => {
     console.log('Verification completed:', result);
     if (result.verified) {
       setIsVerified(true);
-      setVerificationStatus({ ...verificationStatus, verified: true, status: 'verified' });
+      setVerificationStatus({ verified: true, status: 'verified' });
       setShowVerification(false);
     } else {
-      setVerificationStatus(result);
+      setVerificationStatus({ verified: false, status: 'failed' });
     }
   };
 
@@ -73,118 +72,284 @@ export default function ProfilePage() {
     console.error('Identity verification error:', error);
   };
 
-  const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Profile' }
-  ];
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <Layout showNavigation={true}>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 mx-auto mb-4" style={{
+              borderWidth: '2px',
+              borderColor: 'var(--neutral-200)',
+              borderTopColor: 'var(--brand-primary)'
+            }}></div>
+            <p style={{fontSize: '0.875rem', color: 'var(--neutral-600)'}}>Loading your profile...</p>
+          </div>
         </div>
       </Layout>
     );
   }
 
   return (
-    <Layout maxWidth="2xl">
-      <PageHeader
-        title="Profile & Settings"
-        subtitle="Manage your account and verification status"
-        breadcrumbs={breadcrumbs}
-        icon="👤"
-      />
-
-      {/* User Info */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <p className="text-gray-900">
-              {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
-            </p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <p className="text-gray-900">{user?.email}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Verification Status */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Identity Verification</h3>
-          {isVerified && (
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-              ✅ Verified
-            </span>
-          )}
+    <Layout showNavigation={true}>
+      {/* Header Section */}
+      <div className="w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+        <div className="text-center mb-8">
+          <h1 style={{
+            fontSize: 'clamp(1.875rem, 3vw, 2.25rem)',
+            fontWeight: '700',
+            color: 'var(--neutral-900)',
+            margin: '0 0 0.75rem 0',
+            letterSpacing: '-0.02em'
+          }}>
+            Profile & Settings
+          </h1>
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--neutral-600)',
+            margin: '0',
+            maxWidth: '480px',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
+            Manage your account and verification status
+          </p>
         </div>
 
-        {isVerified ? (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center">
-              <span className="text-green-600 mr-2">✅</span>
-              <div>
-                <h4 className="font-medium text-green-800">Identity Verified</h4>
-                <p className="text-green-700 text-sm">
-                  Your identity has been successfully verified. You can create listings and trade securely.
-                </p>
-              </div>
+        {/* User Info */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '1rem',
+          border: '1px solid var(--neutral-200)',
+          padding: '2rem',
+          marginBottom: '1.5rem'
+        }}>
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            color: 'var(--neutral-900)',
+            margin: '0 0 1.5rem 0'
+          }}>Account Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: 'var(--neutral-600)',
+                marginBottom: '0.5rem'
+              }}>Name</label>
+              <p style={{
+                fontSize: '1rem',
+                color: 'var(--neutral-900)',
+                fontWeight: '500'
+              }}>
+                {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
+              </p>
+            </div>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: 'var(--neutral-600)',
+                marginBottom: '0.5rem'
+              }}>Email</label>
+              <p style={{
+                fontSize: '1rem',
+                color: 'var(--neutral-900)',
+                fontWeight: '500'
+              }}>{user?.email}</p>
             </div>
           </div>
-        ) : (
-          <div>
-            {verificationStatus?.status === 'pending_review' ? (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center">
-                  <span className="text-yellow-600 mr-2">⏳</span>
-                  <div>
-                    <h4 className="font-medium text-yellow-800">Verification Under Review</h4>
-                    <p className="text-yellow-700 text-sm">
-                      Your verification is being processed. This typically takes 2-5 minutes.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="text-blue-600 mr-2">🆔</span>
-                    <div>
-                      <h4 className="font-medium text-blue-800">Complete Identity Verification</h4>
-                      <p className="text-blue-700 text-sm">
-                        Verify your identity to create listings and build trust with buyers.
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowVerification(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-                  >
-                    Start Verification
-                  </button>
-                </div>
+        </div>
+
+        {/* Verification Status */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '1rem',
+          border: '1px solid var(--neutral-200)',
+          padding: '2rem'
+        }}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 style={{
+              fontSize: '1.25rem',
+              fontWeight: '600',
+              color: 'var(--neutral-900)',
+              margin: '0'
+            }}>Identity Verification</h3>
+            {isVerified && (
+              <div style={{
+                backgroundColor: 'var(--success-50)',
+                color: 'var(--success-800)',
+                padding: '0.375rem 0.75rem',
+                borderRadius: '1rem',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <span>✅</span>
+                Verified
               </div>
             )}
           </div>
-        )}
 
-        {/* Verification Modal */}
-        {showVerification && user && (
-          <div className="mt-6 border-t border-gray-200 pt-6">
-            <FreeIdentityVerification
-              userId={user.id}
-              onComplete={handleVerificationComplete}
-              onError={handleVerificationError}
-            />
-          </div>
-        )}
+          {isVerified ? (
+            <div style={{
+              backgroundColor: 'var(--success-50)',
+              border: '1px solid var(--success-200)',
+              borderRadius: '0.75rem',
+              padding: '1.5rem'
+            }}>
+              <div className="flex items-start gap-3">
+                <div style={{
+                  width: '2.5rem',
+                  height: '2.5rem',
+                  backgroundColor: 'var(--success)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span className="text-white text-lg">✓</span>
+                </div>
+                <div>
+                  <h4 style={{
+                    fontSize: '1.125rem',
+                    fontWeight: '600',
+                    color: 'var(--success-800)',
+                    margin: '0 0 0.5rem 0'
+                  }}>Identity Verified</h4>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--success-700)',
+                    margin: '0'
+                  }}>
+                    Your identity has been successfully verified. You can create listings and trade securely on SafeTrade.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {verificationStatus?.status === 'failed' ? (
+                <div style={{
+                  backgroundColor: 'var(--error-50)',
+                  border: '1px solid var(--error-200)',
+                  borderRadius: '0.75rem',
+                  padding: '1.5rem',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div className="flex items-start gap-3">
+                    <div style={{
+                      width: '2.5rem',
+                      height: '2.5rem',
+                      backgroundColor: 'var(--error-100)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <span style={{color: 'var(--error-600)', fontSize: '1.25rem'}}>⚠</span>
+                    </div>
+                    <div>
+                      <h4 style={{
+                        fontSize: '1.125rem',
+                        fontWeight: '600',
+                        color: 'var(--error-800)',
+                        margin: '0 0 0.5rem 0'
+                      }}>Verification Failed</h4>
+                      <p style={{
+                        fontSize: '0.875rem',
+                        color: 'var(--error-700)',
+                        margin: '0 0 1rem 0'
+                      }}>
+                        Your previous verification attempt was unsuccessful. Please try again with good lighting.
+                      </p>
+                      <button
+                        onClick={() => setShowVerification(true)}
+                        className="btn btn-primary"
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.875rem'
+                        }}
+                      >
+                        Retry Verification
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{
+                  backgroundColor: 'var(--brand-50)',
+                  border: '1px solid var(--brand-200)',
+                  borderRadius: '0.75rem',
+                  padding: '1.5rem',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div style={{
+                        width: '2.5rem',
+                        height: '2.5rem',
+                        backgroundColor: 'var(--brand-primary)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <span className="text-white text-lg">📷</span>
+                      </div>
+                      <div>
+                        <h4 style={{
+                          fontSize: '1.125rem',
+                          fontWeight: '600',
+                          color: 'var(--brand-800)',
+                          margin: '0 0 0.5rem 0'
+                        }}>Complete Liveness Verification</h4>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          color: 'var(--brand-700)',
+                          margin: '0'
+                        }}>
+                          Quick face verification to build trust with buyers and access all SafeTrade features.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowVerification(true)}
+                      className="btn btn-primary"
+                      style={{
+                        padding: '0.75rem 1.5rem',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        flexShrink: 0
+                      }}
+                    >
+                      Start Verification
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Verification Component */}
+          {showVerification && user && (
+            <div className="mt-6">
+              <LivenessVerification
+                userId={user.id}
+                onComplete={handleVerificationComplete}
+                onError={handleVerificationError}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </Layout>
   );

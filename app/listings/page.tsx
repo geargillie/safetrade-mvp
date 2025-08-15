@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
-import PageHeader from '@/components/PageHeader';
 import ListingCard from '@/components/ListingCard';
 
 export default function ListingsPage() {
@@ -164,56 +162,58 @@ export default function ListingsPage() {
     });
   };
 
-  const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Browse Motorcycles' }
-  ];
 
   return (
-    <Layout>
-      <PageHeader
-        title="Browse Motorcycles"
-        subtitle="Verified sellers • Real-time stolen vehicle checks • Secure transactions"
-        breadcrumbs={breadcrumbs}
-        icon="🏍️"
-        action={
-          user && (
-            <Link
-              href="/listings/create"
-              className="btn-primary"
-            >
-              <span>+</span>
-              <span>List Your Motorcycle</span>
-            </Link>
-          )
-        }
-      />
-
-      {/* Enhanced Filters Section */}
-      <div className="card mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-heading-md">Find Your Perfect Motorcycle</h2>
-          <div className="flex items-center gap-2">
-            <div className="badge badge-success">
-              <span className="status-dot status-available"></span>
-              Verified Sellers
-            </div>
-            <div className="badge badge-info">
-              <span className="status-dot" style={{backgroundColor: 'var(--info)'}}></span>
-              NICB Protected
-            </div>
-          </div>
+    <Layout showNavigation={true}>
+      {/* Minimalistic Header */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+        <div className="text-center mb-12">
+          <h1 style={{
+            fontSize: 'clamp(1.875rem, 3vw, 2.25rem)',
+            fontWeight: '700',
+            color: 'var(--neutral-900)',
+            margin: '0 0 0.75rem 0',
+            letterSpacing: '-0.02em'
+          }}>
+            Browse Motorcycles
+          </h1>
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--neutral-600)',
+            margin: '0',
+            maxWidth: '480px',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
+            Find your perfect ride from verified sellers
+          </p>
         </div>
 
-        {/* Search Bar - Full Width */}
-        <div className="mb-6">
-          <div className="relative">
+        {/* Simplified Search */}
+        <div className="mb-12">
+          <div className="relative max-w-2xl mx-auto">
             <input
               type="text"
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              placeholder="Search by title, make, model..."
-              className="input input-lg pl-12"
+              placeholder="Search motorcycles..."
+              style={{
+                width: '100%',
+                padding: '1rem 1rem 1rem 3rem',
+                fontSize: '1rem',
+                border: '1px solid var(--neutral-300)',
+                borderRadius: '0.75rem',
+                backgroundColor: 'white',
+                transition: 'all 0.2s ease'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
+                (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                (e.target as HTMLElement).style.boxShadow = 'none';
+              }}
             />
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--neutral-400)'}}>
@@ -223,184 +223,152 @@ export default function ListingsPage() {
           </div>
         </div>
 
-        {/* Filters Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          <div>
-            <label className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>Brand</label>
+        {/* Compact Filters */}
+        <div className="mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
             <select
               value={filters.make}
               onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-              className="input"
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                border: '1px solid var(--neutral-300)',
+                borderRadius: '2rem',
+                backgroundColor: 'white',
+                minWidth: '120px'
+              }}
             >
-                <option value="">All Brands</option>
-                <option value="Harley-Davidson">Harley-Davidson</option>
-                <option value="Honda">Honda</option>
-                <option value="Yamaha">Yamaha</option>
-                <option value="Suzuki">Suzuki</option>
-                <option value="Kawasaki">Kawasaki</option>
-                <option value="Ducati">Ducati</option>
-                <option value="BMW">BMW</option>
-                <option value="KTM">KTM</option>
-                <option value="Triumph">Triumph</option>
-                <option value="Indian">Indian</option>
-              </select>
-            </div>
+              <option value="">All Brands</option>
+              <option value="Harley-Davidson">Harley-Davidson</option>
+              <option value="Honda">Honda</option>
+              <option value="Yamaha">Yamaha</option>
+              <option value="Suzuki">Suzuki</option>
+              <option value="Kawasaki">Kawasaki</option>
+              <option value="Ducati">Ducati</option>
+              <option value="BMW">BMW</option>
+              <option value="KTM">KTM</option>
+            </select>
 
-          <div>
-            <label className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>Min Price</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{color: 'var(--neutral-500)'}}>$</span>
-              <input
-                type="number"
-                value={filters.priceMin}
-                onChange={(e) => setFilters({ ...filters, priceMin: e.target.value })}
-                placeholder="0"
-                className="input pl-8"
-              />
-            </div>
-          </div>
+            <input
+              type="number"
+              value={filters.priceMax}
+              onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
+              placeholder="Max Price"
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                border: '1px solid var(--neutral-300)',
+                borderRadius: '2rem',
+                backgroundColor: 'white',
+                width: '120px'
+              }}
+            />
 
-          <div>
-            <label className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>Max Price</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{color: 'var(--neutral-500)'}}>$</span>
-              <input
-                type="number"
-                value={filters.priceMax}
-                onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
-                placeholder="50,000"
-                className="input pl-8"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>Year</label>
             <input
               type="number"
               value={filters.year}
               onChange={(e) => setFilters({ ...filters, year: e.target.value })}
-              placeholder="e.g. 2020"
-              className="input"
+              placeholder="Year"
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '0.875rem',
+                border: '1px solid var(--neutral-300)',
+                borderRadius: '2rem',
+                backgroundColor: 'white',
+                width: '100px'
+              }}
             />
-          </div>
 
-          <div>
-            <label className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>Condition</label>
-            <select
-              value={filters.condition}
-              onChange={(e) => setFilters({ ...filters, condition: e.target.value })}
-              className="input"
-            >
-                <option value="">Any Condition</option>
-                <option value="New">New</option>
-                <option value="Like New">Like New</option>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-              </select>
-            </div>
-          </div>
-
-        {/* Results and Actions */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 pt-4" style={{borderTop: '1px solid var(--neutral-200)'}}>
-          <div className="flex items-center gap-4 mb-3 sm:mb-0">
-            <span className="text-body" style={{fontWeight: '500'}}>
-              {listings.length} {listings.length === 1 ? 'motorcycle' : 'motorcycles'} found
-            </span>
             {Object.values(filters).some(value => value !== '') && (
               <button
                 onClick={clearFilters}
-                className="text-body-sm hover:underline" style={{fontWeight: '500', color: 'var(--brand-primary)'}}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)',
+                  backgroundColor: 'var(--neutral-100)',
+                  border: '1px solid var(--neutral-300)',
+                  borderRadius: '2rem',
+                  cursor: 'pointer'
+                }}
               >
-                Clear all filters
+                Clear
               </button>
             )}
           </div>
           
-          <div className="flex items-center gap-4 text-body-sm" style={{color: 'var(--neutral-500)'}}>
-            <span className="flex items-center gap-1">
-              <span className="status-dot status-available"></span>
-              Real-time updates
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="status-dot" style={{backgroundColor: 'var(--info)'}}></span>
-              Secure platform
+          {/* Results Count */}
+          <div className="text-center">
+            <span style={{
+              fontSize: '0.875rem',
+              color: 'var(--neutral-600)'
+            }}>
+              {listings.length} motorcycles found
             </span>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Loading State */}
+      {/* Clean Loading State */}
       {loading && (
-        <div className="flex items-center justify-center py-16">
-          <div className="text-center">
-            <div className="relative mb-6">
-              <div className="animate-spin rounded-full h-16 w-16 mx-auto" style={{borderWidth: '4px', borderColor: 'rgba(0, 0, 0, 0.1)', borderTopColor: 'var(--brand-primary)'}}></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl">🏍️</span>
-              </div>
-            </div>
-            <h3 className="text-heading-md mb-2">Finding motorcycles...</h3>
-            <p className="text-body">Searching through verified listings</p>
-          </div>
+        <div className="text-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 mx-auto mb-4" style={{
+            borderWidth: '2px',
+            borderColor: 'var(--neutral-200)',
+            borderTopColor: 'var(--brand-primary)'
+          }}></div>
+          <p style={{fontSize: '0.875rem', color: 'var(--neutral-600)'}}>Loading motorcycles...</p>
         </div>
       )}
 
-      {/* Enhanced No Results State */}
+      {/* Clean No Results State */}
       {!loading && listings.length === 0 && (
-        <div className="text-center py-16">
-          <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6" style={{background: 'linear-gradient(135deg, var(--neutral-100), var(--neutral-200))'}}>
-            <span className="text-4xl">🔍</span>
+        <div className="text-center py-20">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{
+            backgroundColor: 'var(--neutral-100)'
+          }}>
+            <span className="text-2xl">🔍</span>
           </div>
-          <h3 className="text-heading-lg mb-3">No motorcycles found</h3>
-          <p className="text-body-lg mb-6 max-w-md mx-auto">
+          <h3 style={{
+            fontSize: '1.5rem',
+            fontWeight: '600',
+            color: 'var(--neutral-900)',
+            margin: '0 0 1rem 0'
+          }}>
+            No motorcycles found
+          </h3>
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--neutral-600)',
+            margin: '0 auto 2rem auto',
+            maxWidth: '400px'
+          }}>
             {Object.values(filters).some(value => value !== '') 
-              ? "Try adjusting your search criteria to see more results."
-              : "Be the first to list a motorcycle on SafeTrade!"
+              ? "Try adjusting your search criteria"
+              : "Be the first to list a motorcycle"
             }
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            {Object.values(filters).some(value => value !== '') && (
-              <button
-                onClick={clearFilters}
-                className="btn btn-primary"
-              >
-                View All Motorcycles
-              </button>
-            )}
-            {user && (
-              <Link
-                href="/listings/create"
-                className="btn btn-primary" style={{backgroundColor: 'var(--success)', borderColor: 'var(--success)'}}
-              >
-                List Your Motorcycle
-              </Link>
-            )}
-          </div>
+          {Object.values(filters).some(value => value !== '') && (
+            <button
+              onClick={clearFilters}
+              className="btn btn-primary"
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                borderRadius: '0.5rem'
+              }}
+            >
+              View All Motorcycles
+            </button>
+          )}
         </div>
       )}
 
-      {/* Listings Grid */}
+      {/* Clean Listings Grid */}
       {!loading && listings.length > 0 && (
-        <div className="space-y-6">
-          {/* Sort Options */}
-          <div className="flex items-center justify-between">
-            <h3 className="text-heading-md">Available Motorcycles</h3>
-            <div className="flex items-center gap-4">
-              <span className="text-body">Sort by:</span>
-              <select className="input text-body-sm" style={{padding: '0.5rem 1rem'}}>
-                <option>Newest First</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Year: Newest</option>
-                <option>Year: Oldest</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Minimalistic Grid */}
-          <div className="listings-grid">
+        <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 pb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {listings.map((listing) => (
               <ListingCard 
                 key={listing.id} 
@@ -408,67 +376,6 @@ export default function ListingsPage() {
                 showVerificationBadge={true}
               />
             ))}
-          </div>
-
-          {/* Load More Button (Future Enhancement) */}
-          {listings.length >= 12 && (
-            <div className="text-center pt-8">
-              <button className="btn btn-secondary btn-lg">
-                Load More Motorcycles
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Enhanced Call to Action */}
-      {!user && listings.length > 0 && (
-        <div className="section" style={{background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))', borderRadius: 'var(--radius-xl)', color: 'white', textAlign: 'center', position: 'relative', overflow: 'hidden'}}>
-          <div style={{position: 'absolute', inset: '0', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}></div>
-          <div style={{position: 'relative', zIndex: '10'}}>
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{backgroundColor: 'rgba(255, 255, 255, 0.2)'}}>
-              <span className="text-2xl">🚀</span>
-            </div>
-            <h3 className="text-heading-lg mb-4">Ready to sell your motorcycle?</h3>
-            <p className="text-body-lg mb-6 max-w-2xl mx-auto" style={{color: 'rgba(255, 255, 255, 0.9)'}}>
-              Join thousands of verified sellers on SafeTrade. Get real-time stolen vehicle protection, 
-              identity verification, and secure payment processing.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/auth/register"
-                className="btn btn-lg" style={{backgroundColor: 'white', color: 'var(--brand-primary)', borderColor: 'white'}}
-              >
-                Get Started - Free Verification
-              </Link>
-              <span className="text-body-sm" style={{color: 'rgba(255, 255, 255, 0.75)'}}>
-                ✓ Free to join ✓ Verified sellers only ✓ Secure platform
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Stats Section for Social Proof */}
-      {listings.length > 0 && (
-        <div className="section-sm" style={{backgroundColor: 'var(--neutral-50)', borderRadius: 'var(--radius-xl)'}}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-heading-lg mb-2" style={{color: 'var(--brand-primary)'}}>{listings.length}+</div>
-              <div className="text-body">Active Listings</div>
-            </div>
-            <div>
-              <div className="text-heading-lg mb-2" style={{color: 'var(--success)'}}>
-                100%
-              </div>
-              <div className="text-body">Verified Sellers</div>
-            </div>
-            <div>
-              <div className="text-heading-lg mb-2" style={{color: 'var(--info)'}}>
-                24/7
-              </div>
-              <div className="text-body">NICB Protection</div>
-            </div>
           </div>
         </div>
       )}

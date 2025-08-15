@@ -2,9 +2,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import MessageButton from '@/components/MessageButton'
+import Layout from '@/components/Layout'
 import Image from 'next/image'
 import Link from 'next/link'
 import { maskLocation, getMeetingLocationSuggestions } from '@/lib/locationUtils'
@@ -43,7 +44,6 @@ interface Listing {
 
 export default function ListingDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const [listing, setListing] = useState<Listing | null>(null)
   const [user, setUser] = useState<{ id: string } | null>(null)
   const [loading, setLoading] = useState(true)
@@ -182,171 +182,270 @@ export default function ListingDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading listing...</p>
+      <Layout showNavigation={true}>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 mx-auto mb-4" style={{
+              borderWidth: '2px',
+              borderColor: 'var(--neutral-200)',
+              borderTopColor: 'var(--brand-primary)'
+            }}></div>
+            <p style={{fontSize: '0.875rem', color: 'var(--neutral-600)'}}>Loading motorcycle...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     )
   }
 
   if (error || !listing) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.08 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
+      <Layout showNavigation={true}>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{
+              backgroundColor: 'var(--neutral-100)'
+            }}>
+              <span className="text-2xl">⚠️</span>
+            </div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              color: 'var(--neutral-900)',
+              margin: '0 0 1rem 0'
+            }}>
+              Motorcycle not found
+            </h3>
+            <p style={{
+              fontSize: '1rem',
+              color: 'var(--neutral-600)',
+              margin: '0 auto 2rem auto',
+              maxWidth: '400px'
+            }}>
+              {error || 'The motorcycle you are looking for does not exist.'}
+            </p>
+            <Link 
+              href="/listings"
+              className="btn btn-primary"
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                borderRadius: '0.5rem'
+              }}
+            >
+              ← Back to Browse
+            </Link>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Listing Not Found</h2>
-          <p className="text-gray-600 mb-4">{error || 'The listing you are looking for does not exist.'}</p>
-          <Link 
-            href="/listings"
-            className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Listings
-          </Link>
         </div>
-      </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back
-            </button>
-            <div className="text-sm text-gray-500">
-              <Link href="/" className="hover:text-gray-700">Home</Link>
-              <span className="mx-2">/</span>
-              <Link href="/listings" className="hover:text-gray-700">Listings</Link>
-              <span className="mx-2">/</span>
-              <span className="text-gray-900">{listing.year} {listing.make} {listing.model}</span>
-            </div>
-          </div>
+    <Layout showNavigation={true}>
+      {/* Breadcrumb Navigation */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-6">
+        <div className="flex items-center gap-2" style={{
+          fontSize: '0.875rem',
+          color: 'var(--neutral-500)'
+        }}>
+          <Link href="/" className="hover:text-gray-700">Home</Link>
+          <span>/</span>
+          <Link href="/listings" className="hover:text-gray-700">Browse</Link>
+          <span>/</span>
+          <span style={{color: 'var(--neutral-900)'}}>{listing.year} {listing.make} {listing.model}</span>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Title and Status Section */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {listing.year} {listing.make} {listing.model}
-              </h1>
-              <p className="text-xl text-gray-600">{listing.title}</p>
-            </div>
-            <div className="flex items-center space-x-4">
+      {/* Header Section */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+          <div className="flex-1">
+            <h1 style={{
+              fontSize: 'clamp(1.875rem, 3vw, 2.5rem)',
+              fontWeight: '700',
+              color: 'var(--neutral-900)',
+              margin: '0 0 0.5rem 0',
+              letterSpacing: '-0.02em'
+            }}>
+              {listing.year} {listing.make} {listing.model}
+            </h1>
+            <p style={{
+              fontSize: '1.125rem',
+              color: 'var(--neutral-600)',
+              margin: '0 0 1.5rem 0'
+            }}>
+              {listing.title}
+            </p>
+            
+            {/* Price and Status */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <div style={{
+                fontSize: '2rem',
+                fontWeight: '700',
+                color: 'var(--neutral-900)'
+              }}>
+                {formatPrice(listing.price)}
+              </div>
+              
               {/* Status Badge */}
-              <div className={`flex items-center px-4 py-2 rounded-full font-medium text-sm ${
-                getStatusDisplay(listing.status).color === 'green' ? 'bg-green-100 text-green-800' :
-                getStatusDisplay(listing.status).color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-red-100 text-red-800'
-              }`}>
-                <span className="mr-2">{getStatusDisplay(listing.status).icon}</span>
+              <div style={{
+                padding: '0.375rem 0.75rem',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: 'white',
+                backgroundColor: getStatusDisplay(listing.status).color === 'green' ? 'var(--success)' :
+                                getStatusDisplay(listing.status).color === 'yellow' ? 'var(--warning)' : 'var(--error)',
+                borderRadius: '0.375rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <span>{getStatusDisplay(listing.status).icon}</span>
                 {getStatusDisplay(listing.status).text}
               </div>
               
-              {/* Status Management for Seller */}
-              {user && user.id === listing.seller_id && (
-                <div className="relative status-selector-container">
-                  <button
-                    onClick={() => setShowStatusSelector(!showStatusSelector)}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center"
-                    disabled={isUpdatingStatus}
-                  >
-                    {isUpdatingStatus ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-600 border-t-transparent mr-2"></div>
-                    ) : (
-                      <span className="mr-2">⚙️</span>
-                    )}
-                    Change Status
-                  </button>
-                  
-                  {showStatusSelector && (
-                    <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[160px]">
-                      <div className="p-2">
-                        <button
-                          onClick={() => updateListingStatus('available')}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
-                          disabled={listing.status === 'available'}
-                        >
-                          <span className="mr-2">✅</span>
-                          Available
-                        </button>
-                        <button
-                          onClick={() => updateListingStatus('in_talks')}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
-                          disabled={listing.status === 'in_talks'}
-                        >
-                          <span className="mr-2">💬</span>
-                          In Talks
-                        </button>
-                        <button
-                          onClick={() => updateListingStatus('sold')}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
-                          disabled={listing.status === 'sold'}
-                        >
-                          <span className="mr-2">🔴</span>
-                          Sold
-                        </button>
-                      </div>
-                    </div>
-                  )}
+              {/* VIN Verification Badge */}
+              {listing.vin_verified && (
+                <div style={{
+                  padding: '0.375rem 0.75rem',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: 'white',
+                  backgroundColor: 'var(--info)',
+                  borderRadius: '0.375rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem'
+                }}>
+                  🔍 VIN Verified
                 </div>
               )}
             </div>
           </div>
+          
+          {/* Seller Quick Actions */}
+          {user && user.id === listing.seller_id && (
+            <div className="relative status-selector-container">
+              <button
+                onClick={() => setShowStatusSelector(!showStatusSelector)}
+                className="btn btn-secondary"
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.875rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+                disabled={isUpdatingStatus}
+              >
+                {isUpdatingStatus ? (
+                  <div className="animate-spin rounded-full h-4 w-4" style={{
+                    borderWidth: '2px',
+                    borderColor: 'var(--neutral-300)',
+                    borderTopColor: 'var(--brand-primary)'
+                  }}></div>
+                ) : (
+                  <span>⚙️</span>
+                )}
+                Manage Status
+              </button>
+              
+              {showStatusSelector && (
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg z-10 min-w-[160px]" style={{
+                  border: '1px solid var(--neutral-200)'
+                }}>
+                  <div className="p-2">
+                    <button
+                      onClick={() => updateListingStatus('available')}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      disabled={listing.status === 'available'}
+                      style={{color: 'var(--neutral-700)'}}
+                    >
+                      <span className="mr-2">✅</span>
+                      Available
+                    </button>
+                    <button
+                      onClick={() => updateListingStatus('in_talks')}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      disabled={listing.status === 'in_talks'}
+                      style={{color: 'var(--neutral-700)'}}
+                    >
+                      <span className="mr-2">💬</span>
+                      In Talks
+                    </button>
+                    <button
+                      onClick={() => updateListingStatus('sold')}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      disabled={listing.status === 'sold'}
+                      style={{color: 'var(--neutral-700)'}}
+                    >
+                      <span className="mr-2">🔴</span>
+                      Sold
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+      </div>
 
+      {/* Main Content Area */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              overflow: 'hidden',
+              border: '1px solid var(--neutral-200)'
+            }}>
               {listing.images && listing.images.length > 0 ? (
                 <>
                   {/* Main Image */}
-                  <div className="aspect-w-16 aspect-h-10 bg-gray-100">
+                  <div className="relative" style={{
+                    height: '400px',
+                    backgroundColor: 'var(--neutral-50)'
+                  }}>
                     <Image
                       src={listing.images[selectedImageIndex]?.image_url || '/placeholder.jpg'}
                       alt={listing.title}
-                      width={800}
-                      height={384}
-                      className="w-full h-96 object-cover"
+                      fill
+                      className="object-cover"
                       priority
                     />
                   </div>
                   
                   {/* Thumbnail Gallery */}
                   {listing.images.length > 1 && (
-                    <div className="p-4 bg-gray-50">
-                      <div className="flex space-x-2 overflow-x-auto">
+                    <div style={{
+                      padding: '1rem',
+                      backgroundColor: 'var(--neutral-50)'
+                    }}>
+                      <div className="flex gap-2 overflow-x-auto">
                         {listing.images.map((image, index) => (
                           <button
                             key={image.id}
                             onClick={() => setSelectedImageIndex(index)}
-                            className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                              selectedImageIndex === index 
-                                ? 'border-blue-600 ring-2 ring-blue-200' 
-                                : 'border-gray-200 hover:border-gray-300'
-                            }`}
+                            className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all"
+                            style={{
+                              border: selectedImageIndex === index 
+                                ? '2px solid var(--brand-primary)' 
+                                : '2px solid var(--neutral-200)'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (selectedImageIndex !== index) {
+                                (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (selectedImageIndex !== index) {
+                                (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-200)';
+                              }
+                            }}
                           >
                             <Image
                               src={image.image_url || '/placeholder.jpg'}
@@ -362,103 +461,177 @@ export default function ListingDetailPage() {
                   )}
                 </>
               ) : (
-                <div className="h-96 bg-gray-100 flex items-center justify-center">
+                <div className="flex items-center justify-center" style={{
+                  height: '400px',
+                  backgroundColor: 'var(--neutral-50)'
+                }}>
                   <div className="text-center">
-                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="text-gray-500">No images available</p>
+                    <span className="text-6xl mb-4 block">🏍️</span>
+                    <p style={{color: 'var(--neutral-500)'}}>No images available</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Vehicle Details */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Vehicle Details</h2>
-                <div className="flex items-center space-x-2">
-                  <span className="text-3xl font-black text-green-600">
-                    {formatPrice(listing.price)}
-                  </span>
-                  <div className="text-sm text-gray-500">Asking Price</div>
-                </div>
-              </div>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              border: '1px solid var(--neutral-200)',
+              padding: '2rem'
+            }}>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0'
+              }}>
+                Vehicle Details
+              </h2>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Make</span>
-                    <span className="text-gray-900 font-semibold">{listing.make}</span>
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Make</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>{listing.make}</span>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Model</span>
-                    <span className="text-gray-900 font-semibold">{listing.model}</span>
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Model</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>{listing.model}</span>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Year</span>
-                    <span className="text-gray-900 font-semibold">{listing.year}</span>
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Year</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>{listing.year}</span>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Condition</span>
-                    <span className="text-gray-900 font-semibold">{listing.condition}</span>
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Condition</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>{listing.condition}</span>
                   </div>
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Mileage</span>
-                    <span className="text-gray-900 font-semibold">
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Mileage</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>
                       {listing.mileage ? `${formatMileage(listing.mileage)} miles` : 'Not specified'}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">Location</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-gray-900 font-semibold">
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Location</span>
+                    <div className="flex items-center gap-3">
+                      <span style={{
+                        color: 'var(--neutral-900)',
+                        fontWeight: '600'
+                      }}>
                         {showExactLocation 
                           ? `${listing.city}, NJ ${listing.zip_code || ''}`.trim()
                           : maskLocation(listing.city, listing.zip_code).vicinity
                         }
                       </span>
                       {user && user.id !== listing.seller_id && (
-                        <div className="flex flex-col items-end space-y-1">
+                        <div className="flex flex-col items-end gap-1">
                           <button
                             onClick={() => setShowExactLocation(!showExactLocation)}
-                            className="text-blue-600 hover:text-blue-800 text-sm underline"
+                            style={{
+                              color: 'var(--brand-primary)',
+                              fontSize: '0.75rem',
+                              textDecoration: 'underline',
+                              padding: '0.25rem'
+                            }}
                           >
                             {showExactLocation ? 'Hide city' : 'Show city'}
                           </button>
-                          <div className="text-xs text-gray-500">
+                          <div style={{
+                            fontSize: '0.625rem',
+                            color: 'var(--neutral-500)'
+                          }}>
                             🛡️ Addresses protected
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600 font-medium">VIN Status</span>
-                    <div className="flex items-center">
+                  <div className="flex justify-between items-center py-3" style={{
+                    borderBottom: '1px solid var(--neutral-100)'
+                  }}>
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>VIN Status</span>
+                    <div className="flex items-center gap-2">
                       {listing.vin_verified ? (
                         <>
-                          <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-green-700 font-semibold">Verified</span>
+                          <span style={{color: 'var(--success)'}}>✅</span>
+                          <span style={{
+                            color: 'var(--success)',
+                            fontWeight: '600'
+                          }}>Verified</span>
                         </>
                       ) : (
                         <>
-                          <svg className="w-5 h-5 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-yellow-700 font-semibold">Pending</span>
+                          <span style={{color: 'var(--warning)'}}>⚠️</span>
+                          <span style={{
+                            color: 'var(--warning)',
+                            fontWeight: '600'
+                          }}>Pending</span>
                         </>
                       )}
                     </div>
                   </div>
                   <div className="flex justify-between items-center py-3">
-                    <span className="text-gray-600 font-medium">Listed</span>
-                    <span className="text-gray-900 font-semibold">
+                    <span style={{
+                      color: 'var(--neutral-600)',
+                      fontWeight: '500'
+                    }}>Listed</span>
+                    <span style={{
+                      color: 'var(--neutral-900)',
+                      fontWeight: '600'
+                    }}>
                       {new Date(listing.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -467,13 +640,27 @@ export default function ListingDetailPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <span className="mr-3">📝</span>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              border: '1px solid var(--neutral-200)',
+              padding: '2rem'
+            }}>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0'
+              }}>
                 Description
               </h2>
-              <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <div>
+                <p style={{
+                  color: 'var(--neutral-700)',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap',
+                  fontSize: '1rem'
+                }}>
                   {listing.description || 'No description provided.'}
                 </p>
               </div>
@@ -483,13 +670,37 @@ export default function ListingDetailPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sticky top-8">
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              border: '1px solid var(--neutral-200)',
+              padding: '1.5rem',
+              position: 'sticky',
+              top: '2rem'
+            }}>
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  backgroundColor: 'var(--brand-primary)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem auto'
+                }}>
                   <span className="text-white text-2xl">🏍️</span>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Ready to Purchase?</h3>
-                <p className="text-sm text-gray-600">
+                <h3 style={{
+                  fontSize: '1.125rem',
+                  fontWeight: '600',
+                  color: 'var(--neutral-900)',
+                  margin: '0 0 0.5rem 0'
+                }}>Ready to Purchase?</h3>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)'
+                }}>
                   Connect with the seller securely
                 </p>
               </div>
@@ -497,23 +708,60 @@ export default function ListingDetailPage() {
               {user ? (
                 user.id === listing.seller_id ? (
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 text-center">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-blue-600 text-xl">👤</span>
+                    <div style={{
+                      backgroundColor: 'var(--brand-50)',
+                      border: '1px solid var(--brand-200)',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{
+                        width: '3rem',
+                        height: '3rem',
+                        backgroundColor: 'var(--brand-100)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 0.75rem auto'
+                      }}>
+                        <span style={{color: 'var(--brand-primary)', fontSize: '1.25rem'}}>👤</span>
                       </div>
-                      <p className="text-blue-800 font-medium">This is your listing</p>
-                      <p className="text-blue-600 text-sm mt-1">Manage your motorcycle sale</p>
+                      <p style={{
+                        color: 'var(--brand-800)',
+                        fontWeight: '500',
+                        fontSize: '0.875rem'
+                      }}>This is your listing</p>
+                      <p style={{
+                        color: 'var(--brand-600)',
+                        fontSize: '0.75rem',
+                        margin: '0.25rem 0 0 0'
+                      }}>Manage your motorcycle sale</p>
                     </div>
                     <div className="grid grid-cols-1 gap-3">
                       <Link
                         href={`/listings/${listing.id}/edit`}
-                        className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all font-semibold text-center block shadow-lg"
+                        className="btn btn-secondary"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          fontWeight: '600',
+                          textAlign: 'center',
+                          display: 'block'
+                        }}
                       >
                         ✏️ Edit Listing
                       </Link>
                       <Link
                         href="/messages"
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-center block shadow-lg"
+                        className="btn btn-primary"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          fontWeight: '600',
+                          textAlign: 'center',
+                          display: 'block'
+                        }}
                       >
                         💬 View Messages
                       </Link>
@@ -521,16 +769,46 @@ export default function ListingDetailPage() {
                   </div>
                 ) : listing.status === 'sold' ? (
                   <div className="space-y-4">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                      <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-red-600 text-xl">🔴</span>
+                    <div style={{
+                      backgroundColor: 'var(--error-50)',
+                      border: '1px solid var(--error-200)',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{
+                        width: '3rem',
+                        height: '3rem',
+                        backgroundColor: 'var(--error-100)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 0.75rem auto'
+                      }}>
+                        <span style={{color: 'var(--error-600)', fontSize: '1.25rem'}}>🔴</span>
                       </div>
-                      <p className="text-red-800 font-medium">This motorcycle has been sold</p>
-                      <p className="text-red-600 text-sm mt-1">No longer available for purchase</p>
+                      <p style={{
+                        color: 'var(--error-800)',
+                        fontWeight: '500',
+                        fontSize: '0.875rem'
+                      }}>This motorcycle has been sold</p>
+                      <p style={{
+                        color: 'var(--error-600)',
+                        fontSize: '0.75rem',
+                        margin: '0.25rem 0 0 0'
+                      }}>No longer available for purchase</p>
                     </div>
                     <Link
                       href="/listings"
-                      className="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-semibold text-center block"
+                      className="btn btn-secondary"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 1rem',
+                        fontWeight: '600',
+                        textAlign: 'center',
+                        display: 'block'
+                      }}
                     >
                       🔍 Browse Other Motorcycles
                     </Link>
@@ -538,9 +816,23 @@ export default function ListingDetailPage() {
                 ) : (
                   <div className="space-y-4">
                     {listing.status === 'in_talks' && (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-                        <p className="text-yellow-800 text-sm font-medium">🗣️ Seller is in talks with buyers</p>
-                        <p className="text-yellow-600 text-xs mt-1">Still available - contact to show interest</p>
+                      <div style={{
+                        backgroundColor: 'var(--warning-50)',
+                        border: '1px solid var(--warning-200)',
+                        borderRadius: '0.75rem',
+                        padding: '0.75rem',
+                        textAlign: 'center'
+                      }}>
+                        <p style={{
+                          color: 'var(--warning-800)',
+                          fontSize: '0.875rem',
+                          fontWeight: '500'
+                        }}>🗣️ Seller is in talks with buyers</p>
+                        <p style={{
+                          color: 'var(--warning-600)',
+                          fontSize: '0.75rem',
+                          margin: '0.25rem 0 0 0'
+                        }}>Still available - contact to show interest</p>
                       </div>
                     )}
                     <MessageButton
@@ -557,17 +849,44 @@ export default function ListingDetailPage() {
               ) : (
                 <div className="space-y-4">
                   {listing.status === 'sold' ? (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                      <p className="text-red-800 font-medium">This motorcycle has been sold</p>
+                    <div style={{
+                      backgroundColor: 'var(--error-50)',
+                      border: '1px solid var(--error-200)',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      textAlign: 'center'
+                    }}>
+                      <p style={{
+                        color: 'var(--error-800)',
+                        fontWeight: '500',
+                        fontSize: '0.875rem'
+                      }}>This motorcycle has been sold</p>
                     </div>
                   ) : (
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 text-center mb-4">
-                      <p className="text-blue-800 text-sm">Sign in to contact the seller securely</p>
+                    <div style={{
+                      backgroundColor: 'var(--brand-50)',
+                      border: '1px solid var(--brand-200)',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      textAlign: 'center',
+                      marginBottom: '1rem'
+                    }}>
+                      <p style={{
+                        color: 'var(--brand-800)',
+                        fontSize: '0.875rem'
+                      }}>Sign in to contact the seller securely</p>
                     </div>
                   )}
                   <Link
                     href="/auth/login"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold text-center block shadow-lg"
+                    className="btn btn-primary"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      fontWeight: '600',
+                      textAlign: 'center',
+                      display: 'block'
+                    }}
                   >
                     🔐 Sign In to Message Seller
                   </Link>
@@ -576,91 +895,130 @@ export default function ListingDetailPage() {
             </div>
 
             {/* Seller Info */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <span className="mr-3">👤</span>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              border: '1px solid var(--neutral-200)',
+              padding: '1.5rem'
+            }}>
+              <h3 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: 'var(--neutral-900)',
+                margin: '0 0 1.5rem 0'
+              }}>
                 Seller Information
               </h3>
               
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+              <div className="flex items-center gap-4 mb-6">
+                <div style={{
+                  width: '3rem',
+                  height: '3rem',
+                  backgroundColor: 'var(--brand-primary)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
                   <span className="text-white font-bold text-lg">
                     {listing.seller?.first_name?.[0] || 'S'}
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 style={{
+                    fontWeight: '600',
+                    color: 'var(--neutral-900)',
+                    fontSize: '1rem'
+                  }}>
                     {listing.seller?.first_name} {listing.seller?.last_name}
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--neutral-600)'
+                  }}>
                     Member since {listing.seller?.created_at ? getSellerJoinDate(listing.seller.created_at) : 'Unknown'}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center" style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)'
+                }}>
+                  <span style={{color: 'var(--success)', marginRight: '0.5rem'}}>✅</span>
                   Identity verified
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center" style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)'
+                }}>
+                  <span style={{color: 'var(--success)', marginRight: '0.5rem'}}>🛡️</span>
                   SafeTrade protected
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center" style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--neutral-600)'
+                }}>
+                  <span style={{color: 'var(--success)', marginRight: '0.5rem'}}>📍</span>
                   Located in {maskLocation(listing.city, listing.zip_code).vicinity}
                 </div>
               </div>
             </div>
 
             {/* Safety Tips */}
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-yellow-800 mb-4 flex items-center">
-                <span className="mr-2">🛡️</span>
+            <div style={{
+              backgroundColor: 'var(--warning-50)',
+              border: '1px solid var(--warning-200)',
+              borderRadius: '1rem',
+              padding: '1.5rem'
+            }}>
+              <h3 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: 'var(--warning-800)',
+                margin: '0 0 1rem 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span>🛡️</span>
                 Safety Tips
               </h3>
-              <ul className="space-y-2 text-sm text-yellow-700">
-                <li className="flex items-start">
-                  <svg className="w-4 h-4 mr-2 mt-0.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+              <ul className="space-y-3" style={{
+                fontSize: '0.875rem',
+                color: 'var(--warning-700)'
+              }}>
+                <li className="flex items-start gap-2">
+                  <span style={{color: 'var(--warning-600)'}}>✓</span>
                   <div>
-                    <div className="font-medium">Meet in a safe, public location</div>
-                    <div className="text-xs mt-1 text-yellow-600">
+                    <div style={{fontWeight: '500'}}>Meet in a safe, public location</div>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--warning-600)',
+                      marginTop: '0.25rem'
+                    }}>
                       Suggested: {getMeetingLocationSuggestions(listing.city, listing.zip_code)[0]}
                     </div>
                   </div>
                 </li>
-                <li className="flex items-start">
-                  <svg className="w-4 h-4 mr-2 mt-0.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  Inspect the vehicle thoroughly
+                <li className="flex items-start gap-2">
+                  <span style={{color: 'var(--warning-600)'}}>✓</span>
+                  <span>Inspect the vehicle thoroughly</span>
                 </li>
-                <li className="flex items-start">
-                  <svg className="w-4 h-4 mr-2 mt-0.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  Verify VIN matches documentation
+                <li className="flex items-start gap-2">
+                  <span style={{color: 'var(--warning-600)'}}>✓</span>
+                  <span>Verify VIN matches documentation</span>
                 </li>
-                <li className="flex items-start">
-                  <svg className="w-4 h-4 mr-2 mt-0.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  Use secure payment methods
+                <li className="flex items-start gap-2">
+                  <span style={{color: 'var(--warning-600)'}}>✓</span>
+                  <span>Use secure payment methods</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
