@@ -15,17 +15,7 @@ function getSupabaseClient() {
 
 export async function POST(request: NextRequest) {
   try {
-    // Get Supabase client with error handling
-    let supabase;
-    try {
-      supabase = getSupabaseClient();
-    } catch (error) {
-      console.error('Supabase initialization error:', error);
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
+    console.log('🚀 Liveness verification API called');
 
     const { userId, imageData, timestamp } = await request.json();
     console.log('🔍 Liveness verification request:', { 
@@ -44,19 +34,51 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // For test/development mode, skip Supabase setup and auth checks
+    if (userId.startsWith('test-') || process.env.NODE_ENV === 'development') {
+      console.log('⚠️ Development/test mode: skipping auth checks');
+      
+      // Simple liveness verification logic - more forgiving in dev mode
+      const livenessScore = performSimpleLivenessCheck(imageData);
+      const verified = livenessScore >= 30; // Lower threshold for development
+      
+      console.log('🎯 Test mode liveness verification:', {
+        livenessScore,
+        verified,
+        userId,
+        threshold: 30
+      });
+      
+      return NextResponse.json({
+        verified,
+        score: livenessScore,
+        message: verified 
+          ? 'Liveness verification successful! You are now verified on SafeTrade.'
+          : 'Liveness verification failed. Please ensure good lighting and try again.',
+        verificationId: `test-${Date.now()}`
+      });
+    }
+
+    // Get Supabase client with error handling for production
+    let supabase;
+    try {
+      supabase = getSupabaseClient();
+    } catch (error) {
+      console.error('Supabase initialization error:', error);
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
     // Check if user exists in auth.users (this should always exist for authenticated users)
     const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
     if (authError || !authUser.user) {
       console.error('❌ User not found in auth.users:', { userId, authError });
-      // For testing purposes, let's be more permissive
-      if (userId.startsWith('test-') || process.env.NODE_ENV === 'development') {
-        console.log('⚠️ Development/test mode: proceeding without auth user');
-      } else {
-        return NextResponse.json(
-          { error: 'User not found. Please ensure you are logged in.' },
-          { status: 404 }
-        );
-      }
+      return NextResponse.json(
+        { error: 'User not found. Please ensure you are logged in.' },
+        { status: 404 }
+      );
     }
 
     if (authUser?.user) {

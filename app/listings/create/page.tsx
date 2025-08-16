@@ -93,7 +93,7 @@ export default function CreateListing() {
 
   useEffect(() => {
     getUser()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -247,7 +247,7 @@ export default function CreateListing() {
       } else {
         setVinVerification({ loading: false, result: null, error: result.message || 'VIN verification failed' })
       }
-    } catch (error) {
+    } catch {
       setVinVerification({ loading: false, result: null, error: 'Network error during VIN verification' })
     }
   }
@@ -502,6 +502,79 @@ export default function CreateListing() {
             <div className="space-y-6">
               <h3 className="text-heading-md border-b border-neutral-200 pb-3">Vehicle Details</h3>
               
+              {/* VIN Section - Enhanced but not overwhelming */}
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <label className="form-label">
+                  VIN (17 characters)
+                  <span className="text-body-sm ml-1" style={{color: 'var(--neutral-500)'}}>
+                    - Used for theft verification and auto-fill
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="vin"
+                  value={formData.vin}
+                  onChange={(e) => {
+                    handleInputChange(e)
+                    if (e.target.value.length === 17) {
+                      verifyVIN(e.target.value)
+                    }
+                  }}
+                  className="form-input"
+                  maxLength={17}
+                  placeholder="1HGBH41JXMN109186"
+                  style={{
+                    borderColor: formData.vin.length === 17 
+                      ? vinVerification.result?.success && vinVerification.result.data?.isValid 
+                        ? 'var(--success)' 
+                        : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
+                        ? 'var(--error)' 
+                        : 'var(--neutral-200)'
+                      : 'var(--neutral-200)'
+                  }}
+                />
+                
+                {vinVerification.loading && (
+                  <div className="mt-2 text-body-sm" style={{color: 'var(--info)'}}>
+                    Verifying VIN...
+                  </div>
+                )}
+                
+                {vinVerification.result && (
+                  <div className="mt-2">
+                    {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
+                      <div className="bg-success-50 border border-success-200 text-success-700 px-3 py-2 rounded-md text-sm">
+                        <div className="flex items-center">
+                          <span className="mr-2">✅</span>
+                          <strong>VIN Verified</strong>
+                        </div>
+                        <div className="text-sm mt-1">
+                          Valid VIN • Theft Check: {vinVerification.result.data?.isStolen ? 'STOLEN' : 'CLEAN'}
+                          {vinVerification.result.data?.vehicleInfo && (
+                            <div className="mt-1">
+                              Auto-filled: {vinVerification.result.data.vehicleInfo.year} {vinVerification.result.data.vehicleInfo.make} {vinVerification.result.data.vehicleInfo.model}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-warning-50 border border-warning-200 text-warning-700 px-3 py-2 rounded-md text-sm">
+                        <div className="flex items-center">
+                          <span className="mr-2">⚠️</span>
+                          <strong>VIN Warning</strong>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {vinVerification.error && (
+                  <div className="mt-2 bg-error-50 border border-error-200 text-error-700 px-3 py-2 rounded-md text-sm">
+                    Error: {vinVerification.error}
+                  </div>
+                )}
+              </div>
+              
               <div className="grid grid-cols-1 md-grid-cols-3 gap-6">
                 <div>
                   <label className="form-label">Make</label>
@@ -556,77 +629,6 @@ export default function CreateListing() {
                     min="0"
                     placeholder="12000"
                   />
-                </div>
-                <div>
-                  <label className="form-label">
-                    VIN (17 characters)
-                    <span className="text-body-sm ml-1" style={{color: 'var(--neutral-500)'}}>
-                      - Used for theft verification
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    name="vin"
-                    value={formData.vin}
-                    onChange={(e) => {
-                      handleInputChange(e)
-                      if (e.target.value.length === 17) {
-                        verifyVIN(e.target.value)
-                      }
-                    }}
-                    className="form-input"
-                    maxLength={17}
-                    placeholder="1HGBH41JXMN109186"
-                    style={{
-                      borderColor: formData.vin.length === 17 
-                        ? vinVerification.result?.success && vinVerification.result.data?.isValid 
-                          ? 'var(--success)' 
-                          : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
-                          ? 'var(--error)' 
-                          : 'var(--neutral-200)'
-                        : 'var(--neutral-200)'
-                    }}
-                  />
-                  
-                  {vinVerification.loading && (
-                    <div className="mt-2 text-body-sm" style={{color: 'var(--info)'}}>
-                      Verifying VIN...
-                    </div>
-                  )}
-                  
-                  {vinVerification.result && (
-                    <div className="mt-2">
-                      {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
-                        <div className="bg-success-50 border border-success-200 text-success-700 px-3 py-2 rounded-md text-sm">
-                          <div className="flex items-center">
-                            <span className="mr-2">✅</span>
-                            <strong>VIN Verified</strong>
-                          </div>
-                          <div className="text-sm mt-1">
-                            Valid VIN • Theft Check: {vinVerification.result.data?.isStolen ? 'STOLEN' : 'CLEAN'}
-                            {vinVerification.result.data?.vehicleInfo && (
-                              <div className="mt-1">
-                                Vehicle: {vinVerification.result.data.vehicleInfo.year} {vinVerification.result.data.vehicleInfo.make} {vinVerification.result.data.vehicleInfo.model}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="bg-warning-50 border border-warning-200 text-warning-700 px-3 py-2 rounded-md text-sm">
-                          <div className="flex items-center">
-                            <span className="mr-2">⚠️</span>
-                            <strong>VIN Warning</strong>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  {vinVerification.error && (
-                    <div className="mt-2 bg-error-50 border border-error-200 text-error-700 px-3 py-2 rounded-md text-sm">
-                      Error: {vinVerification.error}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

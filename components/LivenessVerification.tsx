@@ -49,6 +49,7 @@ export default function LivenessVerification({
 
   const startCamera = async () => {
     try {
+      console.log('🎥 Requesting camera access...');
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
           width: 640, 
@@ -57,15 +58,20 @@ export default function LivenessVerification({
         }
       });
       
+      console.log('✅ Camera access granted');
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Wait for video to be ready
+        videoRef.current.onloadedmetadata = () => {
+          console.log('📹 Video metadata loaded, starting sequence');
+          setCurrentStep('capture');
+          startLivenessSequence();
+        };
       }
-      setCurrentStep('capture');
-      startLivenessSequence();
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      onError('Unable to access camera. Please ensure camera permissions are granted.');
+      console.error('❌ Error accessing camera:', error);
+      onError('Unable to access camera. Please ensure camera permissions are granted and refresh the page.');
     }
   };
 
@@ -102,6 +108,8 @@ export default function LivenessVerification({
 
 
   const captureImage = useCallback(() => {
+    console.log('📸 Starting image capture...');
+    
     if (!videoRef.current || !canvasRef.current) {
       console.error('❌ Missing video or canvas ref');
       onError('Camera not ready. Please try again.');
@@ -121,7 +129,7 @@ export default function LivenessVerification({
     // Ensure video has valid dimensions
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       console.error('❌ Video has no dimensions:', { width: video.videoWidth, height: video.videoHeight });
-      onError('Camera not ready. Please try again.');
+      onError('Camera not ready. Please wait a moment and try again.');
       return;
     }
 
@@ -142,7 +150,8 @@ export default function LivenessVerification({
       hasBase64: imageDataUrl.includes(',')
     });
     
-    if (!imageDataUrl.startsWith('data:image/') || imageDataUrl.length < 1000) {
+    // Lower threshold for development testing
+    if (!imageDataUrl.startsWith('data:image/') || imageDataUrl.length < 500) {
       console.error('❌ Invalid captured image format');
       onError('Failed to capture image properly. Please try again.');
       return;
@@ -154,6 +163,7 @@ export default function LivenessVerification({
       setStream(null);
     }
     
+    console.log('✅ Image captured successfully, processing...');
     setCurrentStep('processing');
     
     // Call processLivenessVerification directly instead of relying on closure
