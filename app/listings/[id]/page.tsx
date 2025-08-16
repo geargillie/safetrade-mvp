@@ -250,17 +250,28 @@ export default function ListingDetailPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Breadcrumb Navigation */}
-      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-3">
-        <div className="flex items-center gap-2" style={{
-          fontSize: '0.75rem',
-          color: 'var(--neutral-500)'
-        }}>
-          <Link href="/" className="hover:text-gray-700">Home</Link>
-          <span>/</span>
-          <Link href="/listings" className="hover:text-gray-700">Browse</Link>
-          <span>/</span>
-          <span style={{color: 'var(--neutral-900)'}}>{listing.year} {listing.make} {listing.model}</span>
+      {/* Enhanced Breadcrumb Navigation - Vercel style */}
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Link href="/" className="hover:text-black transition-colors flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Home
+          </Link>
+          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <Link href="/listings" className="hover:text-black transition-colors flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-4H5m14 8H5" />
+            </svg>
+            Browse
+          </Link>
+          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span className="text-black font-medium">{listing.year} {listing.make} {listing.model}</span>
         </div>
       </div>
 
@@ -285,112 +296,109 @@ export default function ListingDetailPage() {
               {listing.title}
             </p>
             
-            {/* Price and Key Info */}
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4 flex-wrap">
-                <div style={{
-                  fontSize: '1.75rem',
-                  fontWeight: '700',
-                  color: 'var(--neutral-900)'
-                }}>
-                  {formatPrice(listing.price)}
+            {/* Enhanced Price and Key Info - Vercel style */}
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    <span className="text-2xl font-bold text-black">
+                      {formatPrice(listing.price)}
+                    </span>
+                  </div>
                 </div>
                 
-                {/* Verification Badge - Simplified */}
-                {listing.vin_verified && (
-                  <div style={{
-                    padding: '0.375rem 0.75rem',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: 'white',
-                    backgroundColor: 'var(--success)',
-                    borderRadius: '0.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.25rem'
-                  }}>
-                    ✅ Verified
+                {/* Enhanced Badges */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Verification Badge */}
+                  {listing.vin_verified && (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-md text-sm font-medium text-green-700">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      VIN Verified
+                    </div>
+                  )}
+                  
+                  {/* Vehicle Type Badge */}
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-50 border border-blue-200 rounded-md text-sm font-medium text-blue-700">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                    Motorcycle
                   </div>
-                )}
+                  
+                  {/* Mileage Badge */}
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm font-medium text-gray-700">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    {listing.mileage ? `${formatMileage(listing.mileage)}mi` : 'N/A'}
+                  </div>
+                </div>
               </div>
               
-              {/* Status Badge - Moved to Right */}
-              <div style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                color: 'white',
-                backgroundColor: getStatusDisplay(listing.status).color === 'green' ? 'var(--success)' :
-                                getStatusDisplay(listing.status).color === 'yellow' ? 'var(--warning)' : 'var(--error)',
-                borderRadius: '1rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.375rem',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}>
-                <span>{getStatusDisplay(listing.status).icon}</span>
+              {/* Enhanced Status Badge */}
+              <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium ${
+                getStatusDisplay(listing.status).color === 'green' ? 'bg-green-50 border-green-200 text-green-700' :
+                getStatusDisplay(listing.status).color === 'yellow' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 
+                'bg-red-50 border-red-200 text-red-700'
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  getStatusDisplay(listing.status).color === 'green' ? 'bg-green-500' :
+                  getStatusDisplay(listing.status).color === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'
+                }`}></div>
                 {getStatusDisplay(listing.status).text}
               </div>
             </div>
           </div>
           
-          {/* Seller Quick Actions */}
+          {/* Enhanced Seller Quick Actions - Vercel style */}
           {user && user.id === listing.seller_id && (
             <div className="relative status-selector-container">
               <button
                 onClick={() => setShowStatusSelector(!showStatusSelector)}
-                className="btn btn-secondary"
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '0.875rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
+                className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                 disabled={isUpdatingStatus}
               >
                 {isUpdatingStatus ? (
-                  <div className="animate-spin rounded-full h-4 w-4" style={{
-                    borderWidth: '2px',
-                    borderColor: 'var(--neutral-300)',
-                    borderTopColor: 'var(--brand-primary)'
-                  }}></div>
+                  <div className="w-3 h-3 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
                 ) : (
-                  <span>⚙️</span>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                 )}
-                Manage Status
+                Manage Listing
               </button>
               
               {showStatusSelector && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg z-10 min-w-[160px]" style={{
-                  border: '1px solid var(--neutral-200)'
-                }}>
-                  <div className="p-2">
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-md shadow-lg border border-gray-200 z-10 min-w-[180px]">
+                  <div className="p-1">
                     <button
                       onClick={() => updateListingStatus('available')}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center gap-2 text-sm transition-colors"
                       disabled={listing.status === 'available'}
-                      style={{color: 'var(--neutral-700)'}}
                     >
-                      <span className="mr-2">✅</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       Available
                     </button>
                     <button
                       onClick={() => updateListingStatus('in_talks')}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center gap-2 text-sm transition-colors"
                       disabled={listing.status === 'in_talks'}
-                      style={{color: 'var(--neutral-700)'}}
                     >
-                      <span className="mr-2">💬</span>
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       In Talks
                     </button>
                     <button
                       onClick={() => updateListingStatus('sold')}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center text-sm"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded flex items-center gap-2 text-sm transition-colors"
                       disabled={listing.status === 'sold'}
-                      style={{color: 'var(--neutral-700)'}}
                     >
-                      <span className="mr-2">🔴</span>
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                       Sold
                     </button>
                   </div>
@@ -484,316 +492,208 @@ export default function ListingDetailPage() {
               )}
             </div>
 
-            {/* Vehicle Details */}
-            <div style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-              borderRadius: '1rem',
-              border: '1px solid var(--neutral-200)',
-              padding: '2rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-            }}>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: '600',
-                color: 'var(--neutral-900)',
-                margin: '0 0 1.5rem 0'
-              }}>
-                Vehicle Details
-              </h2>
+            {/* Professional Vehicle Specifications - Vercel style */}
+            <div className="bg-white border border-gray-200 rounded-md p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-blue-50 border border-blue-200 rounded-md flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-black">Vehicle Specifications</h2>
+                  <p className="text-sm text-gray-600">Key details about this motorcycle</p>
+                </div>
+              </div>
               
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Make</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>{listing.make}</span>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Make */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Make</span>
                   </div>
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Model</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>{listing.model}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Year</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>{listing.year}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Condition</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>{listing.condition}</span>
-                  </div>
+                  <span className="text-sm font-semibold text-black">{listing.make}</span>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Mileage</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>
-                      {listing.mileage ? `${formatMileage(listing.mileage)} miles` : 'Not specified'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Location</span>
-                    <div className="flex items-center gap-3">
-                      <span style={{
-                        color: 'var(--neutral-900)',
-                        fontWeight: '600'
-                      }}>
-                        {showExactLocation 
-                          ? `${listing.city}, NJ ${listing.zip_code || ''}`.trim()
-                          : maskLocation(listing.city, listing.zip_code).vicinity
-                        }
-                      </span>
-                      {user && user.id !== listing.seller_id && (
-                        <div className="flex flex-col items-end gap-1">
-                          <button
-                            onClick={() => setShowExactLocation(!showExactLocation)}
-                            style={{
-                              color: 'var(--brand-primary)',
-                              fontSize: '0.75rem',
-                              textDecoration: 'underline',
-                              padding: '0.25rem'
-                            }}
-                          >
-                            {showExactLocation ? 'Hide city' : 'Show city'}
-                          </button>
-                          <div style={{
-                            fontSize: '0.625rem',
-                            color: 'var(--neutral-500)'
-                          }}>
-                            🛡️ Addresses protected
-                          </div>
-                        </div>
-                      )}
+                {/* Model */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
                     </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Model</span>
                   </div>
-                  <div className="flex justify-between items-center py-3">
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>Listed</span>
-                    <span style={{
-                      color: 'var(--neutral-900)',
-                      fontWeight: '600'
-                    }}>
-                      {new Date(listing.created_at).toLocaleDateString()}
+                  <span className="text-sm font-semibold text-black">{listing.model}</span>
+                </div>
+                
+                {/* Year */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Year</span>
+                  </div>
+                  <span className="text-sm font-semibold text-black">{listing.year}</span>
+                </div>
+                
+                {/* Condition */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Condition</span>
+                  </div>
+                  <span className="text-sm font-semibold text-black capitalize">{listing.condition}</span>
+                </div>
+                
+                {/* Mileage */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Mileage</span>
+                  </div>
+                  <span className="text-sm font-semibold text-black">
+                    {listing.mileage ? `${formatMileage(listing.mileage)} mi` : 'Not specified'}
+                  </span>
+                </div>
+                
+                {/* Location */}
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-4 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Location</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm font-semibold text-black">
+                      {showExactLocation 
+                        ? `${listing.city}, NJ ${listing.zip_code || ''}`.trim()
+                        : maskLocation(listing.city, listing.zip_code).vicinity
+                      }
                     </span>
+                    {user && user.id !== listing.seller_id && (
+                      <div className="flex flex-col gap-1">
+                        <button
+                          onClick={() => setShowExactLocation(!showExactLocation)}
+                          className="text-xs text-blue-600 hover:text-blue-700 transition-colors text-left"
+                        >
+                          {showExactLocation ? 'Hide exact city' : 'Show exact city'}
+                        </button>
+                        <div className="inline-flex items-center gap-1 text-xs text-gray-500">
+                          <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                          Privacy protected
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Security Report - Simplified */}
-            {(listing.vin_verified || listing.theft_record_checked || listing.total_loss_checked) && (
-              <div style={{
-                background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
-                borderRadius: '1rem',
-                border: '1px solid var(--neutral-200)',
-                padding: '1.5rem'
-              }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    borderRadius: '0.75rem',
-                    backgroundColor: 'var(--success)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <span className="text-white text-lg">🛡️</span>
-                  </div>
-                  <div>
-                    <h2 style={{
-                      fontSize: '1.25rem',
-                      fontWeight: '600',
-                      color: 'var(--neutral-900)',
-                      margin: '0'
-                    }}>
-                      Security Verification
-                    </h2>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      color: 'var(--neutral-600)',
-                      margin: '0'
-                    }}>
-                      Vehicle history and safety checks
-                    </p>
+
+            {/* Professional Description Section - Vercel style */}
+            <div className="bg-white border border-gray-200 rounded-md">
+              <div className="flex items-center gap-3 p-6 border-b border-gray-200">
+                <div className="w-8 h-8 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-center">
+                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-black">Description</h2>
+                  <p className="text-sm text-gray-600">Detailed information from the seller</p>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-6">
+                  <div className="max-h-80 overflow-y-auto">
+                    <div className="prose prose-sm max-w-none">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base m-0">
+                        {listing.description || 'No description provided by the seller.'}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {listing.vin_verified && (
-                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                      <span className="text-green-600 text-lg">✅</span>
-                      <div>
-                        <p className="text-sm font-medium text-green-800">VIN Verified</p>
-                        <p className="text-xs text-green-600">Official database check</p>
+                {/* Listing Metadata */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Date Listed</span>
                       </div>
-                    </div>
-                  )}
-                  
-                  {listing.theft_record_checked && (
-                    <div className={`flex items-center gap-3 p-3 rounded-lg border ${
-                      listing.theft_record_found 
-                        ? 'bg-red-50 border-red-200' 
-                        : 'bg-green-50 border-green-200'
-                    }`}>
-                      <span className={`text-lg ${
-                        listing.theft_record_found ? 'text-red-600' : 'text-green-600'
-                      }`}>
-                        {listing.theft_record_found ? '🚨' : '🛡️'}
+                      <span className="text-sm font-semibold text-black">
+                        {new Date(listing.created_at).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
                       </span>
-                      <div>
-                        <p className={`text-sm font-medium ${
-                          listing.theft_record_found ? 'text-red-800' : 'text-green-800'
-                        }`}>
-                          {listing.theft_record_found ? 'Theft Alert' : 'Clean Record'}
-                        </p>
-                        <p className={`text-xs ${
-                          listing.theft_record_found ? 'text-red-600' : 'text-green-600'
-                        }`}>
-                          Theft database check
-                        </p>
-                      </div>
                     </div>
-                  )}
-                  
-                  {listing.total_loss_checked && (
-                    <div className={`flex items-center gap-3 p-3 rounded-lg border ${
-                      listing.total_loss_found 
-                        ? 'bg-yellow-50 border-yellow-200' 
-                        : 'bg-green-50 border-green-200'
-                    }`}>
-                      <span className={`text-lg ${
-                        listing.total_loss_found ? 'text-yellow-600' : 'text-green-600'
-                      }`}>
-                        {listing.total_loss_found ? '⚠️' : '💚'}
+                    
+                    <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Last Updated</span>
+                      </div>
+                      <span className="text-sm font-semibold text-black">
+                        {new Date(listing.created_at).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
                       </span>
-                      <div>
-                        <p className={`text-sm font-medium ${
-                          listing.total_loss_found ? 'text-yellow-800' : 'text-green-800'
-                        }`}>
-                          {listing.total_loss_found ? 'Total Loss' : 'No Loss Record'}
-                        </p>
-                        <p className={`text-xs ${
-                          listing.total_loss_found ? 'text-yellow-600' : 'text-green-600'
-                        }`}>
-                          Insurance check
-                        </p>
-                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* Description */}
-            <div style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-              borderRadius: '1rem',
-              border: '1px solid var(--neutral-200)',
-              padding: '2rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-            }}>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: '600',
-                color: 'var(--neutral-900)',
-                margin: '0 0 1.5rem 0'
-              }}>
-                Description
-              </h2>
-              <div>
-                <p style={{
-                  color: 'var(--neutral-700)',
-                  lineHeight: '1.6',
-                  whiteSpace: 'pre-wrap',
-                  fontSize: '1rem'
-                }}>
-                  {listing.description || 'No description provided.'}
-                </p>
               </div>
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
-            {/* Quick Actions */}
-            <div style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-              borderRadius: '1rem',
-              border: '1px solid var(--neutral-200)',
-              padding: '1.25rem',
-              position: 'sticky',
-              top: '1rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-            }}>
-              <div className="text-center mb-4">
-                <div style={{
-                  width: '4rem',
-                  height: '4rem',
-                  backgroundColor: 'var(--brand-primary)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 1rem auto'
-                }}>
-                  <span className="text-white text-2xl">🏍️</span>
+            {/* Enhanced Quick Actions - Vercel style */}
+            <div className="bg-white border border-gray-200 rounded-md p-6 sticky top-4">
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-md flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
                 </div>
-                <h3 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: 'var(--neutral-900)',
-                  margin: '0 0 0.5rem 0'
-                }}>Ready to Purchase?</h3>
-                <p style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--neutral-600)'
-                }}>
-                  Connect with the seller securely
+                <h3 className="text-lg font-semibold text-black mb-2">Ready to Purchase?</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Connect with the seller through our secure messaging platform
                 </p>
               </div>
 

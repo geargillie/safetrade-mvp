@@ -87,12 +87,17 @@ export const useEnhancedMessaging = (currentUserId: string) => {
       // Transform conversation_details to EnhancedConversation format
       const enhancedConversations = (data || []).map((conv: any) => ({
         ...conv,
+        // Add missing fields with fallback values
+        security_level: conv.security_level || 'standard',
+        security_flags: conv.security_flags || [],
+        fraud_alerts_count: conv.fraud_alerts_count || 0,
+        encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,
         metrics: {
           total_messages: 0, // Fallback - could be calculated if needed
           unread_count: conv.unread_count || 0,
           last_activity: conv.last_message_at || conv.updated_at,
-          fraud_alerts: 0, // Fallback
-          security_level: 'standard' as const
+          fraud_alerts: conv.fraud_alerts_count || 0,
+          security_level: conv.security_level || 'standard' as const
         },
         is_verified: conv.buyer_first_name && conv.seller_first_name // Simple verification check
       }));

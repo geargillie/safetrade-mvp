@@ -81,75 +81,85 @@ export default function EnhancedMessagesPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Enhanced Page Header */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <div className="flex items-center justify-between py-6">
-          <div className="flex items-center gap-4">
-            {isMobile && !showConversationList && (
-              <button
-                onClick={handleBackToList}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
-            
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-              <div className="flex items-center gap-4 mt-1">
-                <span className="text-sm text-gray-600">
-                  Secure • AI Protected • End-to-End Encrypted
-                </span>
-                
-                {/* Connection status indicator */}
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${
-                    connectionStatus === 'connected' ? 'bg-green-500' :
-                    connectionStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'
-                  }`} />
-                  <span className="text-xs text-gray-500 capitalize">{connectionStatus}</span>
+      {/* Vercel-style Header */}
+      <div className="w-full border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {isMobile && !showConversationList && (
+                <button
+                  onClick={handleBackToList}
+                  className="p-2 rounded-md hover:bg-gray-100 transition-colors"
+                >
+                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+              
+              <div>
+                <h1 className="text-2xl font-semibold text-black">Messages</h1>
+                <div className="flex items-center gap-3 mt-1">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <span className="text-xs text-gray-600 font-medium">End-to-end encrypted</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                    <span className="text-xs text-gray-600 font-medium">AI protected</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            {/* Security alerts */}
-            {securityAlerts > 0 && (
-              <div className="flex items-center gap-2 bg-red-50 text-red-700 px-3 py-1 rounded-lg">
-                <span className="text-red-500">⚠️</span>
-                <span className="text-sm font-medium">{securityAlerts} security alert{securityAlerts > 1 ? 's' : ''}</span>
-              </div>
-            )}
             
-            {/* Unread counter */}
-            {totalUnreadCount > 0 && (
-              <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-lg">
-                <span className="text-blue-500">💬</span>
-                <span className="text-sm font-medium">{totalUnreadCount} unread</span>
+            <div className="flex items-center gap-3">
+              {/* Security alerts - Vercel badge style */}
+              {securityAlerts > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 px-2.5 py-1.5 rounded-md text-xs font-medium">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                  </svg>
+                  {securityAlerts} alert{securityAlerts > 1 ? 's' : ''}
+                </div>
+              )}
+              
+              {/* Unread counter - Vercel badge style */}
+              {totalUnreadCount > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1.5 rounded-md text-xs font-medium">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm6 4a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm-4 3a1 1 0 000 2h8a1 1 0 100-2H5z" />
+                  </svg>
+                  {totalUnreadCount} unread
+                </div>
+              )}
+              
+              {/* User info */}
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-medium text-gray-600">
+                    {(user.user_metadata?.first_name || 'U').charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-sm text-gray-700 font-medium">
+                  {user.user_metadata?.first_name || 'User'}
+                </span>
               </div>
-            )}
-            
-            <div className="text-sm text-gray-600">
-              Welcome, {user.user_metadata?.first_name || 'User'}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Messaging Interface */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-          <div className="flex h-[calc(100vh-240px)]">
+      {/* Main Messaging Interface - Vercel style */}
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="bg-white border border-gray-200 overflow-hidden">
+          <div className="flex h-[calc(100vh-140px)]">
             
             {/* Enhanced Conversation List */}
             <div className={`${
               isMobile 
                 ? (showConversationList ? 'w-full' : 'hidden') 
                 : 'w-80'
-            } border-r border-gray-200 flex-shrink-0`}>
+            } border-r border-gray-200 flex-shrink-0 bg-gray-50`}>
               <EnhancedConversationList
                 conversations={conversations}
                 currentUserId={user.id}
@@ -173,29 +183,36 @@ export default function EnhancedMessagesPage() {
                   currentUserId={user.id}
                 />
               ) : (
-                <div className="h-full flex items-center justify-center bg-gray-50">
-                  <div className="text-center max-w-sm">
-                    <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                <div className="h-full flex items-center justify-center bg-white">
+                  <div className="text-center max-w-md px-6">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
                     </div>
                     
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-lg font-semibold text-black mb-2">
                       Select a conversation
                     </h3>
                     
-                    <p className="text-gray-500 leading-relaxed mb-6">
-                      Choose a conversation from the sidebar to start secure messaging with verified users.
+                    <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                      Choose a conversation from the sidebar to start secure messaging.
                     </p>
 
-                    <div className="bg-blue-50 rounded-lg p-4 text-left">
-                      <h4 className="font-medium text-blue-900 mb-2">🛡️ SafeTrade Security</h4>
-                      <ul className="text-sm text-blue-700 space-y-1">
-                        <li>• End-to-end encryption</li>
-                        <li>• AI fraud detection</li>
-                        <li>• Verified users only</li>
-                        <li>• Real-time protection</li>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-left">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <span className="text-sm font-medium text-black">Secure messaging</span>
+                      </div>
+                      <ul className="text-xs text-gray-600 space-y-1.5 ml-7">
+                        <li>End-to-end encryption</li>
+                        <li>AI fraud detection</li>
+                        <li>Identity verification required</li>
+                        <li>Real-time message status</li>
                       </ul>
                     </div>
                   </div>
@@ -206,10 +223,21 @@ export default function EnhancedMessagesPage() {
         </div>
       </div>
 
-      {/* Footer info */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="text-center text-xs text-gray-500">
-          <p>🔒 Your conversations are protected by military-grade encryption and AI-powered fraud detection</p>
+      {/* Footer info - Vercel style */}
+      <div className="w-full max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+            <span>Encrypted</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+            <span>AI Protected</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+            <span>Real-time</span>
+          </div>
         </div>
       </div>
     </Layout>
