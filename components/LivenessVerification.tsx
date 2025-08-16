@@ -100,63 +100,11 @@ export default function LivenessVerification({
     }, 1000);
   };
 
-  const processLivenessVerification = async (imageData: string) => {
-    setLoading(true);
-    console.log('🚀 Starting liveness verification for user:', userId);
-    
-    try {
-      const response = await fetch('/api/verify-liveness', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          imageData,
-          timestamp: new Date().toISOString()
-        })
-      });
-
-      const result = await response.json();
-      console.log('📊 Liveness verification result:', { 
-        status: response.status, 
-        verified: result.verified,
-        score: result.score,
-        error: result.error 
-      });
-      
-      if (response.ok) {
-        if (result.verified) {
-          setCurrentStep('complete');
-          onComplete({
-            verified: result.verified,
-            score: result.score,
-            message: result.message
-          });
-        } else {
-          // Verification completed but failed - reset to allow retry
-          console.log('❌ Verification failed, resetting UI');
-          setCurrentStep('intro');
-          setCapturedImage(null);
-          onError(result.message || 'Liveness verification failed. Please try again with better lighting.');
-        }
-      } else {
-        console.error('❌ Liveness verification API error:', result);
-        setCurrentStep('intro');
-        setCapturedImage(null);
-        onError(result.error || `Verification failed (${response.status})`);
-      }
-    } catch (error) {
-      console.error('❌ Liveness verification network error:', error);
-      setCurrentStep('intro');
-      setCapturedImage(null);
-      onError('Network error. Please check your connection and try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const captureImage = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) {
       console.error('❌ Missing video or canvas ref');
+      onError('Camera not ready. Please try again.');
       return;
     }
 
@@ -166,6 +114,7 @@ export default function LivenessVerification({
     
     if (!context) {
       console.error('❌ Could not get canvas context');
+      onError('Camera setup failed. Please try again.');
       return;
     }
 
@@ -206,8 +155,62 @@ export default function LivenessVerification({
     }
     
     setCurrentStep('processing');
-    processLivenessVerification(imageDataUrl);
-  }, [stream, processLivenessVerification]);
+    
+    // Call processLivenessVerification directly instead of relying on closure
+    (async () => {
+      setLoading(true);
+      console.log('🚀 Starting liveness verification for user:', userId);
+      
+      try {
+        const response = await fetch('/api/verify-liveness', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            imageData: imageDataUrl,
+            timestamp: new Date().toISOString()
+          })
+        });
+
+        const result = await response.json();
+        console.log('📊 Liveness verification result:', { 
+          status: response.status, 
+          verified: result.verified,
+          score: result.score,
+          error: result.error 
+        });
+        
+        if (response.ok) {
+          if (result.verified) {
+            setCurrentStep('complete');
+            onComplete({
+              verified: result.verified,
+              score: result.score,
+              message: result.message
+            });
+          } else {
+            // Verification completed but failed - reset to allow retry
+            console.log('❌ Verification failed, resetting UI');
+            setCurrentStep('intro');
+            setCapturedImage(null);
+            onError(result.message || 'Liveness verification failed. Please try again with better lighting.');
+          }
+        } else {
+          console.error('❌ Liveness verification API error:', result);
+          setCurrentStep('intro');
+          setCapturedImage(null);
+          onError(result.error || `Verification failed (${response.status})`);
+        }
+      } catch (error) {
+        console.error('❌ Liveness verification network error:', error);
+        setCurrentStep('intro');
+        setCapturedImage(null);
+        onError('Network error. Please check your connection and try again.');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [stream, userId, onComplete, onError]);
 
   const retryVerification = () => {
     setCapturedImage(null);
