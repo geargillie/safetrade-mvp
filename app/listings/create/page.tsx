@@ -37,7 +37,35 @@ export default function CreateListing() {
     loading: boolean
     result: { 
       success?: boolean; 
-      data?: unknown;
+      data?: {
+        vin?: string;
+        isValid?: boolean;
+        isStolen?: boolean;
+        isTotalLoss?: boolean;
+        vehicleInfo?: {
+          year?: string;
+          make?: string;
+          model?: string;
+          vehicleType?: string;
+          engineSize?: string;
+          fuelType?: string;
+          bodyClass?: string;
+          plantCountry?: string;
+        };
+        stolenCheck?: { 
+          checked?: boolean;
+          sources?: string[];
+          isStolen?: boolean;
+          lastChecked?: string;
+        };
+        totalLossCheck?: {
+          checked?: boolean;
+          sources?: string[];
+          isTotalLoss?: boolean;
+          lastChecked?: string;
+        };
+        alerts?: { message: string }[];
+      };
       isValid?: boolean;
       isStolen?: boolean;
       warnings?: string[];
@@ -201,6 +229,21 @@ export default function CreateListing() {
       
       if (response.ok) {
         setVinVerification({ loading: false, result, error: null })
+        
+        // Auto-fill form fields from VIN verification result
+        if (result.success && result.data?.vehicleInfo) {
+          const vehicleInfo = result.data.vehicleInfo
+          setFormData(prev => ({
+            ...prev,
+            make: vehicleInfo.make || prev.make,
+            model: vehicleInfo.model !== 'Unknown' ? vehicleInfo.model || prev.model : prev.model,
+            year: vehicleInfo.year || prev.year,
+            // Auto-generate title if fields are available
+            title: vehicleInfo.year && vehicleInfo.make && vehicleInfo.model !== 'Unknown' 
+              ? `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`
+              : prev.title
+          }))
+        }
       } else {
         setVinVerification({ loading: false, result: null, error: result.message || 'VIN verification failed' })
       }
@@ -236,12 +279,12 @@ export default function CreateListing() {
           city: formData.city,
           zip_code: formData.zipCode,
           images,
-          vin_verified: vinVerification.result?.isValid || false,
-          theft_record_checked: Boolean(vinVerification.result?.stolenCheck),
-          theft_record_found: vinVerification.result?.isStolen || false,
+          vin_verified: Boolean(vinVerification.result?.success && vinVerification.result?.data?.isValid),
+          theft_record_checked: Boolean(vinVerification.result?.success && vinVerification.result?.data?.stolenCheck),
+          theft_record_found: Boolean(vinVerification.result?.data?.isStolen),
           total_loss_checked: true,
           total_loss_found: false,
-          vin_verification_date: vinVerification.result?.stolenCheck?.lastChecked || new Date().toISOString()
+          vin_verification_date: vinVerification.result?.data?.stolenCheck?.lastChecked || new Date().toISOString()
         })
         .select()
         .single()
@@ -536,9 +579,9 @@ export default function CreateListing() {
                     placeholder="1HGBH41JXMN109186"
                     style={{
                       borderColor: formData.vin.length === 17 
-                        ? vinVerification.result?.isValid 
+                        ? vinVerification.result?.success && vinVerification.result.data?.isValid 
                           ? 'var(--success)' 
-                          : vinVerification.result?.isValid === false 
+                          : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
                           ? 'var(--error)' 
                           : 'var(--neutral-200)'
                         : 'var(--neutral-200)'
@@ -553,14 +596,19 @@ export default function CreateListing() {
                   
                   {vinVerification.result && (
                     <div className="mt-2">
-                      {vinVerification.result.isValid ? (
+                      {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
                         <div className="bg-success-50 border border-success-200 text-success-700 px-3 py-2 rounded-md text-sm">
                           <div className="flex items-center">
                             <span className="mr-2">✅</span>
                             <strong>VIN Verified</strong>
                           </div>
                           <div className="text-sm mt-1">
-                            Valid VIN • Theft Check: {vinVerification.result.isStolen ? 'STOLEN' : 'CLEAN'}
+                            Valid VIN • Theft Check: {vinVerification.result.data?.isStolen ? 'STOLEN' : 'CLEAN'}
+                            {vinVerification.result.data?.vehicleInfo && (
+                              <div className="mt-1">
+                                Vehicle: {vinVerification.result.data.vehicleInfo.year} {vinVerification.result.data.vehicleInfo.make} {vinVerification.result.data.vehicleInfo.model}
+                              </div>
+                            )}
                           </div>
                         </div>
                       ) : (
