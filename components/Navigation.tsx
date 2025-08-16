@@ -106,12 +106,12 @@ export default function Navigation() {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center gap-1 transition-all duration-200 hover:scale-105"
+            className="flex items-center gap-2 transition-all duration-200 hover:scale-105"
           >
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center shadow-sm" style={{backgroundColor: 'var(--brand-primary)'}}>
-              <span className="text-white text-xs font-bold">ST</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm" style={{backgroundColor: 'var(--brand-primary)'}}>
+              <span className="text-white text-sm font-bold">ST</span>
             </div>
-            <span className="hidden sm:block text-body" style={{color: 'var(--neutral-900)', fontWeight: '600'}}>SafeTrade</span>
+            <span className="hidden sm:block text-heading-sm" style={{color: 'var(--neutral-900)', fontWeight: '700'}}>SafeTrade</span>
           </Link>
 
           {/* User Info and Menu Icon */}
@@ -122,18 +122,17 @@ export default function Navigation() {
               <>
                 {/* User Name and Verification Status */}
                 <div className="hidden sm:flex flex-col items-end">
-                  <span style={{
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
+                  <span className="text-body" style={{
+                    fontWeight: '600',
                     color: 'var(--neutral-900)',
                     lineHeight: '1.2'
                   }}>
                     {user.user_metadata?.first_name || 'User'}
                   </span>
-                  <span style={{
-                    fontSize: '0.75rem',
+                  <span className="text-body-sm" style={{
                     color: isVerified ? 'var(--success)' : 'var(--warning)',
-                    lineHeight: '1.2'
+                    lineHeight: '1.2',
+                    fontWeight: '500'
                   }}>
                     {isVerified ? '✅ Verified' : '⚠️ Unverified'}
                   </span>
@@ -142,18 +141,8 @@ export default function Navigation() {
                 {/* Menu Button */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="p-2 rounded-lg transition-all duration-200 border border-transparent h-8 w-8 flex items-center justify-center"
+                  className="p-2 rounded-lg transition-all duration-200 border border-transparent h-10 w-10 flex items-center justify-center hover:bg-neutral-100 hover:border-neutral-300"
                   style={{color: 'var(--neutral-600)'}}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--neutral-900)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--neutral-600)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
-                  }}
                   aria-label="User menu"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,18 +153,8 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg transition-all duration-200 border border-transparent h-8 w-8 flex items-center justify-center"
+                className="p-2 rounded-lg transition-all duration-200 border border-transparent h-10 w-10 flex items-center justify-center hover:bg-neutral-100 hover:border-neutral-300"
                 style={{color: 'var(--neutral-600)'}}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--neutral-100)';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--neutral-900)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--neutral-300)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--neutral-600)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
-                }}
                 aria-label="Menu"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +167,7 @@ export default function Navigation() {
 
         {/* Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="absolute top-16 right-6 w-56 bg-white rounded-lg shadow-lg border py-2 animate-fade-in z-50" style={{borderColor: 'var(--neutral-200)'}}>
+          <div className="absolute top-16 right-6 w-56 bg-white rounded-lg shadow-lg border py-1 animate-fade-in z-50" style={{borderColor: 'var(--neutral-200)'}}>
             {loading ? (
               <div className="px-4 py-3">
                 <div className="w-20 h-4 rounded animate-pulse" style={{backgroundColor: 'var(--neutral-200)'}}></div>
@@ -199,7 +178,7 @@ export default function Navigation() {
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Home
@@ -207,7 +186,7 @@ export default function Navigation() {
                 <Link
                   href="/listings"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Browse
@@ -215,7 +194,7 @@ export default function Navigation() {
                 <Link
                   href="/listings/create"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Sell
@@ -223,23 +202,23 @@ export default function Navigation() {
                 <Link
                   href="/messages"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Messages
                 </Link>
-                <div className="border-t my-2" style={{borderColor: 'var(--neutral-200)'}}></div>
+                <div className="border-t my-1" style={{borderColor: 'var(--neutral-200)'}}></div>
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Profile
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="w-full text-left px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-red-50"
+                  className="w-full text-left px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-red-50"
                   style={{color: 'var(--error)'}}
                 >
                   Sign Out
@@ -251,7 +230,7 @@ export default function Navigation() {
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Home
@@ -259,16 +238,16 @@ export default function Navigation() {
                 <Link
                   href="/listings"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Browse
                 </Link>
-                <div className="border-t my-2" style={{borderColor: 'var(--neutral-200)'}}></div>
+                <div className="border-t my-1" style={{borderColor: 'var(--neutral-200)'}}></div>
                 <Link
                   href="/auth/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200 hover:bg-gray-50"
+                  className="block px-4 py-2.5 text-body font-medium transition-all duration-200 hover:bg-neutral-50"
                   style={{color: 'var(--neutral-700)'}}
                 >
                   Sign In
@@ -276,8 +255,8 @@ export default function Navigation() {
                 <Link
                   href="/auth/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-body font-medium transition-all duration-200"
-                  style={{backgroundColor: 'var(--brand-primary)', color: 'white', margin: '0 0.5rem', borderRadius: '0.5rem'}}
+                  className="block mx-2 my-1 px-4 py-2.5 text-body font-medium transition-all duration-200 rounded-lg text-center"
+                  style={{backgroundColor: 'var(--brand-primary)', color: 'white'}}
                 >
                   Sign Up
                 </Link>

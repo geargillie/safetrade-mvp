@@ -637,33 +637,6 @@ export default function ListingDetailPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-between items-center py-3" style={{
-                    borderBottom: '1px solid var(--neutral-100)'
-                  }}>
-                    <span style={{
-                      color: 'var(--neutral-600)',
-                      fontWeight: '500'
-                    }}>VIN Status</span>
-                    <div className="flex items-center gap-2">
-                      {listing.vin_verified ? (
-                        <>
-                          <span style={{color: 'var(--success)'}}>✅</span>
-                          <span style={{
-                            color: 'var(--success)',
-                            fontWeight: '600'
-                          }}>Verified</span>
-                        </>
-                      ) : (
-                        <>
-                          <span style={{color: 'var(--warning)'}}>⚠️</span>
-                          <span style={{
-                            color: 'var(--warning)',
-                            fontWeight: '600'
-                          }}>Pending</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
                   <div className="flex justify-between items-center py-3">
                     <span style={{
                       color: 'var(--neutral-600)',

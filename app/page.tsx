@@ -32,7 +32,7 @@ export default function HomePage() {
       {/* Hero Section - Clean Minimalistic Design */}
       <section className="section-lg" style={{minHeight: '85vh', display: 'flex', alignItems: 'center'}}>
         <div className="container">
-          <div className="text-center mx-auto" style={{maxWidth: '800px'}}>
+          <div className="text-center mx-auto" style={{maxWidth: '1000px'}}>
             
             {/* Main Heading Block */}
             <div className="mb-8">
@@ -41,13 +41,13 @@ export default function HomePage() {
                 <br />
                 Marketplace
               </h1>
-              <p className="text-body-lg" style={{maxWidth: '520px', margin: '0 auto'}}>
+              <p className="text-body-lg" style={{maxWidth: '600px', margin: '0 auto'}}>
                 Connect with verified sellers, access comprehensive vehicle histories, and trade with complete confidence.
               </p>
             </div>
 
             {/* Primary Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 max-w-lg mx-auto">
               <Link href="/listings" className="btn btn-primary btn-lg">
                 Browse Listings
               </Link>
@@ -58,7 +58,7 @@ export default function HomePage() {
 
             {/* Trust Indicators */}
             <div className="mb-8">
-              <div className="flex flex-wrap justify-center items-center gap-3 max-w-lg mx-auto">
+              <div className="flex flex-wrap justify-center items-center gap-4 max-w-2xl mx-auto">
                 <div className="badge badge-success">
                   <span className="status-dot status-available"></span>
                   ID Verified
@@ -75,7 +75,7 @@ export default function HomePage() {
             </div>
 
             {/* Stats Section */}
-            <div className="grid grid-cols-3 gap-8 mb-8 max-w-md mx-auto" style={{borderTop: '1px solid var(--neutral-200)', paddingTop: '2rem'}}>
+            <div className="grid grid-cols-3 gap-8 mb-8 max-w-xl mx-auto" style={{borderTop: '1px solid var(--neutral-200)', paddingTop: '2rem'}}>
               <div className="text-center">
                 <div style={{fontSize: '2rem', fontWeight: '700', color: 'var(--neutral-900)', marginBottom: '0.25rem'}}>500+</div>
                 <div className="text-body-sm">Active Listings</div>
