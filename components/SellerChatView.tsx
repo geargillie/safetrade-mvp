@@ -1,120 +1,37 @@
 // components/SellerChatView.tsx - For sellers to see all conversations about their listings
 'use client'
 
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import MessageThreadModal from './MessageThreadModal'
-
-interface Conversation {
-  id: string
-  listing_id: string
-  buyer_id: string
-  seller_id: string
-  listing_title: string
-  listing_price: number
-  buyer_first_name: string
-  buyer_last_name: string
-  last_message: string
-  last_message_at: string
-  unread_count: number
-  created_at: string
-}
+import { useRouter } from 'next/navigation'
+import { useEnhancedMessaging } from '@/hooks/useEnhancedMessaging'
 
 interface SellerChatViewProps {
   currentUserId: string
 }
 
 export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
-  const [conversations, setConversations] = useState<Conversation[]>([])
-  const [selectedConversation, setSelectedConversation] = useState<{
-    conversation: Conversation
-    listing: {
-      id: string
-      title: string
-      price: number
-      seller_id: string
-    }
-    otherUserId: string
-    otherUserName: string
-  } | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter()
+  const { conversations, loading, error } = useEnhancedMessaging(currentUserId)
 
-  useEffect(() => {
-    loadSellerConversations()
-    
-    // Set up real-time subscription for new conversations
-    const conversationSubscription = supabase
-      .channel('seller-conversations')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'conversations',
-          filter: `seller_id=eq.${currentUserId}`
-        }, 
-        () => {
-          loadSellerConversations()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(conversationSubscription)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUserId])
-
-  const loadSellerConversations = async () => {
-    try {
-      console.log('Loading conversations for seller:', currentUserId)
-      
-      const { data, error } = await supabase
-        .from('conversation_details')
-        .select('*')
-        .eq('seller_id', currentUserId)
-        .order('updated_at', { ascending: false })
-
-      if (error) {
-        console.error('Error loading seller conversations:', error)
-        throw error
-      }
-
-      console.log(`Found ${data?.length || 0} conversations for seller`)
-      setConversations(data || [])
-    } catch (error) {
-      console.error('Error loading conversations:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const openConversation = (conversation: Conversation) => {
-    // For seller's view, we need to create the listing object correctly
-    // and make sure the currentUserId is treated as the seller, not buyer
-    const listing = {
-      id: conversation.listing_id,
-      title: conversation.listing_title,
-      price: conversation.listing_price,
-      seller_id: conversation.seller_id
-    }
-    
-    // Since this is the seller's view, the seller is opening their own conversation
-    // We need to pass the conversation ID so the modal knows it's an existing conversation
-    setSelectedConversation({ 
-      conversation, 
-      listing,
-      // Pass the buyer as the "other user" for display purposes
-      otherUserId: conversation.buyer_id,
-      otherUserName: `${conversation.buyer_first_name} ${conversation.buyer_last_name}`
-    })
-    setIsModalOpen(true)
+  const openConversation = () => {
+    // Navigate to the enhanced messages page
+    router.push('/messages')
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-red-900 mb-2">Error loading conversations</h2>
+          <p className="text-red-700">{error}</p>
+        </div>
       </div>
     )
   }
@@ -140,16 +57,16 @@ export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
             {conversations.map((conversation) => (
               <div
                 key={conversation.id}
-                onClick={() => openConversation(conversation)}
+                onClick={() => openConversation()}
                 className="p-6 hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium text-gray-900">{conversation.listing_title}</h3>
-                      {conversation.unread_count > 0 && (
+                      {conversation.metrics.unread_count > 0 && (
                         <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                          {conversation.unread_count} new
+                          {conversation.metrics.unread_count} new
                         </span>
                       )}
                     </div>
@@ -181,24 +98,23 @@ export default function SellerChatView({ currentUserId }: SellerChatViewProps) {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Message Thread Modal */}
-      {selectedConversation && (
-        <MessageThreadModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false)
-            setSelectedConversation(null)
-            loadSellerConversations() // Refresh to update unread counts
-          }}
-          conversationId={selectedConversation.conversation.id}
-          currentUserId={currentUserId}
-          listingTitle={selectedConversation.conversation.listing_title}
-          listingPrice={selectedConversation.conversation.listing_price}
-          otherUserName={selectedConversation.otherUserName}
-        />
-      )}
+        {/* Call to action for new messaging system */}
+        <div className="p-6 border-t border-gray-200 bg-blue-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-blue-900">Enhanced Secure Messaging</h3>
+              <p className="text-sm text-blue-700 mt-1">View all conversations with end-to-end encryption and AI fraud protection</p>
+            </div>
+            <button 
+              onClick={openConversation}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Open Messages
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

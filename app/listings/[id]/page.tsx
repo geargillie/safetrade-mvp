@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import MessageButton from '@/components/MessageButton'
+import EnhancedMessageButton from '@/components/EnhancedMessageButton'
 import Layout from '@/components/Layout'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -251,9 +251,9 @@ export default function ListingDetailPage() {
   return (
     <Layout showNavigation={true}>
       {/* Breadcrumb Navigation */}
-      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-6">
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-3">
         <div className="flex items-center gap-2" style={{
-          fontSize: '0.875rem',
+          fontSize: '0.75rem',
           color: 'var(--neutral-500)'
         }}>
           <Link href="/" className="hover:text-gray-700">Home</Link>
@@ -265,103 +265,72 @@ export default function ListingDetailPage() {
       </div>
 
       {/* Header Section */}
-      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 pb-8">
+      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 pb-3">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div className="flex-1">
             <h1 style={{
-              fontSize: 'clamp(1.875rem, 3vw, 2.5rem)',
+              fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
               fontWeight: '700',
               color: 'var(--neutral-900)',
-              margin: '0 0 0.5rem 0',
+              margin: '0 0 0.25rem 0',
               letterSpacing: '-0.02em'
             }}>
               {listing.year} {listing.make} {listing.model}
             </h1>
             <p style={{
-              fontSize: '1.125rem',
+              fontSize: '1rem',
               color: 'var(--neutral-600)',
-              margin: '0 0 1.5rem 0'
+              margin: '0 0 0.75rem 0'
             }}>
               {listing.title}
             </p>
             
-            {/* Price and Status */}
-            <div className="flex items-center gap-4 flex-wrap">
-              <div style={{
-                fontSize: '2rem',
-                fontWeight: '700',
-                color: 'var(--neutral-900)'
-              }}>
-                {formatPrice(listing.price)}
+            {/* Price and Key Info */}
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
+                <div style={{
+                  fontSize: '1.75rem',
+                  fontWeight: '700',
+                  color: 'var(--neutral-900)'
+                }}>
+                  {formatPrice(listing.price)}
+                </div>
+                
+                {/* Verification Badge - Simplified */}
+                {listing.vin_verified && (
+                  <div style={{
+                    padding: '0.375rem 0.75rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'white',
+                    backgroundColor: 'var(--success)',
+                    borderRadius: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem'
+                  }}>
+                    ✅ Verified
+                  </div>
+                )}
               </div>
               
-              {/* Status Badge */}
+              {/* Status Badge - Moved to Right */}
               <div style={{
-                padding: '0.375rem 0.75rem',
+                padding: '0.5rem 1rem',
                 fontSize: '0.875rem',
-                fontWeight: '500',
+                fontWeight: '600',
                 color: 'white',
                 backgroundColor: getStatusDisplay(listing.status).color === 'green' ? 'var(--success)' :
                                 getStatusDisplay(listing.status).color === 'yellow' ? 'var(--warning)' : 'var(--error)',
-                borderRadius: '0.375rem',
+                borderRadius: '1rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.25rem'
+                gap: '0.375rem',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}>
                 <span>{getStatusDisplay(listing.status).icon}</span>
                 {getStatusDisplay(listing.status).text}
               </div>
-              
-              {/* VIN Verification Badge */}
-              {listing.vin_verified && (
-                <div style={{
-                  padding: '0.375rem 0.75rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: 'white',
-                  backgroundColor: 'var(--info)',
-                  borderRadius: '0.375rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem'
-                }}>
-                  🔍 VIN Verified
-                </div>
-              )}
-              
-              {/* Theft Record Badge */}
-              {listing.theft_record_checked && (
-                <div style={{
-                  padding: '0.375rem 0.75rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: 'white',
-                  backgroundColor: listing.theft_record_found ? 'var(--error)' : 'var(--success)',
-                  borderRadius: '0.375rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem'
-                }}>
-                  {listing.theft_record_found ? '🚨 Theft Record' : '🛡️ Clean Record'}
-                </div>
-              )}
-              
-              {/* Total Loss Badge */}
-              {listing.total_loss_checked && (
-                <div style={{
-                  padding: '0.375rem 0.75rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: 'white',
-                  backgroundColor: listing.total_loss_found ? 'var(--warning)' : 'var(--success)',
-                  borderRadius: '0.375rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem'
-                }}>
-                  {listing.total_loss_found ? '⚠️ Total Loss' : '💚 No Loss Record'}
-                </div>
-              )}
             </div>
           </div>
           
@@ -434,21 +403,22 @@ export default function ListingDetailPage() {
 
       {/* Main Content Area */}
       <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
             {/* Image Gallery */}
             <div style={{
-              backgroundColor: 'white',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               borderRadius: '1rem',
               overflow: 'hidden',
-              border: '1px solid var(--neutral-200)'
+              border: '1px solid var(--neutral-200)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
             }}>
               {listing.images && listing.images.length > 0 ? (
                 <>
                   {/* Main Image */}
                   <div className="relative" style={{
-                    height: '400px',
+                    height: '280px',
                     backgroundColor: 'var(--neutral-50)'
                   }}>
                     <Image
@@ -503,7 +473,7 @@ export default function ListingDetailPage() {
                 </>
               ) : (
                 <div className="flex items-center justify-center" style={{
-                  height: '400px',
+                  height: '280px',
                   backgroundColor: 'var(--neutral-50)'
                 }}>
                   <div className="text-center">
@@ -516,10 +486,11 @@ export default function ListingDetailPage() {
 
             {/* Vehicle Details */}
             <div style={{
-              backgroundColor: 'white',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               borderRadius: '1rem',
               border: '1px solid var(--neutral-200)',
-              padding: '2rem'
+              padding: '2rem',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
             }}>
               <h2 style={{
                 fontSize: '1.5rem',
@@ -530,7 +501,7 @@ export default function ListingDetailPage() {
                 Vehicle Details
               </h2>
               
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3" style={{
                     borderBottom: '1px solid var(--neutral-100)'
@@ -653,301 +624,118 @@ export default function ListingDetailPage() {
               </div>
             </div>
 
-            {/* VIN Verification & Security Report */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '1rem',
-              border: '1px solid var(--neutral-200)',
-              padding: '2rem'
-            }}>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: '600',
-                color: 'var(--neutral-900)',
-                margin: '0 0 1.5rem 0'
+            {/* Security Report - Simplified */}
+            {(listing.vin_verified || listing.theft_record_checked || listing.total_loss_checked) && (
+              <div style={{
+                background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+                borderRadius: '1rem',
+                border: '1px solid var(--neutral-200)',
+                padding: '1.5rem'
               }}>
-                VIN Verification & Security Report
-              </h2>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* VIN Status */}
-                <div style={{
-                  backgroundColor: listing.vin_verified ? 'rgba(5, 150, 105, 0.05)' : 'rgba(217, 119, 6, 0.05)',
-                  border: `1px solid ${listing.vin_verified ? 'rgba(5, 150, 105, 0.2)' : 'rgba(217, 119, 6, 0.2)'}`,
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem'
-                }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div style={{
-                      width: '3rem',
-                      height: '3rem',
-                      borderRadius: '50%',
-                      backgroundColor: listing.vin_verified ? 'var(--success)' : 'var(--warning)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <span className="text-white text-lg">
-                        {listing.vin_verified ? '✅' : '⏳'}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 style={{
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        color: 'var(--neutral-900)',
-                        margin: '0'
-                      }}>
-                        VIN Verification
-                      </h3>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: listing.vin_verified ? 'var(--success)' : 'var(--warning)',
-                        fontWeight: '500',
-                        margin: '0'
-                      }}>
-                        {listing.vin_verified ? 'Verified' : 'Pending Verification'}
-                      </p>
-                    </div>
-                  </div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: 'var(--neutral-600)',
-                    margin: '0'
+                <div className="flex items-center gap-3 mb-4">
+                  <div style={{
+                    width: '2.5rem',
+                    height: '2.5rem',
+                    borderRadius: '0.75rem',
+                    backgroundColor: 'var(--success)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
-                    {listing.vin_verified 
-                      ? 'VIN has been verified against official databases'
-                      : 'VIN verification is currently in progress'}
-                  </p>
-                  {listing.vin_verification_date && (
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: 'var(--neutral-500)',
-                      margin: '0.5rem 0 0 0'
+                    <span className="text-white text-lg">🛡️</span>
+                  </div>
+                  <div>
+                    <h2 style={{
+                      fontSize: '1.25rem',
+                      fontWeight: '600',
+                      color: 'var(--neutral-900)',
+                      margin: '0'
                     }}>
-                      Verified on {new Date(listing.vin_verification_date).toLocaleDateString()}
+                      Security Verification
+                    </h2>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: 'var(--neutral-600)',
+                      margin: '0'
+                    }}>
+                      Vehicle history and safety checks
                     </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {listing.vin_verified && (
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <span className="text-green-600 text-lg">✅</span>
+                      <div>
+                        <p className="text-sm font-medium text-green-800">VIN Verified</p>
+                        <p className="text-xs text-green-600">Official database check</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {listing.theft_record_checked && (
+                    <div className={`flex items-center gap-3 p-3 rounded-lg border ${
+                      listing.theft_record_found 
+                        ? 'bg-red-50 border-red-200' 
+                        : 'bg-green-50 border-green-200'
+                    }`}>
+                      <span className={`text-lg ${
+                        listing.theft_record_found ? 'text-red-600' : 'text-green-600'
+                      }`}>
+                        {listing.theft_record_found ? '🚨' : '🛡️'}
+                      </span>
+                      <div>
+                        <p className={`text-sm font-medium ${
+                          listing.theft_record_found ? 'text-red-800' : 'text-green-800'
+                        }`}>
+                          {listing.theft_record_found ? 'Theft Alert' : 'Clean Record'}
+                        </p>
+                        <p className={`text-xs ${
+                          listing.theft_record_found ? 'text-red-600' : 'text-green-600'
+                        }`}>
+                          Theft database check
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {listing.total_loss_checked && (
+                    <div className={`flex items-center gap-3 p-3 rounded-lg border ${
+                      listing.total_loss_found 
+                        ? 'bg-yellow-50 border-yellow-200' 
+                        : 'bg-green-50 border-green-200'
+                    }`}>
+                      <span className={`text-lg ${
+                        listing.total_loss_found ? 'text-yellow-600' : 'text-green-600'
+                      }`}>
+                        {listing.total_loss_found ? '⚠️' : '💚'}
+                      </span>
+                      <div>
+                        <p className={`text-sm font-medium ${
+                          listing.total_loss_found ? 'text-yellow-800' : 'text-green-800'
+                        }`}>
+                          {listing.total_loss_found ? 'Total Loss' : 'No Loss Record'}
+                        </p>
+                        <p className={`text-xs ${
+                          listing.total_loss_found ? 'text-yellow-600' : 'text-green-600'
+                        }`}>
+                          Insurance check
+                        </p>
+                      </div>
+                    </div>
                   )}
                 </div>
-
-                {/* Theft Record Status */}
-                <div style={{
-                  backgroundColor: listing.theft_record_checked 
-                    ? listing.theft_record_found 
-                      ? 'rgba(220, 38, 38, 0.05)' 
-                      : 'rgba(5, 150, 105, 0.05)'
-                    : 'rgba(148, 163, 184, 0.05)',
-                  border: `1px solid ${listing.theft_record_checked 
-                    ? listing.theft_record_found 
-                      ? 'rgba(220, 38, 38, 0.2)' 
-                      : 'rgba(5, 150, 105, 0.2)'
-                    : 'rgba(148, 163, 184, 0.2)'}`,
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem'
-                }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div style={{
-                      width: '3rem',
-                      height: '3rem',
-                      borderRadius: '50%',
-                      backgroundColor: listing.theft_record_checked 
-                        ? listing.theft_record_found 
-                          ? 'var(--error)' 
-                          : 'var(--success)'
-                        : 'var(--neutral-400)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <span className="text-white text-lg">
-                        {listing.theft_record_checked 
-                          ? listing.theft_record_found ? '🚨' : '🛡️'
-                          : '❓'}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 style={{
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        color: 'var(--neutral-900)',
-                        margin: '0'
-                      }}>
-                        Theft Record Check
-                      </h3>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: listing.theft_record_checked 
-                          ? listing.theft_record_found 
-                            ? 'var(--error)' 
-                            : 'var(--success)'
-                          : 'var(--neutral-500)',
-                        fontWeight: '500',
-                        margin: '0'
-                      }}>
-                        {listing.theft_record_checked 
-                          ? listing.theft_record_found 
-                            ? 'Theft Record Found' 
-                            : 'Clean Record'
-                          : 'Not Checked'}
-                      </p>
-                    </div>
-                  </div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: 'var(--neutral-600)',
-                    margin: '0'
-                  }}>
-                    {listing.theft_record_checked 
-                      ? listing.theft_record_found 
-                        ? 'This vehicle has been reported as stolen in official databases'
-                        : 'No theft records found in national databases'
-                      : 'Theft record check has not been performed'}
-                  </p>
-                </div>
-
-                {/* Total Loss Status */}
-                <div style={{
-                  backgroundColor: listing.total_loss_checked 
-                    ? listing.total_loss_found 
-                      ? 'rgba(217, 119, 6, 0.05)' 
-                      : 'rgba(5, 150, 105, 0.05)'
-                    : 'rgba(148, 163, 184, 0.05)',
-                  border: `1px solid ${listing.total_loss_checked 
-                    ? listing.total_loss_found 
-                      ? 'rgba(217, 119, 6, 0.2)' 
-                      : 'rgba(5, 150, 105, 0.2)'
-                    : 'rgba(148, 163, 184, 0.2)'}`,
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem'
-                }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div style={{
-                      width: '3rem',
-                      height: '3rem',
-                      borderRadius: '50%',
-                      backgroundColor: listing.total_loss_checked 
-                        ? listing.total_loss_found 
-                          ? 'var(--warning)' 
-                          : 'var(--success)'
-                        : 'var(--neutral-400)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <span className="text-white text-lg">
-                        {listing.total_loss_checked 
-                          ? listing.total_loss_found ? '⚠️' : '💚'
-                          : '❓'}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 style={{
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        color: 'var(--neutral-900)',
-                        margin: '0'
-                      }}>
-                        Total Loss Check
-                      </h3>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: listing.total_loss_checked 
-                          ? listing.total_loss_found 
-                            ? 'var(--warning)' 
-                            : 'var(--success)'
-                          : 'var(--neutral-500)',
-                        fontWeight: '500',
-                        margin: '0'
-                      }}>
-                        {listing.total_loss_checked 
-                          ? listing.total_loss_found 
-                            ? 'Total Loss Record' 
-                            : 'No Loss Record'
-                          : 'Not Checked'}
-                      </p>
-                    </div>
-                  </div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: 'var(--neutral-600)',
-                    margin: '0'
-                  }}>
-                    {listing.total_loss_checked 
-                      ? listing.total_loss_found 
-                        ? 'This vehicle has been declared a total loss by insurance companies'
-                        : 'No total loss records found in insurance databases'
-                      : 'Total loss check has not been performed'}
-                  </p>
-                </div>
-
-                {/* Security Summary */}
-                <div style={{
-                  backgroundColor: 'rgba(8, 145, 178, 0.05)',
-                  border: '1px solid rgba(8, 145, 178, 0.2)',
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem'
-                }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div style={{
-                      width: '3rem',
-                      height: '3rem',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--info)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <span className="text-white text-lg">🔍</span>
-                    </div>
-                    <div>
-                      <h3 style={{
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        color: 'var(--neutral-900)',
-                        margin: '0'
-                      }}>
-                        Security Summary
-                      </h3>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: 'var(--info)',
-                        fontWeight: '500',
-                        margin: '0'
-                      }}>
-                        Vehicle History Report
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2" style={{fontSize: '0.875rem'}}>
-                      <span style={{color: listing.vin_verified ? 'var(--success)' : 'var(--warning)'}}>
-                        {listing.vin_verified ? '✅' : '⏳'}
-                      </span>
-                      <span style={{color: 'var(--neutral-700)'}}>VIN Verification</span>
-                    </div>
-                    <div className="flex items-center gap-2" style={{fontSize: '0.875rem'}}>
-                      <span style={{color: listing.theft_record_checked ? (listing.theft_record_found ? 'var(--error)' : 'var(--success)') : 'var(--neutral-400)'}}>
-                        {listing.theft_record_checked ? (listing.theft_record_found ? '🚨' : '✅') : '❓'}
-                      </span>
-                      <span style={{color: 'var(--neutral-700)'}}>Theft Database Check</span>
-                    </div>
-                    <div className="flex items-center gap-2" style={{fontSize: '0.875rem'}}>
-                      <span style={{color: listing.total_loss_checked ? (listing.total_loss_found ? 'var(--warning)' : 'var(--success)') : 'var(--neutral-400)'}}>
-                        {listing.total_loss_checked ? (listing.total_loss_found ? '⚠️' : '✅') : '❓'}
-                      </span>
-                      <span style={{color: 'var(--neutral-700)'}}>Insurance Loss Check</span>
-                    </div>
-                  </div>
-                </div>
               </div>
-            </div>
+            )}
 
             {/* Description */}
             <div style={{
-              backgroundColor: 'white',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               borderRadius: '1rem',
               border: '1px solid var(--neutral-200)',
-              padding: '2rem'
+              padding: '2rem',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
             }}>
               <h2 style={{
                 fontSize: '1.5rem',
@@ -971,17 +759,18 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Quick Actions */}
             <div style={{
-              backgroundColor: 'white',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               borderRadius: '1rem',
               border: '1px solid var(--neutral-200)',
-              padding: '1.5rem',
+              padding: '1.25rem',
               position: 'sticky',
-              top: '2rem'
+              top: '1rem',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
             }}>
-              <div className="text-center mb-6">
+              <div className="text-center mb-4">
                 <div style={{
                   width: '4rem',
                   height: '4rem',
@@ -1138,7 +927,7 @@ export default function ListingDetailPage() {
                         }}>Still available - contact to show interest</p>
                       </div>
                     )}
-                    <MessageButton
+                    <EnhancedMessageButton
                       listing={{
                         id: listing.id,
                         title: listing.title,
@@ -1146,6 +935,8 @@ export default function ListingDetailPage() {
                         seller_id: listing.seller_id
                       }}
                       currentUserId={user.id}
+                      variant="primary"
+                      size="lg"
                     />
                   </div>
                 )
@@ -1199,21 +990,22 @@ export default function ListingDetailPage() {
 
             {/* Seller Info */}
             <div style={{
-              backgroundColor: 'white',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               borderRadius: '1rem',
               border: '1px solid var(--neutral-200)',
-              padding: '1.5rem'
+              padding: '1.25rem',
+              boxShadow: '0 2px 4px -1px rgba(0, 0, 0, 0.06)'
             }}>
               <h3 style={{
-                fontSize: '1.125rem',
+                fontSize: '1rem',
                 fontWeight: '600',
                 color: 'var(--neutral-900)',
-                margin: '0 0 1.5rem 0'
+                margin: '0 0 1rem 0'
               }}>
                 Seller Information
               </h3>
               
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-3 mb-4">
                 <div style={{
                   width: '3rem',
                   height: '3rem',
@@ -1271,16 +1063,17 @@ export default function ListingDetailPage() {
 
             {/* Safety Tips */}
             <div style={{
-              backgroundColor: 'var(--warning-50)',
-              border: '1px solid var(--warning-200)',
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 5%, #fef3c7 100%)',
+              border: '1px solid #f59e0b',
               borderRadius: '1rem',
-              padding: '1.5rem'
+              padding: '1.25rem',
+              boxShadow: '0 2px 4px -1px rgba(245, 158, 11, 0.1)'
             }}>
               <h3 style={{
-                fontSize: '1.125rem',
+                fontSize: '1rem',
                 fontWeight: '600',
                 color: 'var(--warning-800)',
-                margin: '0 0 1rem 0',
+                margin: '0 0 0.75rem 0',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem'
@@ -1288,7 +1081,7 @@ export default function ListingDetailPage() {
                 <span>🛡️</span>
                 Safety Tips
               </h3>
-              <ul className="space-y-3" style={{
+              <ul className="space-y-2" style={{
                 fontSize: '0.875rem',
                 color: 'var(--warning-700)'
               }}>
