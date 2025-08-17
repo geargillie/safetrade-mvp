@@ -67,8 +67,8 @@ async function verifyIdDocument(imageData: string) {
     };
   }
 
-  // Check if image is too small to be a valid ID
-  if (imageBuffer.length < 10000) { // Less than ~10KB likely not a real ID photo
+  // Check if image is too small to be a valid ID (more reasonable threshold)
+  if (imageBuffer.length < 3000) { // Less than ~3KB likely not a real photo
     return {
       verified: false,
       score: 20,
@@ -79,24 +79,24 @@ async function verifyIdDocument(imageData: string) {
     };
   }
 
-  // Basic validation checks - now with stricter requirements
+  // More reasonable validation checks for real ID photos
   const validations = {
-    imageQuality: imageData.length > 50000, // Sufficient resolution for ID
-    sufficientSize: imageBuffer.length >= 10000, // Minimum file size
+    imageQuality: imageData.length > 8000, // Much lower threshold for compressed IDs
+    sufficientSize: imageBuffer.length >= 3000, // More realistic minimum file size
     notTooLarge: imageBuffer.length <= 5000000, // Max 5MB
     validFormat: imageData.startsWith('data:image/') && (
       imageData.includes('data:image/jpeg') || 
       imageData.includes('data:image/jpg') || 
       imageData.includes('data:image/png')
     ),
-    minimumComplexity: imageBuffer.length > 50000 // Higher complexity suggests actual document vs simple image
+    reasonableSize: imageBuffer.length > 5000 // Reasonable complexity for documents
   };
 
   const passedChecks = Object.values(validations).filter(Boolean).length;
   const score = Math.round((passedChecks / Object.keys(validations).length) * 100);
 
-  // Much stricter verification - require higher score
-  const isVerified = score >= 90 && validations.imageQuality && validations.sufficientSize && validations.minimumComplexity;
+  // More reasonable verification - still reject obvious fakes but accept real IDs
+  const isVerified = score >= 80 && validations.sufficientSize && validations.validFormat;
 
   if (!isVerified) {
     const failedChecks = Object.entries(validations)
@@ -147,8 +147,8 @@ async function verifyPhoto(imageData: string) {
     };
   }
 
-  // Check minimum photo requirements
-  if (imageBuffer.length < 5000) { // Less than ~5KB likely not a real photo
+  // Check minimum photo requirements (more reasonable)
+  if (imageBuffer.length < 2000) { // Less than ~2KB likely not a real photo
     return {
       verified: false,
       score: 15,
@@ -158,24 +158,24 @@ async function verifyPhoto(imageData: string) {
     };
   }
 
-  // Basic validation checks - more realistic
+  // More reasonable validation checks for camera photos
   const validations = {
-    sufficientSize: imageBuffer.length >= 5000, // Minimum file size for face photo
-    imageQuality: imageData.length > 20000, // Sufficient resolution
+    sufficientSize: imageBuffer.length >= 2000, // Lower minimum for compressed photos
+    imageQuality: imageData.length > 5000, // More realistic for camera captures
     validFormat: imageData.startsWith('data:image/') && (
       imageData.includes('data:image/jpeg') || 
       imageData.includes('data:image/jpg') || 
       imageData.includes('data:image/png')
     ),
     notTooLarge: imageBuffer.length <= 3000000, // Max 3MB
-    minimumComplexity: imageBuffer.length > 15000 // Higher complexity suggests actual photo vs simple image
+    reasonableComplexity: imageBuffer.length > 3000 // Reasonable complexity for face photos
   };
 
   const passedChecks = Object.values(validations).filter(Boolean).length;
   const score = Math.round((passedChecks / Object.keys(validations).length) * 100);
 
-  // Stricter photo verification
-  const isVerified = score >= 85 && validations.sufficientSize && validations.imageQuality && validations.minimumComplexity;
+  // More reasonable photo verification
+  const isVerified = score >= 80 && validations.sufficientSize && validations.validFormat;
 
   if (!isVerified) {
     const failedChecks = Object.entries(validations)
