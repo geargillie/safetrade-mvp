@@ -43,14 +43,25 @@ export default function ProfilePage() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      const response = await fetch(`/api/verify-liveness?userId=${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVerificationStatus(data);
-        setIsVerified(data.verified);
-      } else {
+      // Check from the profiles table for verification status
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('verification_status, verified_at')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching profile:', error);
         setIsVerified(false);
+        return;
       }
+      
+      const isVerified = profile?.verification_status === 'verified';
+      setVerificationStatus({ 
+        verified: isVerified, 
+        status: profile?.verification_status || 'pending'
+      });
+      setIsVerified(isVerified);
     } catch (error) {
       console.error('Error checking verification status:', error);
       setIsVerified(false);

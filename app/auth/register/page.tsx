@@ -8,7 +8,6 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PageHeader from '@/components/PageHeader'
-import PhoneVerification from '@/components/PhoneVerification'
 import SimpleVerification from '@/components/SimpleVerification'
 
 function RegisterContent() {
@@ -20,7 +19,7 @@ function RegisterContent() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
-  const [step, setStep] = useState<'register' | 'verify_email' | 'verify_phone' | 'verify_identity' | 'complete'>('register')
+  const [step, setStep] = useState<'register' | 'verify_email' | 'verify_identity' | 'complete'>('register')
   const [verificationMethod, setVerificationMethod] = useState<'start' | null>(null)
 
   // Check user registration progress on component mount
@@ -45,17 +44,14 @@ function RegisterContent() {
             if (profile?.identity_verified) {
               setStep('complete')
               setMessage('Welcome back! Your account is fully verified.')
-            } else if (profile?.phone_verified) {
-              setStep('verify_identity')
-              setMessage('Phone verified! Please complete identity verification.')
             } else {
-              setStep('verify_phone')
-              setMessage('Email verified! Please verify your phone number.')
+              setStep('verify_identity')
+              setMessage('Email verified! Please complete identity verification.')
             }
           } catch (error) {
             console.error('Error checking verification status:', error)
-            setStep('verify_phone')
-            setMessage('Email verified! Please verify your phone number.')
+            setStep('verify_identity')
+            setMessage('Email verified! Please complete identity verification.')
           }
         } else {
           setStep('verify_email')
@@ -64,7 +60,7 @@ function RegisterContent() {
       } else {
         // Check URL parameters for step
         const urlStep = searchParams.get('step')
-        if (urlStep && ['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].includes(urlStep)) {
+        if (urlStep && ['register', 'verify_email', 'verify_identity', 'complete'].includes(urlStep)) {
           setStep(urlStep as typeof step)
         }
       }
@@ -154,8 +150,8 @@ function RegisterContent() {
             console.error('Error creating profile for confirmed user:', error)
           }
           
-          setStep('verify_phone')
-          setMessage('Account created! Now let\'s verify your phone number.')
+          setStep('verify_identity')
+          setMessage('Account created! Now let\'s verify your identity.')
         } else {
           // Email needs confirmation
           console.log('Email confirmation required, confirmation email should be sent')
@@ -203,8 +199,8 @@ function RegisterContent() {
 
       if (session?.user?.email_confirmed_at) {
         setUserId(session.user.id)
-        setStep('verify_phone')
-        setMessage('Email verified! Now let&apos;s verify your phone.')
+        setStep('verify_identity')
+        setMessage('Email verified! Now let&apos;s verify your identity.')
       } else if (session?.user) {
         // User exists but email not confirmed yet
         setMessage('Email not verified yet. Please check your email and click the confirmation link first. Check your spam folder if needed.')
@@ -221,28 +217,6 @@ function RegisterContent() {
     }
   }
 
-  const handlePhoneVerified = async () => {
-    setStep('verify_identity')
-    setMessage('Phone verified! Now let&apos;s verify your identity for secure trading.')
-    
-    // Check if identity is already verified
-    if (userId) {
-      try {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('identity_verified')
-          .eq('id', userId)
-          .single()
-        
-        if (profile?.identity_verified) {
-          setStep('complete')
-          setMessage('Welcome! Your account is fully verified.')
-        }
-      } catch (error) {
-        console.error('Error checking identity verification:', error)
-      }
-    }
-  }
 
   const handleIdentityVerified = (result: { verified?: boolean; status?: string; score?: number; message?: string }) => {
     console.log('Identity verification completed:', result)
@@ -308,9 +282,9 @@ function RegisterContent() {
         
         {/* Progress indicator */}
         <div className="flex items-center justify-center mb-8">
-          {['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].map((stepName, index) => {
-            const stepLabels = ['Sign Up', 'Email', 'Phone', 'Identity', 'Complete'];
-            const currentIndex = ['register', 'verify_email', 'verify_phone', 'verify_identity', 'complete'].indexOf(step);
+          {['register', 'verify_email', 'verify_identity', 'complete'].map((stepName, index) => {
+            const stepLabels = ['Sign Up', 'Email', 'Identity', 'Complete'];
+            const currentIndex = ['register', 'verify_email', 'verify_identity', 'complete'].indexOf(step);
             const isActive = index === currentIndex;
             const isCompleted = index < currentIndex;
             
@@ -471,8 +445,8 @@ function RegisterContent() {
                       console.error('Error creating profile during email skip:', error)
                     }
                     
-                    setStep('verify_phone')
-                    setMessage('Email verification skipped for testing. Now verify your phone.')
+                    setStep('verify_identity')
+                    setMessage('Email verification skipped for testing. Now verify your identity.')
                   }}
                   className="btn-ghost w-full"
                 >
@@ -482,30 +456,6 @@ function RegisterContent() {
             </div>
           )}
 
-          {step === 'verify_phone' && (
-            <div className="space-y-4">
-              <PageHeader
-                title="Verify Your Phone"
-                subtitle="We'll send you a code to verify your phone number"
-                icon="📱"
-              />
-              <PhoneVerification onVerified={handlePhoneVerified} userId={userId || undefined} />
-              
-              {/* Skip button for testing */}
-              <div className="text-center">
-                <button
-                  onClick={() => {
-                    console.log('Skipping phone verification for testing')
-                    setStep('verify_identity')
-                    setMessage('Phone verification skipped for testing. Now verify your identity.')
-                  }}
-                  className="text-sm text-muted-foreground hover:text-foreground underline"
-                >
-                  Skip phone verification (testing only)
-                </button>
-              </div>
-            </div>
-          )}
 
           {step === 'verify_identity' && userId && (
             <div className="space-y-4">
