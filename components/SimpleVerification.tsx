@@ -127,6 +127,14 @@ export default function SimpleVerification({
   // Start camera for photo capture
   const startCamera = useCallback(async () => {
     try {
+      console.log('🎥 Starting camera...');
+      console.log('Browser capabilities:', {
+        hasGetUserMedia: !!navigator.mediaDevices?.getUserMedia,
+        hasMediaDevices: !!navigator.mediaDevices,
+        userAgent: navigator.userAgent,
+        isSecureContext: window.isSecureContext
+      });
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
           width: { ideal: 1280, min: 640 }, 
@@ -136,15 +144,46 @@ export default function SimpleVerification({
         audio: false
       });
       
+      console.log('✅ Camera stream obtained:', {
+        streamId: mediaStream.id,
+        tracks: mediaStream.getTracks().map(track => ({
+          kind: track.kind,
+          enabled: track.enabled,
+          readyState: track.readyState,
+          muted: track.muted
+        }))
+      });
+      
       setStream(mediaStream);
+      
       if (videoRef.current) {
+        console.log('🎥 Setting video srcObject...');
         videoRef.current.srcObject = mediaStream;
-        // Explicitly play the video to ensure it shows
-        try {
-          await videoRef.current.play();
-        } catch (playError) {
-          console.log('Auto-play prevented, video should still work:', playError);
-        }
+        
+        // Wait a bit for the srcObject to be set
+        setTimeout(async () => {
+          if (videoRef.current) {
+            console.log('🎬 Video element state after srcObject set:', {
+              srcObject: !!videoRef.current.srcObject,
+              readyState: videoRef.current.readyState,
+              videoWidth: videoRef.current.videoWidth,
+              videoHeight: videoRef.current.videoHeight,
+              paused: videoRef.current.paused,
+              ended: videoRef.current.ended,
+              muted: videoRef.current.muted
+            });
+            
+            // Explicitly play the video to ensure it shows
+            try {
+              await videoRef.current.play();
+              console.log('✅ Video play() successful');
+            } catch (playError) {
+              console.log('⚠️ Video play() failed:', playError);
+            }
+          }
+        }, 100);
+      } else {
+        console.error('❌ videoRef.current is null!');
       }
     } catch (error) {
       console.error('Camera access error:', error);
@@ -399,6 +438,7 @@ export default function SimpleVerification({
               autoPlay
               playsInline
               muted
+              controls={false}
               className="w-80 h-60 rounded-xl bg-gray-900 mb-4 mx-auto block object-cover"
               style={{
                 maxWidth: '100%',
@@ -406,8 +446,14 @@ export default function SimpleVerification({
                 width: '320px',
                 display: 'block',
                 margin: '0 auto',
-                border: '2px solid #e5e7eb'
+                border: '2px solid #e5e7eb',
+                backgroundColor: '#111827'
               }}
+              onLoadedMetadata={() => console.log('📺 Video metadata loaded')}
+              onCanPlay={() => console.log('📺 Video can play')}
+              onPlaying={() => console.log('📺 Video is playing')}
+              onLoadedData={() => console.log('📺 Video data loaded')}
+              onError={(e) => console.error('📺 Video error:', e)}
             />
             {!videoReady ? (
               <div className="text-center">
