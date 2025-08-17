@@ -40,9 +40,21 @@ export default function SimpleVerification({
 
   // Handle video readiness
   const handleVideoReady = useCallback(() => {
-    if (videoRef.current && videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) {
-      console.log('Video ready:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
-      setVideoReady(true);
+    if (videoRef.current) {
+      console.log('Video ready check:', {
+        readyState: videoRef.current.readyState,
+        videoWidth: videoRef.current.videoWidth,
+        videoHeight: videoRef.current.videoHeight,
+        srcObject: !!videoRef.current.srcObject,
+        paused: videoRef.current.paused
+      });
+      
+      // More lenient check - video is ready if it has dimensions or readyState >= 2
+      if ((videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) || 
+          videoRef.current.readyState >= 2) {
+        console.log('Video is ready for capture');
+        setVideoReady(true);
+      }
     }
   }, []);
 
@@ -58,14 +70,14 @@ export default function SimpleVerification({
       video.addEventListener('playing', handleVideoReady);
       video.addEventListener('loadeddata', handleVideoReady);
       
-      // Fallback timer - force ready after 3 seconds
+      // Fallback timer - force ready after 2 seconds to ensure video shows
       const fallbackTimer = setTimeout(() => {
         console.log('Fallback timer triggered - forcing video ready');
         if (videoRef.current) {
           console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
           setVideoReady(true);
         }
-      }, 3000);
+      }, 2000);
       
       // Also check immediately in case video is already ready
       const checkTimer = setTimeout(() => {
@@ -127,6 +139,12 @@ export default function SimpleVerification({
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Explicitly play the video to ensure it shows
+        try {
+          await videoRef.current.play();
+        } catch (playError) {
+          console.log('Auto-play prevented, video should still work:', playError);
+        }
       }
     } catch (error) {
       console.error('Camera access error:', error);
@@ -381,7 +399,15 @@ export default function SimpleVerification({
               autoPlay
               playsInline
               muted
-              className="w-80 h-60 rounded-xl bg-gray-100 mb-4 mx-auto"
+              className="w-80 h-60 rounded-xl bg-gray-900 mb-4 mx-auto block object-cover"
+              style={{
+                maxWidth: '100%',
+                height: '240px',
+                width: '320px',
+                display: 'block',
+                margin: '0 auto',
+                border: '2px solid #e5e7eb'
+              }}
             />
             {!videoReady ? (
               <div className="text-center">
