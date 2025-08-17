@@ -255,12 +255,12 @@ export default function ProfilePage() {
                             fontWeight: '600',
                             color: 'var(--brand-800)',
                             margin: '0 0 0.5rem 0'
-                          }}>Complete Liveness Verification</h4>
+                          }}>Complete Identity Verification</h4>
                           <p className="text-body-sm" style={{
                             color: 'var(--brand-700)',
                             margin: '0'
                           }}>
-                            Quick face verification to build trust with buyers and access all SafeTrade features.
+                            Upload your ID and take a photo to verify your identity and access all SafeTrade features.
                           </p>
                         </div>
                       </div>

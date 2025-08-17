@@ -218,17 +218,38 @@ export default function CreateListing() {
     
     setVinVerification({ loading: true, result: null, error: null })
     
-    // VIN verification API removed - keeping manual entry only
-    setTimeout(() => {
-      setVinVerification({ 
-        loading: false, 
-        result: { 
-          success: true,
-          data: { vehicleInfo: undefined }
-        }, 
-        error: null 
+    try {
+      const response = await fetch('/api/verify-vin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vin })
       })
-    }, 500) // Small delay to simulate processing
+      
+      const result = await response.json()
+      
+      if (response.ok) {
+        setVinVerification({ loading: false, result, error: null })
+        
+        // Auto-fill form fields from VIN verification result
+        if (result.success && result.data?.vehicleInfo) {
+          const vehicleInfo = result.data.vehicleInfo
+          setFormData(prev => ({
+            ...prev,
+            make: vehicleInfo.make !== 'Unknown' ? vehicleInfo.make || prev.make : prev.make,
+            model: vehicleInfo.model !== 'Unknown' ? vehicleInfo.model || prev.model : prev.model,
+            year: vehicleInfo.year !== 'Unknown' ? vehicleInfo.year || prev.year : prev.year,
+            // Auto-generate title if fields are available
+            title: vehicleInfo.year && vehicleInfo.make && vehicleInfo.model !== 'Unknown' 
+              ? `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`
+              : prev.title
+          }))
+        }
+      } else {
+        setVinVerification({ loading: false, result: null, error: result.message || 'VIN verification failed' })
+      }
+    } catch {
+      setVinVerification({ loading: false, result: null, error: 'Network error during VIN verification' })
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

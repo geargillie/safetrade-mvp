@@ -19,8 +19,7 @@ function RegisterContent() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
-  const [step, setStep] = useState<'register' | 'verify_email' | 'verify_identity' | 'complete'>('register')
-  const [verificationMethod, setVerificationMethod] = useState<'start' | null>(null)
+  const [step, setStep] = useState<'register' | 'verify_identity' | 'complete'>('register')
 
   // Check user registration progress on component mount
   useEffect(() => {
@@ -31,36 +30,30 @@ function RegisterContent() {
         setUserId(session.user.id)
         
         // Check what step the user should be on
-        if (session.user.email_confirmed_at) {
-          // Email is verified, check other verification status
-          try {
-            // Check phone verification status
-            const { data: profile } = await supabase
-              .from('user_profiles')
-              .select('phone_verified, identity_verified')
-              .eq('id', session.user.id)
-              .single()
-            
-            if (profile?.identity_verified) {
-              setStep('complete')
-              setMessage('Welcome back! Your account is fully verified.')
-            } else {
-              setStep('verify_identity')
-              setMessage('Email verified! Please complete identity verification.')
-            }
-          } catch (error) {
-            console.error('Error checking verification status:', error)
+        try {
+          // Check identity verification status
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('identity_verified')
+            .eq('id', session.user.id)
+            .single()
+          
+          if (profile?.identity_verified) {
+            setStep('complete')
+            setMessage('Welcome back! Your account is fully verified.')
+          } else {
             setStep('verify_identity')
-            setMessage('Email verified! Please complete identity verification.')
+            setMessage('Account created! Please verify your identity.')
           }
-        } else {
-          setStep('verify_email')
-          setMessage('Please check your email and click the confirmation link.')
+        } catch (error) {
+          console.error('Error checking verification status:', error)
+          setStep('verify_identity')
+          setMessage('Please verify your identity to continue.')
         }
       } else {
         // Check URL parameters for step
         const urlStep = searchParams.get('step')
-        if (urlStep && ['register', 'verify_email', 'verify_identity', 'complete'].includes(urlStep)) {
+        if (urlStep && ['register', 'verify_identity', 'complete'].includes(urlStep)) {
           setStep(urlStep as typeof step)
         }
       }
@@ -118,51 +111,35 @@ function RegisterContent() {
           }))
         }
 
-        // Check if email needs confirmation
-        if (data.user.email_confirmed_at) {
-          // Email already confirmed, go to phone verification
-          console.log('Email was already confirmed, proceeding to phone verification')
-          
-          // Create profile immediately for confirmed users
-          try {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session?.access_token) {
-              const response = await fetch('/api/auth/create-profile', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${session.access_token}`
-                },
-                body: JSON.stringify({
-                  firstName,
-                  lastName,
-                  email
-                })
+        // Create profile and proceed to identity verification
+        try {
+          const { data: { session } } = await supabase.auth.getSession()
+          if (session?.access_token) {
+            const response = await fetch('/api/auth/create-profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+              },
+              body: JSON.stringify({
+                firstName,
+                lastName,
+                email
               })
-              
-              if (response.ok) {
-                console.log('Profile created successfully for confirmed user')
-              } else {
-                console.error('Failed to create profile for confirmed user')
-              }
+            })
+            
+            if (response.ok) {
+              console.log('Profile created successfully')
+            } else {
+              console.error('Failed to create profile')
             }
-          } catch (error) {
-            console.error('Error creating profile for confirmed user:', error)
           }
-          
-          setStep('verify_identity')
-          setMessage('Account created! Now let\'s verify your identity.')
-        } else {
-          // Email needs confirmation
-          console.log('Email confirmation required, confirmation email should be sent')
-          setStep('verify_email')
-          
-          if (data.user.confirmation_sent_at) {
-            setMessage('Check your email and click the confirmation link to continue. If you don\'t see the email, check your spam folder.')
-          } else {
-            setMessage('Account created, but email confirmation may not be required. Try clicking "Check Email Verification" below.')
-          }
+        } catch (error) {
+          console.error('Error creating profile:', error)
         }
+        
+        setStep('verify_identity')
+        setMessage('Account created! Please verify your identity.')
       }
     } catch (error: unknown) {
       const err = error as { message?: string }
@@ -172,50 +149,6 @@ function RegisterContent() {
     }
   }
 
-  const checkEmailVerification = async () => {
-    setLoading(true)
-    setMessage('')
-    
-    try {
-      console.log('Checking email verification status...')
-      
-      // Refresh the session first
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
-      if (error) {
-        console.error('Session error:', error)
-        setMessage('Error checking verification status. Please try again.')
-        return
-      }
-
-      console.log('Current session:', {
-        user: session?.user ? {
-          id: session.user.id,
-          email: session.user.email,
-          emailConfirmed: session.user.email_confirmed_at,
-          confirmationSentAt: session.user.confirmation_sent_at
-        } : null
-      })
-
-      if (session?.user?.email_confirmed_at) {
-        setUserId(session.user.id)
-        setStep('verify_identity')
-        setMessage('Email verified! Now let&apos;s verify your identity.')
-      } else if (session?.user) {
-        // User exists but email not confirmed yet
-        setMessage('Email not verified yet. Please check your email and click the confirmation link first. Check your spam folder if needed.')
-        console.log('Email confirmation pending for user:', session.user.email)
-      } else {
-        setMessage('No active session found. Please try registering again.')
-        setStep('register')
-      }
-    } catch (error) {
-      console.error('Verification check failed:', error)
-      setMessage('Error checking verification. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
 
   const handleIdentityVerified = (result: { verified?: boolean; status?: string; score?: number; message?: string }) => {
@@ -241,34 +174,6 @@ function RegisterContent() {
     setMessage('You can complete identity verification later in your profile settings.')
   }
 
-  const resendConfirmationEmail = async () => {
-    setLoading(true)
-    setMessage('')
-    
-    try {
-      console.log('Resending confirmation email for:', email)
-      
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
-      })
-      
-      if (error) {
-        console.error('Resend email error:', error)
-        setMessage('Failed to resend confirmation email. Please try again.')
-      } else {
-        setMessage('Confirmation email resent! Please check your email and spam folder.')
-      }
-    } catch (error) {
-      console.error('Resend email failed:', error)
-      setMessage('Failed to resend confirmation email. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Breadcrumbs for potential future use
   // const breadcrumbs = [
@@ -282,9 +187,9 @@ function RegisterContent() {
         
         {/* Progress indicator */}
         <div className="flex items-center justify-center mb-8">
-          {['register', 'verify_email', 'verify_identity', 'complete'].map((stepName, index) => {
-            const stepLabels = ['Sign Up', 'Email', 'Identity', 'Complete'];
-            const currentIndex = ['register', 'verify_email', 'verify_identity', 'complete'].indexOf(step);
+          {['register', 'verify_identity', 'complete'].map((stepName, index) => {
+            const stepLabels = ['Sign Up', 'Identity', 'Complete'];
+            const currentIndex = ['register', 'verify_identity', 'complete'].indexOf(step);
             const isActive = index === currentIndex;
             const isCompleted = index < currentIndex;
             
@@ -382,154 +287,28 @@ function RegisterContent() {
             </>
           )}
 
-          {step === 'verify_email' && (
-            <div className="text-center space-y-4">
-              <PageHeader
-                title="Check Your Email"
-                subtitle={`We sent a confirmation link to ${email}`}
-                icon="📧"
-              />
-              <div className="text-sm text-gray-500 space-y-2">
-                <p>Click the link in your email, then come back here to continue.</p>
-                <p className="text-xs">
-                  💡 <strong>Can&apos;t find the email?</strong> Check your spam/junk folder. 
-                  It may take a few minutes to arrive.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <button
-                  onClick={checkEmailVerification}
-                  disabled={loading}
-                  className="btn-primary w-full"
-                >
-                  {loading ? 'Checking...' : 'I\'ve Confirmed My Email'}
-                </button>
-                
-                <button
-                  onClick={resendConfirmationEmail}
-                  disabled={loading}
-                  className="btn-secondary w-full"
-                >
-                  {loading ? 'Sending...' : 'Resend Confirmation Email'}
-                </button>
-                
-                {/* Temporary skip button for testing */}
-                <button
-                  onClick={async () => {
-                    console.log('Skipping email verification for testing')
-                    
-                    // Create profile when skipping email verification
-                    try {
-                      const { data: { session } } = await supabase.auth.getSession()
-                      if (session?.access_token) {
-                        const response = await fetch('/api/auth/create-profile', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${session.access_token}`
-                          },
-                          body: JSON.stringify({
-                            firstName,
-                            lastName,
-                            email
-                          })
-                        })
-                        
-                        if (response.ok) {
-                          console.log('Profile created successfully during email skip')
-                        } else {
-                          console.error('Failed to create profile during email skip')
-                        }
-                      }
-                    } catch (error) {
-                      console.error('Error creating profile during email skip:', error)
-                    }
-                    
-                    setStep('verify_identity')
-                    setMessage('Email verification skipped for testing. Now verify your identity.')
-                  }}
-                  className="btn-ghost w-full"
-                >
-                  Skip Email Verification (Testing Only)
-                </button>
-              </div>
-            </div>
-          )}
-
-
           {step === 'verify_identity' && userId && (
             <div className="space-y-4">
               <PageHeader
-                title="Choose Your Verification Level"
-                subtitle="Select the verification method that works best for you"
-                icon="🛡️"
+                title="Identity Verification"
+                subtitle="Upload your ID and take a photo to verify your identity"
+                icon="🆔"
               />
               
-              {!verificationMethod ? (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-white text-2xl">🛡️</span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Identity Verification</h3>
-                    <p className="text-sm text-gray-600 mb-6">
-                      Complete identity verification to build trust and unlock all trading features. 
-                      Our streamlined process supports both basic and enhanced verification methods.
-                    </p>
-                    
-                    <button
-                      onClick={() => setVerificationMethod('start')}
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors mb-4"
-                    >
-                      Start Verification
-                    </button>
-                  </div>
-                  
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <span className="text-yellow-600">ℹ️</span>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-yellow-800">
-                          Optional but Recommended
-                        </h3>
-                        <p className="text-sm text-yellow-700 mt-1">
-                          Identity verification helps build trust with other traders and unlocks advanced features. 
-                          You can skip this step and complete it later in your profile.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center">
-                    <button
-                      onClick={skipIdentityVerification}
-                      className="text-sm text-muted-foreground hover:text-foreground underline"
-                    >
-                      Skip for now (complete later)
-                    </button>
-                  </div>
-                </div>
-              ) : verificationMethod ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Identity Verification</h3>
-                    <button
-                      onClick={() => setVerificationMethod(null)}
-                      className="text-sm text-blue-600 hover:text-blue-800 underline"
-                    >
-                      ← Back to Options
-                    </button>
-                  </div>
-                  
-                  <SimpleVerification
-                    userId={userId}
-                    onComplete={handleIdentityVerified}
-                    onError={handleIdentityError}
-                  />
-                </div>
-              ) : null}
+              <SimpleVerification
+                userId={userId}
+                onComplete={handleIdentityVerified}
+                onError={handleIdentityError}
+              />
+              
+              <div className="text-center">
+                <button
+                  onClick={skipIdentityVerification}
+                  className="text-sm text-muted-foreground hover:text-foreground underline"
+                >
+                  Skip for now (complete later)
+                </button>
+              </div>
             </div>
           )}
 
@@ -549,15 +328,11 @@ function RegisterContent() {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✅</span>
-                    <span>Email verified</span>
+                    <span>Account created</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✅</span>
-                    <span>Phone verified</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-yellow-600 mr-2">⏳</span>
-                    <span>Identity verification (complete in profile)</span>
+                    <span>Identity verified</span>
                   </div>
                 </div>
               </div>
