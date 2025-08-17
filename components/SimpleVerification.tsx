@@ -41,6 +41,7 @@ export default function SimpleVerification({
   // Handle video readiness
   const handleVideoReady = useCallback(() => {
     if (videoRef.current && videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) {
+      console.log('Video ready:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
       setVideoReady(true);
     }
   }, []);
@@ -50,12 +51,34 @@ export default function SimpleVerification({
     setVideoReady(false);
     if (videoRef.current && stream) {
       const video = videoRef.current;
+      
+      // Add multiple event listeners for better compatibility
       video.addEventListener('loadedmetadata', handleVideoReady);
       video.addEventListener('canplay', handleVideoReady);
+      video.addEventListener('playing', handleVideoReady);
+      video.addEventListener('loadeddata', handleVideoReady);
+      
+      // Fallback timer - force ready after 3 seconds
+      const fallbackTimer = setTimeout(() => {
+        console.log('Fallback timer triggered - forcing video ready');
+        if (videoRef.current) {
+          console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
+          setVideoReady(true);
+        }
+      }, 3000);
+      
+      // Also check immediately in case video is already ready
+      const checkTimer = setTimeout(() => {
+        handleVideoReady();
+      }, 100);
       
       return () => {
         video.removeEventListener('loadedmetadata', handleVideoReady);
         video.removeEventListener('canplay', handleVideoReady);
+        video.removeEventListener('playing', handleVideoReady);
+        video.removeEventListener('loadeddata', handleVideoReady);
+        clearTimeout(fallbackTimer);
+        clearTimeout(checkTimer);
       };
     }
   }, [stream, handleVideoReady]);
@@ -113,8 +136,8 @@ export default function SimpleVerification({
 
   // Capture photo from camera
   const capturePhoto = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current || !stream || !videoReady) {
-      onError('Camera not ready. Please wait a moment and try again.');
+    if (!videoRef.current || !canvasRef.current || !stream) {
+      onError('Camera not ready. Please try again.');
       return;
     }
 
@@ -127,15 +150,22 @@ export default function SimpleVerification({
       return;
     }
 
-    // Double-check video dimensions
-    if (video.videoWidth === 0 || video.videoHeight === 0) {
-      onError('Camera not ready. Please wait a moment and try again.');
-      return;
+    // More lenient dimension check - use default if no dimensions
+    let width = video.videoWidth || 640;
+    let height = video.videoHeight || 480;
+    
+    // If still no dimensions, try to force them
+    if (width === 0 || height === 0) {
+      console.log('Using fallback dimensions');
+      width = 640;
+      height = 480;
     }
+    
+    console.log('Capturing photo with dimensions:', width, 'x', height);
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(video, 0, 0, width, height);
 
     const photoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
     
@@ -357,9 +387,16 @@ export default function SimpleVerification({
                 <p className="text-sm text-gray-600 mb-4">Camera initializing...</p>
                 <button
                   disabled
-                  className="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed"
+                  className="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed mb-3"
                 >
                   Please Wait...
+                </button>
+                <br />
+                <button
+                  onClick={() => setVideoReady(true)}
+                  className="text-blue-600 hover:text-blue-800 text-sm underline"
+                >
+                  Camera ready? Click to continue
                 </button>
               </div>
             ) : (
