@@ -138,6 +138,32 @@ export class AWSRekognitionService {
 
     } catch (error) {
       console.error('AWS Rekognition face detection error:', error);
+      
+      // Check for specific AWS permission errors
+      if (error instanceof Error) {
+        if (error.message.includes('not authorized to perform: rekognition:DetectFaces')) {
+          return {
+            faceDetected: false,
+            confidence: 0,
+            faceCount: 0,
+            qualityScore: 0,
+            details: this.getEmptyDetails(),
+            reason: 'AWS Rekognition permissions not configured. Please contact support or configure proper AWS IAM permissions for face detection.'
+          };
+        }
+        
+        if (error.message.includes('The security token included in the request is invalid')) {
+          return {
+            faceDetected: false,
+            confidence: 0,
+            faceCount: 0,
+            qualityScore: 0,
+            details: this.getEmptyDetails(),
+            reason: 'AWS credentials are invalid. Please check your AWS access keys configuration.'
+          };
+        }
+      }
+      
       return {
         faceDetected: false,
         confidence: 0,
@@ -261,6 +287,38 @@ export class AWSRekognitionService {
 
     } catch (error) {
       console.error('AWS Rekognition face comparison error:', error);
+      
+      // Check for specific AWS permission errors
+      if (error instanceof Error) {
+        if (error.message.includes('not authorized to perform: rekognition:CompareFaces')) {
+          return {
+            match: false,
+            similarity: 0,
+            confidence: 0,
+            details: {
+              sourceFaceDetected: false,
+              targetFaceDetected: false,
+              qualityCheck: false,
+            },
+            reason: 'AWS Rekognition permissions not configured. Please contact support or configure proper AWS IAM permissions for face comparison.'
+          };
+        }
+        
+        if (error.message.includes('The security token included in the request is invalid')) {
+          return {
+            match: false,
+            similarity: 0,
+            confidence: 0,
+            details: {
+              sourceFaceDetected: false,
+              targetFaceDetected: false,
+              qualityCheck: false,
+            },
+            reason: 'AWS credentials are invalid. Please check your AWS access keys configuration.'
+          };
+        }
+      }
+      
       return {
         match: false,
         similarity: 0,
