@@ -56,30 +56,20 @@ export default function Navigation() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      // Check both basic and enhanced verification status
-      const [basicResponse, enhancedResponse] = await Promise.all([
-        fetch(`/api/identity/free-verify?userId=${userId}`),
-        fetch(`/api/identity/enhanced-verify?userId=${userId}`)
-      ]);
+      // Check verification status from profiles table
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('verification_status, verified_at')
+        .eq('id', userId)
+        .single();
       
-      let verified = false;
-      
-      // Check enhanced verification first (higher priority)
-      if (enhancedResponse.ok) {
-        const enhancedData = await enhancedResponse.json();
-        if (enhancedData.verified) {
-          verified = true;
-        }
+      if (error) {
+        console.error('Error fetching profile:', error);
+        setIsVerified(false);
+        return;
       }
       
-      // If not enhanced verified, check basic verification
-      if (!verified && basicResponse.ok) {
-        const basicData = await basicResponse.json();
-        if (basicData.verified) {
-          verified = true;
-        }
-      }
-      
+      const verified = profile?.verification_status === 'verified';
       setIsVerified(verified);
     } catch (error) {
       console.error('Error checking verification status:', error);
