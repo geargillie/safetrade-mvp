@@ -9,7 +9,7 @@ import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PageHeader from '@/components/PageHeader'
 import PhoneVerification from '@/components/PhoneVerification'
-import StreamlinedVerification from '@/components/StreamlinedVerification'
+import SimpleVerification from '@/components/SimpleVerification'
 
 function RegisterContent() {
   const searchParams = useSearchParams()
@@ -573,7 +573,7 @@ function RegisterContent() {
                     </button>
                   </div>
                   
-                  <StreamlinedVerification
+                  <SimpleVerification
                     userId={userId}
                     onComplete={handleIdentityVerified}
                     onError={handleIdentityError}

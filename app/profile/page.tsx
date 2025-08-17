@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
-import LivenessVerification from '@/components/LivenessVerification';
+import SimpleVerification from '@/components/SimpleVerification';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleVerificationComplete = (result: { verified: boolean; score: number; message: string }) => {
+  const handleVerificationComplete = (result: { verified: boolean; message: string }) => {
     console.log('Verification completed:', result);
     if (result.verified) {
       setIsVerified(true);
@@ -269,7 +269,7 @@ export default function ProfilePage() {
             {/* Verification Component */}
             {showVerification && user && (
               <div className="mt-6">
-                <LivenessVerification
+                <SimpleVerification
                   userId={user.id}
                   onComplete={handleVerificationComplete}
                   onError={handleVerificationError}

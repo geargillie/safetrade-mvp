@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
-import StreamlinedVerification from '@/components/StreamlinedVerification'
+import SimpleVerification from '@/components/SimpleVerification'
 
 export default function CreateListing() {
   const router = useRouter()
@@ -359,7 +359,7 @@ export default function CreateListing() {
             </button>
           </div>
           
-          <StreamlinedVerification
+          <SimpleVerification
             userId={user.id}
             onComplete={handleVerificationComplete}
             onError={handleVerificationError}
