@@ -1,0 +1,197 @@
+/* Cross-browser and responsive design fixes */
+
+/* Ensure consistent box-sizing across browsers */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Fix viewport height calculation issues on mobile */
+.hero-section {
+  min-height: calc(100vh - 128px);
+  min-height: calc(100dvh - 128px); /* Dynamic viewport height for mobile */
+  height: calc(100vh - 128px);
+  height: calc(100dvh - 128px);
+}
+
+/* Prevent horizontal overflow on all devices */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Fix backdrop-filter support issues */
+.backdrop-blur-fallback {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-fallback {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Fix gradient background support for older browsers */
+.gradient-fallback {
+  background: #f9fafb; /* Fallback solid color */
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f3f4f6 100%);
+}
+
+/* Fix flexbox gaps for older browsers */
+.flex-gap-fallback > * + * {
+  margin-left: 0.5rem; /* 8px gap equivalent */
+}
+
+.flex-gap-fallback-column > * + * {
+  margin-top: 1rem; /* 16px gap equivalent */
+}
+
+/* Ensure buttons work on touch devices */
+.touch-button {
+  min-height: 44px; /* Minimum touch target size */
+  min-width: 44px;
+  touch-action: manipulation; /* Prevent double-tap zoom */
+}
+
+/* Fix rounded corners consistency */
+.rounded-xl-safe {
+  border-radius: 12px;
+  border-radius: clamp(8px, 12px, 16px); /* Fallback for unsupported clamp */
+}
+
+.rounded-full-safe {
+  border-radius: 50%;
+  border-radius: 9999px;
+}
+
+/* Fix transform support issues */
+.transform-safe {
+  transform: translateY(0);
+  will-change: transform;
+}
+
+.hover-transform-safe:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease-out;
+}
+
+/* Fix shadow rendering across browsers */
+.shadow-consistent {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+}
+
+.shadow-lg-consistent {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+}
+
+/* Fix text rendering consistency */
+.text-rendering-fix {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix layout shifts from loading fonts */
+.font-loading-fix {
+  font-display: swap;
+}
+
+/* Responsive image fixes */
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Fix sticky positioning on iOS */
+.sticky-fix {
+  position: sticky;
+  position: -webkit-sticky;
+}
+
+/* Animation performance fixes */
+.animate-performance {
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+}
+
+/* Fix button focus states for accessibility */
+.button-focus-fix:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.button-focus-fix:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Fix grid layout for older browsers */
+.grid-fallback {
+  display: grid;
+  display: -ms-grid; /* IE 10-11 */
+}
+
+.grid-fallback.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+  -ms-grid-columns: 1fr 1fr;
+}
+
+.grid-fallback.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+  -ms-grid-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 640px) {
+  /* Fix button spacing on mobile */
+  .mobile-button-fix {
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Fix text size on small screens */
+  .mobile-text-fix {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Fix padding on mobile */
+  .mobile-padding-fix {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .high-contrast-fix {
+    border: 2px solid;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .motion-reduce-fix {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .print-hide {
+    display: none;
+  }
+  
+  .print-show {
+    display: block;
+  }
+}
+
+/* Dark mode preparation */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-ready {
+    /* Add dark mode styles when needed */
+  }
+}

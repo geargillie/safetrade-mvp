@@ -1,0 +1,45 @@
+# Page snapshot
+
+```yaml
+- navigation:
+  - link "ST":
+    - /url: /
+  - link "Sign In":
+    - /url: /auth/login
+  - link "Sign Up":
+    - /url: /auth/register
+  - button "Menu":
+    - img
+- main:
+  - text: Trusted by 10,000+ motorcycle enthusiasts
+  - heading "Trade Motorcycles Securely" [level=1]
+  - paragraph: Connect with verified sellers, access comprehensive vehicle histories, and trade with complete confidence.
+  - link "Browse Listings":
+    - /url: /listings
+    - img
+    - text: Browse Listings
+  - button "Start Selling":
+    - img
+    - text: Start Selling
+  - img
+  - text: ID Verified
+  - img
+  - text: VIN Reports
+  - img
+  - text: Secure Escrow
+  - link "Learn how it works":
+    - /url: /about
+    - text: Learn how it works
+    - img
+  - text: ST SafeTrade © 2024 SafeTrade. All rights reserved.
+  - link:
+    - /url: "#"
+    - img
+  - link:
+    - /url: "#"
+    - img
+  - link:
+    - /url: "#"
+    - img
+- alert
+```

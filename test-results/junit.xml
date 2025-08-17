@@ -1,0 +1,800 @@
+<testsuites id="" name="" tests="28" failures="20" skipped="0" errors="0" time="17.911373">
+<testsuite name="visual/cross-browser.test.js" timestamp="2025-08-17T01:35:15.480Z" hostname="chromium-desktop" tests="28" failures="20" skipped="0" time="53.273" errors="0">
+<testcase name="Hero Section Cross-Browser Tests › Hero section displays correctly on Desktop" classname="visual/cross-browser.test.js" time="5.655">
+</testcase>
+<testcase name="Hero Section Cross-Browser Tests › Hero section displays correctly on Laptop" classname="visual/cross-browser.test.js" time="6.267">
+</testcase>
+<testcase name="Hero Section Cross-Browser Tests › Hero section displays correctly on Tablet" classname="visual/cross-browser.test.js" time="6.285">
+</testcase>
+<testcase name="Hero Section Cross-Browser Tests › Hero section displays correctly on Mobile" classname="visual/cross-browser.test.js" time="5.742">
+</testcase>
+<testcase name="Hero Section Cross-Browser Tests › Hero section displays correctly on Mobile Large" classname="visual/cross-browser.test.js" time="6.333">
+</testcase>
+<testcase name="Button Styling Tests › Buttons render correctly on Desktop" classname="visual/cross-browser.test.js" time="0.998">
+<failure message="cross-browser.test.js:47:5 Buttons render correctly on Desktop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:47:5 › Button Styling Tests › Buttons render correctly on Desktop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      67 |       });
+      68 |
+    > 69 |       expect(browseStyles.display).toBe('inline-flex');
+         |                                    ^
+      70 |       expect(browseStyles.alignItems).toBe('center');
+      71 |       expect(browseStyles.justifyContent).toBe('center');
+      72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Button Styling Tests › Buttons render correctly on Laptop" classname="visual/cross-browser.test.js" time="1.166">
+<failure message="cross-browser.test.js:47:5 Buttons render correctly on Laptop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:47:5 › Button Styling Tests › Buttons render correctly on Laptop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      67 |       });
+      68 |
+    > 69 |       expect(browseStyles.display).toBe('inline-flex');
+         |                                    ^
+      70 |       expect(browseStyles.alignItems).toBe('center');
+      71 |       expect(browseStyles.justifyContent).toBe('center');
+      72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Button Styling Tests › Buttons render correctly on Tablet" classname="visual/cross-browser.test.js" time="1.007">
+<failure message="cross-browser.test.js:47:5 Buttons render correctly on Tablet" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:47:5 › Button Styling Tests › Buttons render correctly on Tablet 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      67 |       });
+      68 |
+    > 69 |       expect(browseStyles.display).toBe('inline-flex');
+         |                                    ^
+      70 |       expect(browseStyles.alignItems).toBe('center');
+      71 |       expect(browseStyles.justifyContent).toBe('center');
+      72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Button Styling Tests › Buttons render correctly on Mobile" classname="visual/cross-browser.test.js" time="1.19">
+<failure message="cross-browser.test.js:47:5 Buttons render correctly on Mobile" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:47:5 › Button Styling Tests › Buttons render correctly on Mobile 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      67 |       });
+      68 |
+    > 69 |       expect(browseStyles.display).toBe('inline-flex');
+         |                                    ^
+      70 |       expect(browseStyles.alignItems).toBe('center');
+      71 |       expect(browseStyles.justifyContent).toBe('center');
+      72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Button Styling Tests › Buttons render correctly on Mobile Large" classname="visual/cross-browser.test.js" time="0.979">
+<failure message="cross-browser.test.js:47:5 Buttons render correctly on Mobile Large" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:47:5 › Button Styling Tests › Buttons render correctly on Mobile Large 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      67 |       });
+      68 |
+    > 69 |       expect(browseStyles.display).toBe('inline-flex');
+         |                                    ^
+      70 |       expect(browseStyles.alignItems).toBe('center');
+      71 |       expect(browseStyles.justifyContent).toBe('center');
+      72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Trust Badges Tests › Trust badges display correctly on Desktop" classname="visual/cross-browser.test.js" time="0.994">
+<failure message="cross-browser.test.js:111:5 Trust badges display correctly on Desktop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:111:5 › Trust Badges Tests › Trust badges display correctly on Desktop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      134 |       });
+      135 |
+    > 136 |       expect(badgeStyles.display).toBe('inline-flex');
+          |                                   ^
+      137 |       expect(badgeStyles.alignItems).toBe('center');
+      138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full
+      139 |
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Trust Badges Tests › Trust badges display correctly on Laptop" classname="visual/cross-browser.test.js" time="1.24">
+<failure message="cross-browser.test.js:111:5 Trust badges display correctly on Laptop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:111:5 › Trust Badges Tests › Trust badges display correctly on Laptop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      134 |       });
+      135 |
+    > 136 |       expect(badgeStyles.display).toBe('inline-flex');
+          |                                   ^
+      137 |       expect(badgeStyles.alignItems).toBe('center');
+      138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full
+      139 |
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Trust Badges Tests › Trust badges display correctly on Tablet" classname="visual/cross-browser.test.js" time="1.06">
+<failure message="cross-browser.test.js:111:5 Trust badges display correctly on Tablet" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:111:5 › Trust Badges Tests › Trust badges display correctly on Tablet 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      134 |       });
+      135 |
+    > 136 |       expect(badgeStyles.display).toBe('inline-flex');
+          |                                   ^
+      137 |       expect(badgeStyles.alignItems).toBe('center');
+      138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full
+      139 |
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Trust Badges Tests › Trust badges display correctly on Mobile" classname="visual/cross-browser.test.js" time="1.407">
+<failure message="cross-browser.test.js:111:5 Trust badges display correctly on Mobile" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:111:5 › Trust Badges Tests › Trust badges display correctly on Mobile 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      134 |       });
+      135 |
+    > 136 |       expect(badgeStyles.display).toBe('inline-flex');
+          |                                   ^
+      137 |       expect(badgeStyles.alignItems).toBe('center');
+      138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full
+      139 |
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Trust Badges Tests › Trust badges display correctly on Mobile Large" classname="visual/cross-browser.test.js" time="0.812">
+<failure message="cross-browser.test.js:111:5 Trust badges display correctly on Mobile Large" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:111:5 › Trust Badges Tests › Trust badges display correctly on Mobile Large 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "inline-flex"
+    Received: "flex"
+
+      134 |       });
+      135 |
+    > 136 |       expect(badgeStyles.display).toBe('inline-flex');
+          |                                   ^
+      137 |       expect(badgeStyles.alignItems).toBe('center');
+      138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full
+      139 |
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Header Styling Tests › Header displays correctly on Desktop" classname="visual/cross-browser.test.js" time="0.846">
+<failure message="cross-browser.test.js:155:5 Header displays correctly on Desktop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:155:5 › Header Styling Tests › Header displays correctly on Desktop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      162 |       
+      163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);
+    > 164 |       expect(headerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      165 |
+      166 |       // Test logo visibility
+      167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Header Styling Tests › Header displays correctly on Laptop" classname="visual/cross-browser.test.js" time="1.099">
+<failure message="cross-browser.test.js:155:5 Header displays correctly on Laptop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:155:5 › Header Styling Tests › Header displays correctly on Laptop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      162 |       
+      163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);
+    > 164 |       expect(headerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      165 |
+      166 |       // Test logo visibility
+      167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Header Styling Tests › Header displays correctly on Tablet" classname="visual/cross-browser.test.js" time="1.127">
+<failure message="cross-browser.test.js:155:5 Header displays correctly on Tablet" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:155:5 › Header Styling Tests › Header displays correctly on Tablet 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      162 |       
+      163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);
+    > 164 |       expect(headerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      165 |
+      166 |       // Test logo visibility
+      167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Header Styling Tests › Header displays correctly on Mobile" classname="visual/cross-browser.test.js" time="0.911">
+<failure message="cross-browser.test.js:155:5 Header displays correctly on Mobile" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:155:5 › Header Styling Tests › Header displays correctly on Mobile 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      162 |       
+      163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);
+    > 164 |       expect(headerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      165 |
+      166 |       // Test logo visibility
+      167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Header Styling Tests › Header displays correctly on Mobile Large" classname="visual/cross-browser.test.js" time="0.906">
+<failure message="cross-browser.test.js:155:5 Header displays correctly on Mobile Large" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:155:5 › Header Styling Tests › Header displays correctly on Mobile Large 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      162 |       
+      163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);
+    > 164 |       expect(headerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      165 |
+      166 |       // Test logo visibility
+      167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Footer Styling Tests › Footer displays correctly on Desktop" classname="visual/cross-browser.test.js" time="0.911">
+<failure message="cross-browser.test.js:189:5 Footer displays correctly on Desktop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:189:5 › Footer Styling Tests › Footer displays correctly on Desktop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      196 |       
+      197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);
+    > 198 |       expect(footerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      199 |
+      200 |       // Test footer content layout
+      201 |       const footerContent = footer.locator('div').first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Footer Styling Tests › Footer displays correctly on Laptop" classname="visual/cross-browser.test.js" time="0.931">
+<failure message="cross-browser.test.js:189:5 Footer displays correctly on Laptop" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:189:5 › Footer Styling Tests › Footer displays correctly on Laptop 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      196 |       
+      197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);
+    > 198 |       expect(footerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      199 |
+      200 |       // Test footer content layout
+      201 |       const footerContent = footer.locator('div').first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Footer Styling Tests › Footer displays correctly on Tablet" classname="visual/cross-browser.test.js" time="0.961">
+<failure message="cross-browser.test.js:189:5 Footer displays correctly on Tablet" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:189:5 › Footer Styling Tests › Footer displays correctly on Tablet 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      196 |       
+      197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);
+    > 198 |       expect(footerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      199 |
+      200 |       // Test footer content layout
+      201 |       const footerContent = footer.locator('div').first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Footer Styling Tests › Footer displays correctly on Mobile" classname="visual/cross-browser.test.js" time="0.92">
+<failure message="cross-browser.test.js:189:5 Footer displays correctly on Mobile" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:189:5 › Footer Styling Tests › Footer displays correctly on Mobile 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      196 |       
+      197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);
+    > 198 |       expect(footerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      199 |
+      200 |       // Test footer content layout
+      201 |       const footerContent = footer.locator('div').first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Footer Styling Tests › Footer displays correctly on Mobile Large" classname="visual/cross-browser.test.js" time="0.7">
+<failure message="cross-browser.test.js:189:5 Footer displays correctly on Mobile Large" type="FAILURE">
+<![CDATA[  [chromium-desktop] › visual/cross-browser.test.js:189:5 › Footer Styling Tests › Footer displays correctly on Mobile Large 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 64
+    Received: 65
+
+      196 |       
+      197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);
+    > 198 |       expect(footerHeight).toBe(64); // h-16 = 64px
+          |                            ^
+      199 |
+      200 |       // Test footer content layout
+      201 |       const footerContent = footer.locator('div').first();
+        at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/video.webm]]
+
+[[ATTACHMENT|visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Layout System Tests › CSS Grid and Flexbox work across browsers" classname="visual/cross-browser.test.js" time="0.912">
+</testcase>
+<testcase name="Animation Performance Tests › Animations perform smoothly across devices" classname="visual/cross-browser.test.js" time="1.129">
+</testcase>
+<testcase name="Visual Accessibility Tests › Text has sufficient color contrast" classname="visual/cross-browser.test.js" time="0.785">
+</testcase>
+</testsuite>
+</testsuites>

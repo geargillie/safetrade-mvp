@@ -1,0 +1,2083 @@
+{
+  "config": {
+    "configFile": "/Users/sharma/safetrade-mvp/playwright.config.js",
+    "rootDir": "/Users/sharma/safetrade-mvp/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 5
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "test-results/html"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/junit.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "firefox-desktop",
+        "name": "firefox-desktop",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "webkit-desktop",
+        "name": "webkit-desktop",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "chromium-laptop",
+        "name": "chromium-laptop",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "tablet-portrait",
+        "name": "tablet-portrait",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "tablet-landscape",
+        "name": "tablet-landscape",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "mobile-chrome",
+        "name": "mobile-chrome",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "mobile-safari",
+        "name": "mobile-safari",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "mobile-samsung",
+        "name": "mobile-samsung",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "small-mobile",
+        "name": "small-mobile",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "large-mobile",
+        "name": "large-mobile",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/sharma/safetrade-mvp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "ultra-wide",
+        "name": "ultra-wide",
+        "testDir": "/Users/sharma/safetrade-mvp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 5,
+    "webServer": {
+      "command": "npm run dev",
+      "port": 3000,
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "visual/cross-browser.test.js",
+      "file": "visual/cross-browser.test.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Hero Section Cross-Browser Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Hero section displays correctly on Desktop",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5655,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:15.758Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-dc0081882ffea798a461",
+              "file": "visual/cross-browser.test.js",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Hero section displays correctly on Laptop",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6267,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:15.745Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-961d7eee6ca5303763de",
+              "file": "visual/cross-browser.test.js",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Hero section displays correctly on Tablet",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6285,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:15.760Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-8babdd408244a65d514c",
+              "file": "visual/cross-browser.test.js",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Hero section displays correctly on Mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5742,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:15.764Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-8b289ad8b9c5cc197001",
+              "file": "visual/cross-browser.test.js",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Hero section displays correctly on Mobile Large",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6333,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:15.763Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-690674d00145684fae58",
+              "file": "visual/cross-browser.test.js",
+              "line": 17,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Button Styling Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 45,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Buttons render correctly on Desktop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 998,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 36,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 36,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:23.364Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-2f816-render-correctly-on-Desktop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 36,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-403a63a192ccd81aa9f3",
+              "file": "visual/cross-browser.test.js",
+              "line": 47,
+              "column": 5
+            },
+            {
+              "title": "Buttons render correctly on Laptop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 1166,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 36,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 36,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:23.451Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-76b28--render-correctly-on-Laptop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 36,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-99a134981c994491f582",
+              "file": "visual/cross-browser.test.js",
+              "line": 47,
+              "column": 5
+            },
+            {
+              "title": "Buttons render correctly on Tablet",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 1007,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 36,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 36,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:23.989Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-94058--render-correctly-on-Tablet-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 36,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-2f0853773c11732cb04b",
+              "file": "visual/cross-browser.test.js",
+              "line": 47,
+              "column": 5
+            },
+            {
+              "title": "Buttons render correctly on Mobile",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 1190,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 36,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 36,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:24.009Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-a56db--render-correctly-on-Mobile-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 36,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-e15eb4d2198bfab0c978",
+              "file": "visual/cross-browser.test.js",
+              "line": 47,
+              "column": 5
+            },
+            {
+              "title": "Buttons render correctly on Mobile Large",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 979,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 36,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 36,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  67 |       });\n  68 |\n> 69 |       expect(browseStyles.display).toBe('inline-flex');\n     |                                    ^\n  70 |       expect(browseStyles.alignItems).toBe('center');\n  71 |       expect(browseStyles.justifyContent).toBe('center');\n  72 |       expect(browseStyles.borderRadius).toContain('12px'); // rounded-xl\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:69:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:24.050Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Butto-588b3-r-correctly-on-Mobile-Large-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 36,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-fa6f284938abe66346f8",
+              "file": "visual/cross-browser.test.js",
+              "line": 47,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Trust Badges Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 109,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Trust badges display correctly on Desktop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 994,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 35,
+                          "line": 136
+                        },
+                        "snippet": "  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 35,
+                            "line": 136
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:25.197Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-78981-isplay-correctly-on-Desktop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 35,
+                        "line": 136
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-44920ff6ec28a3dabbc3",
+              "file": "visual/cross-browser.test.js",
+              "line": 111,
+              "column": 5
+            },
+            {
+              "title": "Trust badges display correctly on Laptop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 1240,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 35,
+                          "line": 136
+                        },
+                        "snippet": "  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 35,
+                            "line": 136
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:25.312Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-6c7bb-display-correctly-on-Laptop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 35,
+                        "line": 136
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-6d38aa61281f810dd989",
+              "file": "visual/cross-browser.test.js",
+              "line": 111,
+              "column": 5
+            },
+            {
+              "title": "Trust badges display correctly on Tablet",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 1060,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 35,
+                          "line": 136
+                        },
+                        "snippet": "  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 35,
+                            "line": 136
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:25.610Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b506a-display-correctly-on-Tablet-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 35,
+                        "line": 136
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-705fffed0decfba160d5",
+              "file": "visual/cross-browser.test.js",
+              "line": 111,
+              "column": 5
+            },
+            {
+              "title": "Trust badges display correctly on Mobile",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 1407,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 35,
+                          "line": 136
+                        },
+                        "snippet": "  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 35,
+                            "line": 136
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:25.689Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-b7076-display-correctly-on-Mobile-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 35,
+                        "line": 136
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-eba85d80fd3cc5bf5613",
+              "file": "visual/cross-browser.test.js",
+              "line": 111,
+              "column": 5
+            },
+            {
+              "title": "Trust badges display correctly on Mobile Large",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 812,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 35,
+                          "line": 136
+                        },
+                        "snippet": "  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 35,
+                            "line": 136
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7minline-\u001b[27mflex\"\u001b[39m\nReceived: \u001b[31m\"flex\"\u001b[39m\n\n  134 |       });\n  135 |\n> 136 |       expect(badgeStyles.display).toBe('inline-flex');\n      |                                   ^\n  137 |       expect(badgeStyles.alignItems).toBe('center');\n  138 |       expect(badgeStyles.borderRadius).toContain('9999px'); // rounded-full\n  139 |\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:136:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:26.173Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Trust-c78cf-y-correctly-on-Mobile-Large-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 35,
+                        "line": 136
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-3bbfcd75e6426941903b",
+              "file": "visual/cross-browser.test.js",
+              "line": 111,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Header Styling Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 153,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Header displays correctly on Desktop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 846,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 164
+                        },
+                        "snippet": "  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:27.435Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-750cc-splays-correctly-on-Desktop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-9d749d03881230131078",
+              "file": "visual/cross-browser.test.js",
+              "line": 155,
+              "column": 5
+            },
+            {
+              "title": "Header displays correctly on Laptop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 1099,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 164
+                        },
+                        "snippet": "  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:27.600Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-2238c-isplays-correctly-on-Laptop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-dca8d2e42f282bc92afe",
+              "file": "visual/cross-browser.test.js",
+              "line": 155,
+              "column": 5
+            },
+            {
+              "title": "Header displays correctly on Tablet",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 1127,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 164
+                        },
+                        "snippet": "  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:27.713Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7a465-isplays-correctly-on-Tablet-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-0ea61bbfa4f16345bea2",
+              "file": "visual/cross-browser.test.js",
+              "line": 155,
+              "column": 5
+            },
+            {
+              "title": "Header displays correctly on Mobile",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 911,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 164
+                        },
+                        "snippet": "  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:28.358Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-7f074-isplays-correctly-on-Mobile-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-d44ba115efdb28891de3",
+              "file": "visual/cross-browser.test.js",
+              "line": 155,
+              "column": 5
+            },
+            {
+              "title": "Header displays correctly on Mobile Large",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 906,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 164
+                        },
+                        "snippet": "  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  162 |       \n  163 |       const headerHeight = await header.evaluate(el => el.offsetHeight);\n> 164 |       expect(headerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  165 |\n  166 |       // Test logo visibility\n  167 |       const logo = page.locator('nav div').filter({ hasText: 'SafeTrade' }).first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:164:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:28.354Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Heade-5eeba-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-18d20cce70b3643eaadf",
+              "file": "visual/cross-browser.test.js",
+              "line": 155,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Footer Styling Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 187,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Footer displays correctly on Desktop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 911,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 198
+                        },
+                        "snippet": "  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 198
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:29.553Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-40b8a-splays-correctly-on-Desktop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 198
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-ccd75cf616ff8e9c9f84",
+              "file": "visual/cross-browser.test.js",
+              "line": 189,
+              "column": 5
+            },
+            {
+              "title": "Footer displays correctly on Laptop",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 931,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 198
+                        },
+                        "snippet": "  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 198
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:29.730Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-566f9-isplays-correctly-on-Laptop-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 198
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-245402f50bd3a79e4c51",
+              "file": "visual/cross-browser.test.js",
+              "line": 189,
+              "column": 5
+            },
+            {
+              "title": "Footer displays correctly on Tablet",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 961,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 198
+                        },
+                        "snippet": "  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 198
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:29.958Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-27d0a-isplays-correctly-on-Tablet-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 198
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-dc2bbce4cae3bf2fae38",
+              "file": "visual/cross-browser.test.js",
+              "line": 189,
+              "column": 5
+            },
+            {
+              "title": "Footer displays correctly on Mobile",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 920,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 198
+                        },
+                        "snippet": "  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 198
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:30.728Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-65e3e-isplays-correctly-on-Mobile-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 198
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-9fd27614bb7dbca05593",
+              "file": "visual/cross-browser.test.js",
+              "line": 189,
+              "column": 5
+            },
+            {
+              "title": "Footer displays correctly on Mobile Large",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 700,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28",
+                        "location": {
+                          "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                          "column": 28,
+                          "line": 198
+                        },
+                        "snippet": "  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                            "column": 28,
+                            "line": 198
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m64\u001b[39m\nReceived: \u001b[31m65\u001b[39m\n\n  196 |       \n  197 |       const footerHeight = await footer.evaluate(el => el.offsetHeight);\n> 198 |       expect(footerHeight).toBe(64); // h-16 = 64px\n      |                            ^\n  199 |\n  200 |       // Test footer content layout\n  201 |       const footerContent = footer.locator('div').first();\n    at /Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js:198:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:30.750Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/sharma/safetrade-mvp/test-results/visual-cross-browser-Foote-c6eb8-s-correctly-on-Mobile-Large-chromium-desktop/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/sharma/safetrade-mvp/tests/visual/cross-browser.test.js",
+                        "column": 28,
+                        "line": 198
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-bf9be645836a311ffd29",
+              "file": "visual/cross-browser.test.js",
+              "line": 189,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Layout System Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 231,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CSS Grid and Flexbox work across browsers",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 912,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:31.771Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-56c59e959bd9fe483a66",
+              "file": "visual/cross-browser.test.js",
+              "line": 232,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Animation Performance Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 260,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Animations perform smoothly across devices",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1129,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:31.859Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-d9a3bd6535da83ff7edf",
+              "file": "visual/cross-browser.test.js",
+              "line": 261,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Visual Accessibility Tests",
+          "file": "visual/cross-browser.test.js",
+          "line": 298,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Text has sufficient color contrast",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 785,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-17T01:35:32.094Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a4bfe6109eacd7bf6859-299d42fd2237a945dd8a",
+              "file": "visual/cross-browser.test.js",
+              "line": 299,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-17T01:35:15.448Z",
+    "duration": 17911.373,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 20,
+    "flaky": 0
+  }
+}
