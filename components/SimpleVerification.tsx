@@ -23,6 +23,7 @@ export default function SimpleVerification({
   const [idImage, setIdImage] = useState<string | null>(null);
   const [photoImage, setPhotoImage] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [videoReady, setVideoReady] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -36,6 +37,28 @@ export default function SimpleVerification({
       }
     };
   }, [stream]);
+
+  // Handle video readiness
+  const handleVideoReady = useCallback(() => {
+    if (videoRef.current && videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) {
+      setVideoReady(true);
+    }
+  }, []);
+
+  // Reset video ready state when stream changes
+  React.useEffect(() => {
+    setVideoReady(false);
+    if (videoRef.current && stream) {
+      const video = videoRef.current;
+      video.addEventListener('loadedmetadata', handleVideoReady);
+      video.addEventListener('canplay', handleVideoReady);
+      
+      return () => {
+        video.removeEventListener('loadedmetadata', handleVideoReady);
+        video.removeEventListener('canplay', handleVideoReady);
+      };
+    }
+  }, [stream, handleVideoReady]);
 
   // Handle ID document upload
   const handleIdUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,8 +113,8 @@ export default function SimpleVerification({
 
   // Capture photo from camera
   const capturePhoto = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current || !stream) {
-      onError('Camera not ready. Please try again.');
+    if (!videoRef.current || !canvasRef.current || !stream || !videoReady) {
+      onError('Camera not ready. Please wait a moment and try again.');
       return;
     }
 
@@ -104,7 +127,7 @@ export default function SimpleVerification({
       return;
     }
 
-    // Ensure video has valid dimensions
+    // Double-check video dimensions
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       onError('Camera not ready. Please wait a moment and try again.');
       return;
@@ -125,7 +148,7 @@ export default function SimpleVerification({
     
     // Submit verification
     submitVerification(idImage!, photoDataUrl);
-  }, [stream, idImage, onError]);
+  }, [stream, idImage, onError, videoReady]);
 
   // Submit verification to API
   const submitVerification = async (idImageData: string, photoImageData: string) => {
@@ -328,12 +351,25 @@ export default function SimpleVerification({
               muted
               className="w-80 h-60 rounded-xl bg-gray-100 mb-4 mx-auto"
             />
-            <button
-              onClick={capturePhoto}
-              className="bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Capture Photo
-            </button>
+            {!videoReady ? (
+              <div className="text-center">
+                <div className="animate-pulse w-3 h-3 bg-blue-500 rounded-full mx-auto mb-2"></div>
+                <p className="text-sm text-gray-600 mb-4">Camera initializing...</p>
+                <button
+                  disabled
+                  className="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed"
+                >
+                  Please Wait...
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={capturePhoto}
+                className="bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+              >
+                Capture Photo
+              </button>
+            )}
           </div>
         )}
       </div>
