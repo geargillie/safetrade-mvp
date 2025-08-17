@@ -58,11 +58,27 @@ export default function SimpleVerification({
     }
   }, []);
 
-  // Reset video ready state when stream changes
+  // Reset video ready state when stream changes and ensure stream is assigned
   React.useEffect(() => {
     setVideoReady(false);
     if (videoRef.current && stream) {
       const video = videoRef.current;
+      
+      // Ensure the stream is assigned to the video element
+      if (!video.srcObject) {
+        console.log('🔄 Assigning stream to video element from useEffect');
+        video.srcObject = stream;
+        
+        // Try to play the video
+        setTimeout(async () => {
+          try {
+            await video.play();
+            console.log('✅ Video play() from useEffect successful');
+          } catch (playError) {
+            console.log('⚠️ Video play() from useEffect failed:', playError);
+          }
+        }, 100);
+      }
       
       // Add multiple event listeners for better compatibility
       video.addEventListener('loadedmetadata', handleVideoReady);
@@ -156,35 +172,48 @@ export default function SimpleVerification({
       
       setStream(mediaStream);
       
-      if (videoRef.current) {
-        console.log('🎥 Setting video srcObject...');
-        videoRef.current.srcObject = mediaStream;
-        
-        // Wait a bit for the srcObject to be set
-        setTimeout(async () => {
-          if (videoRef.current) {
-            console.log('🎬 Video element state after srcObject set:', {
-              srcObject: !!videoRef.current.srcObject,
-              readyState: videoRef.current.readyState,
-              videoWidth: videoRef.current.videoWidth,
-              videoHeight: videoRef.current.videoHeight,
-              paused: videoRef.current.paused,
-              ended: videoRef.current.ended,
-              muted: videoRef.current.muted
-            });
-            
-            // Explicitly play the video to ensure it shows
-            try {
-              await videoRef.current.play();
-              console.log('✅ Video play() successful');
-            } catch (playError) {
-              console.log('⚠️ Video play() failed:', playError);
+      // Function to assign stream to video element
+      const assignStreamToVideo = async (retryCount = 0) => {
+        if (videoRef.current) {
+          console.log('🎥 Setting video srcObject...');
+          videoRef.current.srcObject = mediaStream;
+          
+          // Wait a bit for the srcObject to be set
+          setTimeout(async () => {
+            if (videoRef.current) {
+              console.log('🎬 Video element state after srcObject set:', {
+                srcObject: !!videoRef.current.srcObject,
+                readyState: videoRef.current.readyState,
+                videoWidth: videoRef.current.videoWidth,
+                videoHeight: videoRef.current.videoHeight,
+                paused: videoRef.current.paused,
+                ended: videoRef.current.ended,
+                muted: videoRef.current.muted
+              });
+              
+              // Explicitly play the video to ensure it shows
+              try {
+                await videoRef.current.play();
+                console.log('✅ Video play() successful');
+              } catch (playError) {
+                console.log('⚠️ Video play() failed:', playError);
+              }
             }
+          }, 100);
+        } else {
+          console.error(`❌ videoRef.current is null! Retry ${retryCount + 1}/5`);
+          if (retryCount < 5) {
+            // Retry after a short delay to allow React to render the video element
+            setTimeout(() => assignStreamToVideo(retryCount + 1), 200);
+          } else {
+            console.error('❌ Failed to find video element after 5 retries');
+            onError('Failed to initialize video element. Please try again.');
           }
-        }, 100);
-      } else {
-        console.error('❌ videoRef.current is null!');
-      }
+        }
+      };
+      
+      // Try to assign stream immediately, with retries if needed
+      assignStreamToVideo();
     } catch (error) {
       console.error('Camera access error:', error);
       onError('Camera access is required. Please allow camera permissions and try again.');
