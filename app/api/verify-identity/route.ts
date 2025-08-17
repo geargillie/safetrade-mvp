@@ -15,26 +15,33 @@ function getSupabaseClient() {
 
 // Validate image data
 function validateImage(imageData: string, type: 'id' | 'photo'): boolean {
+  console.log(`Validating ${type} image, length: ${imageData?.length || 0}`);
+  
   if (!imageData || typeof imageData !== 'string') {
+    console.log(`${type} validation failed: no image data`);
     return false;
   }
 
   if (!imageData.startsWith('data:image/')) {
+    console.log(`${type} validation failed: invalid format, starts with:`, imageData.substring(0, 20));
     return false;
   }
 
-  // Check minimum size (basic validation)
-  const minSize = type === 'id' ? 10000 : 5000; // ID needs to be larger for text readability
+  // More lenient minimum size - photos from camera can be smaller
+  const minSize = type === 'id' ? 5000 : 2000; // Reduced minimums
   if (imageData.length < minSize) {
+    console.log(`${type} validation failed: too small (${imageData.length} < ${minSize})`);
     return false;
   }
 
   // Check maximum size (10MB)
   const maxSize = 10 * 1024 * 1024 * 1.37; // Base64 is ~37% larger than binary
   if (imageData.length > maxSize) {
+    console.log(`${type} validation failed: too large (${imageData.length} > ${maxSize})`);
     return false;
   }
 
+  console.log(`${type} validation passed, size: ${imageData.length}`);
   return true;
 }
 

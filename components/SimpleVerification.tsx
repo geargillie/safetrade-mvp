@@ -117,8 +117,8 @@ export default function SimpleVerification({
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
-          width: { ideal: 640 }, 
-          height: { ideal: 480 },
+          width: { ideal: 1280, min: 640 }, 
+          height: { ideal: 720, min: 480 },
           facingMode: 'user'
         },
         audio: false
@@ -167,7 +167,9 @@ export default function SimpleVerification({
     canvas.height = height;
     ctx.drawImage(video, 0, 0, width, height);
 
-    const photoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+    // Use higher quality for better file size
+    const photoDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    console.log('Photo captured, data URL length:', photoDataUrl.length);
     
     // Stop camera
     stream.getTracks().forEach(track => track.stop());
