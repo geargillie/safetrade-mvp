@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
-import SimpleVerification from '@/components/SimpleVerification'
+import OnfidoVerification from '@/components/OnfidoVerification'
 
 export default function CreateListing() {
   const router = useRouter()
@@ -257,40 +257,59 @@ export default function CreateListing() {
     setLoading(true)
     setMessage('')
 
+    console.log('Starting listing creation...')
+    console.log('Form data:', formData)
+    console.log('Images:', images)
+    console.log('User:', user)
+
     try {
       if (!user) {
         throw new Error('User not authenticated')
       }
 
+      // Prepare listing data
+      const listingData = {
+        user_id: user.id,
+        title: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        make: formData.make,
+        model: formData.model,
+        year: parseInt(formData.year),
+        mileage: parseInt(formData.mileage),
+        vin: formData.vin,
+        condition: formData.condition,
+        city: formData.city,
+        zip_code: formData.zipCode,
+        images,
+        vin_verified: Boolean(vinVerification.result?.success && vinVerification.result?.data?.isValid),
+        theft_record_checked: Boolean(vinVerification.result?.success && vinVerification.result?.data?.stolenCheck),
+        theft_record_found: Boolean(vinVerification.result?.data?.isStolen),
+        total_loss_checked: true,
+        total_loss_found: false,
+        vin_verification_date: vinVerification.result?.data?.stolenCheck?.lastChecked || new Date().toISOString()
+      }
+
+      console.log('Listing data to insert:', listingData)
+
       // Create listing in Supabase
       const { data, error } = await supabase
         .from('listings')
-        .insert({
-          user_id: user.id,
-          title: formData.title,
-          description: formData.description,
-          price: parseFloat(formData.price),
-          make: formData.make,
-          model: formData.model,
-          year: parseInt(formData.year),
-          mileage: parseInt(formData.mileage),
-          vin: formData.vin,
-          condition: formData.condition,
-          city: formData.city,
-          zip_code: formData.zipCode,
-          images,
-          vin_verified: Boolean(vinVerification.result?.success && vinVerification.result?.data?.isValid),
-          theft_record_checked: Boolean(vinVerification.result?.success && vinVerification.result?.data?.stolenCheck),
-          theft_record_found: Boolean(vinVerification.result?.data?.isStolen),
-          total_loss_checked: true,
-          total_loss_found: false,
-          vin_verification_date: vinVerification.result?.data?.stolenCheck?.lastChecked || new Date().toISOString()
-        })
+        .insert(listingData)
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
 
+      if (!data) {
+        throw new Error('No data returned from listing creation')
+      }
+
+      console.log('Listing created successfully:', data)
+      console.log('Redirecting to:', `/listings/${data.id}`)
       router.push(`/listings/${data.id}`)
     } catch (error) {
       console.error('Error creating listing:', error)
@@ -304,8 +323,8 @@ export default function CreateListing() {
     return <div className="text-center py-8">Loading...</div>
   }
 
-  // Show verification requirement if user is not verified
-  if (isVerified === false && !showVerification) {
+  // Show verification requirement if user is not verified and hasn't chosen to skip
+  if (isVerified === false && !showVerification && !canSkip) {
     return (
       <div className="min-h-screen" style={{backgroundColor: 'var(--neutral-50)', padding: '2rem 0'}}>
         <div className="container">
@@ -322,10 +341,10 @@ export default function CreateListing() {
             }}>
               <span className="text-white text-2xl">⚠️</span>
             </div>
-            <h2 className="text-heading-lg mb-4">Identity Verification Required</h2>
+            <h2 className="text-heading-lg mb-4">Identity Verification Recommended</h2>
             <p className="text-body mb-6">
-              To create listings and start selling on SafeTrade, you need to verify your identity. 
-              This helps us maintain a trusted marketplace for all users.
+              Verified sellers get more views and build trust with buyers. 
+              Verification helps us maintain a safe marketplace for everyone.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
@@ -334,7 +353,15 @@ export default function CreateListing() {
               >
                 Verify Identity Now
               </button>
-              <Link href="/listings" className="btn btn-secondary">
+              <button
+                onClick={() => setCanSkip(true)}
+                className="btn btn-secondary"
+              >
+                Create Listing Without Verification
+              </button>
+            </div>
+            <div className="mt-4">
+              <Link href="/listings" className="link text-body-sm">
                 Browse Listings Instead
               </Link>
             </div>
@@ -359,7 +386,7 @@ export default function CreateListing() {
             </button>
           </div>
           
-          <SimpleVerification
+          <OnfidoVerification
             userId={user.id}
             onComplete={handleVerificationComplete}
             onError={handleVerificationError}
@@ -384,280 +411,241 @@ export default function CreateListing() {
 
   // Main create listing form
   return (
-    <div className="min-h-screen" style={{backgroundColor: 'var(--neutral-50)', padding: '2rem 0'}}>
-      <div className="container">
-        <div className="text-center mb-8">
-          <h1 className="text-heading-xl mb-4">Create New Listing</h1>
-          <p className="text-body">Create a professional listing with verification and security</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Clean Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-3xl mx-auto px-6 py-8">
+          <h1 className="text-3xl font-light text-gray-900">Create Listing</h1>
+          <p className="text-gray-600 mt-2">Fill out the details below to list your motorcycle</p>
         </div>
+      </div>
 
-        <div className="card" style={{maxWidth: '800px', margin: '0 auto'}}>
-          {/* Verification status badge */}
-          {isVerified && (
-            <div className="badge badge-success mb-6" style={{
-              backgroundColor: 'var(--success-50)',
-              border: '1px solid var(--success-200)',
-              padding: '1rem 1.5rem',
-              fontSize: '0.95rem',
-              width: '100%',
-              justifyContent: 'flex-start'
-            }}>
-              <span className="mr-2" style={{color: 'var(--success)'}}>✅</span>
-              <span style={{color: 'var(--success)', fontWeight: '600'}}>
-                Identity Verified - Trusted Seller
-                {verificationStatus?.method === 'enhanced' && (
-                  <span className="ml-2 badge badge-info" style={{
-                    backgroundColor: 'var(--info-50)',
-                    color: 'var(--info)',
-                    fontSize: '0.75rem',
-                    padding: '0.25rem 0.5rem'
-                  }}>
-                    ENHANCED
-                  </span>
-                )}
-              </span>
+      {/* Main Content */}
+      <div className="max-w-3xl mx-auto px-6 py-8">
+        {/* Verification Status */}
+        {isVerified && (
+          <div className="mb-6 p-3 bg-green-50 border-l-4 border-green-400 rounded-r">
+            <div className="flex items-center">
+              <svg className="w-4 h-4 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm text-green-800 font-medium">Identity Verified</span>
             </div>
-          )}
+          </div>
+        )}
 
-          {canSkip && !isVerified && (
-            <div className="badge badge-warning mb-6" style={{
-              backgroundColor: 'var(--warning-50)',
-              border: '1px solid var(--warning-200)',
-              padding: '1rem 1.5rem',
-              fontSize: '0.95rem',
-              width: '100%',
-              justifyContent: 'flex-start'
-            }}>
-              <span className="mr-2" style={{color: 'var(--warning)'}}>⚠️</span>
-              <span style={{color: 'var(--warning)', fontWeight: '600'}}>Unverified Seller</span>
+        {canSkip && !isVerified && (
+          <div className="mb-6 p-3 bg-amber-50 border-l-4 border-amber-400 rounded-r">
+            <div className="flex items-center">
+              <svg className="w-4 h-4 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+              </svg>
+              <span className="text-sm text-amber-800 font-medium">Unverified Seller</span>
             </div>
-          )}
-        
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Info */}
-            <div className="space-y-6">
-              <h3 className="text-heading-md border-b border-neutral-200 pb-3">Basic Information</h3>
-              
-              <div>
-                <label className="form-label">Listing Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  required
-                  placeholder="e.g., 2019 Honda CBR600RR - Excellent Condition"
-                />
-              </div>
-
-              <div>
-                <label className="form-label">Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  rows={4}
-                  required
-                  placeholder="Describe your motorcycle, its condition, any modifications, service history, etc."
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md-grid-cols-2 gap-6">
+          </div>
+        )}
+        {/* Clean Form */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+            
+            {/* Basic Information */}
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Basic Information</h2>
+              <div className="space-y-6">
                 <div>
-                  <label className="form-label">Price ($)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                   <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
+                    type="text"
+                    name="title"
+                    value={formData.title}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
-                    min="0"
-                    step="0.01"
-                    placeholder="15000"
+                    placeholder="e.g., 2019 Honda CBR600RR - Excellent Condition"
                   />
                 </div>
+
                 <div>
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="condition"
-                    value={formData.condition}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows={4}
                     required
-                  >
-                    <option value="">Select condition</option>
-                    <option value="excellent">Excellent</option>
-                    <option value="good">Good</option>
-                    <option value="fair">Fair</option>
-                    <option value="poor">Poor</option>
-                  </select>
+                    placeholder="Describe your motorcycle's condition, features, and history..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-2 text-gray-500">$</span>
+                      <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                        min="0"
+                        step="0.01"
+                        placeholder="15,000"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
+                    <select
+                      name="condition"
+                      value={formData.condition}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="">Select condition</option>
+                      <option value="excellent">Excellent</option>
+                      <option value="good">Good</option>
+                      <option value="fair">Fair</option>
+                      <option value="poor">Poor</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Vehicle Details */}
-            <div className="space-y-6">
-              <h3 className="text-heading-md border-b border-neutral-200 pb-3">Vehicle Details</h3>
-              
-              {/* VIN Section - Enhanced but not overwhelming */}
-              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
-                <label className="form-label">
-                  VIN (17 characters)
-                  <span className="text-body-sm ml-1" style={{color: 'var(--neutral-500)'}}>
-                    - Used for theft verification and auto-fill
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  name="vin"
-                  value={formData.vin}
-                  onChange={(e) => {
-                    handleInputChange(e)
-                    if (e.target.value.length === 17) {
-                      verifyVIN(e.target.value)
-                    }
-                  }}
-                  className="form-input"
-                  maxLength={17}
-                  placeholder="1HGBH41JXMN109186"
-                  style={{
-                    borderColor: formData.vin.length === 17 
-                      ? vinVerification.result?.success && vinVerification.result.data?.isValid 
-                        ? 'var(--success)' 
-                        : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
-                        ? 'var(--error)' 
-                        : 'var(--neutral-200)'
-                      : 'var(--neutral-200)'
-                  }}
-                />
-                
-                {vinVerification.loading && (
-                  <div className="mt-2 text-body-sm" style={{color: 'var(--info)'}}>
-                    Verifying VIN...
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Vehicle Details</h2>
+              <div className="space-y-6">
+                <div className="grid grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Make</label>
+                    <input
+                      type="text"
+                      name="make"
+                      value={formData.make}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                      placeholder="Honda"
+                    />
                   </div>
-                )}
-                
-                {vinVerification.result && (
-                  <div className="mt-2">
-                    {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
-                      <div className="bg-success-50 border border-success-200 text-success-700 px-3 py-2 rounded-md text-sm">
-                        <div className="flex items-center">
-                          <span className="mr-2">✅</span>
-                          <strong>VIN Verified</strong>
-                        </div>
-                        <div className="text-sm mt-1">
-                          Valid VIN • Theft Check: {vinVerification.result.data?.isStolen ? 'STOLEN' : 'CLEAN'}
-                          {vinVerification.result.data?.vehicleInfo && (
-                            <div className="mt-1">
-                              Auto-filled: {vinVerification.result.data.vehicleInfo.year} {vinVerification.result.data.vehicleInfo.make} {vinVerification.result.data.vehicleInfo.model}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="bg-warning-50 border border-warning-200 text-warning-700 px-3 py-2 rounded-md text-sm">
-                        <div className="flex items-center">
-                          <span className="mr-2">⚠️</span>
-                          <strong>VIN Warning</strong>
-                        </div>
-                      </div>
-                    )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                    <input
+                      type="text"
+                      name="model"
+                      value={formData.model}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                      placeholder="CBR600RR"
+                    />
                   </div>
-                )}
-                
-                {vinVerification.error && (
-                  <div className="mt-2 bg-error-50 border border-error-200 text-error-700 px-3 py-2 rounded-md text-sm">
-                    Error: {vinVerification.error}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
+                    <input
+                      type="number"
+                      name="year"
+                      value={formData.year}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                      min="1900"
+                      max={new Date().getFullYear() + 1}
+                      placeholder="2019"
+                    />
                   </div>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-1 md-grid-cols-3 gap-6">
-                <div>
-                  <label className="form-label">Make</label>
-                  <input
-                    type="text"
-                    name="make"
-                    value={formData.make}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                    placeholder="Honda"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Mileage</label>
+                    <input
+                      type="number"
+                      name="mileage"
+                      value={formData.mileage}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                      min="0"
+                      placeholder="12,000"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="form-label">Model</label>
-                  <input
-                    type="text"
-                    name="model"
-                    value={formData.model}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                    placeholder="CBR600RR"
-                  />
-                </div>
-                <div>
-                  <label className="form-label">Year</label>
-                  <input
-                    type="number"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                    min="1900"
-                    max={new Date().getFullYear() + 1}
-                    placeholder="2019"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 md-grid-cols-2 gap-6">
                 <div>
-                  <label className="form-label">Mileage</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">VIN (17 characters)</label>
                   <input
-                    type="number"
-                    name="mileage"
-                    value={formData.mileage}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                    min="0"
-                    placeholder="12000"
+                    type="text"
+                    name="vin"
+                    value={formData.vin}
+                    onChange={(e) => {
+                      handleInputChange(e)
+                      if (e.target.value.length === 17) {
+                        verifyVIN(e.target.value)
+                      }
+                    }}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono ${
+                      formData.vin.length === 17 
+                        ? vinVerification.result?.success && vinVerification.result.data?.isValid 
+                          ? 'border-green-500' 
+                          : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
+                          ? 'border-red-500' 
+                          : 'border-gray-300'
+                        : 'border-gray-300'
+                    }`}
+                    maxLength={17}
+                    placeholder="1HGBH41JXMN109186"
                   />
+                  
+                  {vinVerification.loading && (
+                    <p className="mt-1 text-xs text-blue-600">Verifying VIN...</p>
+                  )}
+                  
+                  {vinVerification.result && (
+                    <div className="mt-1">
+                      {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
+                        <p className="text-xs text-green-600">
+                          ✓ VIN verified • Theft check: {vinVerification.result.data?.isStolen ? 'STOLEN' : 'Clean'}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-amber-600">⚠ Please check VIN</p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {vinVerification.error && (
+                    <p className="mt-1 text-xs text-red-600">{vinVerification.error}</p>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Location */}
-            <div className="space-y-6">
-              <h3 className="text-heading-md border-b border-neutral-200 pb-3">Location</h3>
-              
-              <div className="grid grid-cols-1 md-grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Location</h2>
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="form-label">City</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                     placeholder="San Francisco"
                   />
                 </div>
                 <div>
-                  <label className="form-label">ZIP Code</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
                   <input
                     type="text"
                     name="zipCode"
                     value={formData.zipCode}
                     onChange={handleInputChange}
-                    className="form-input"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                     placeholder="94102"
                   />
@@ -665,9 +653,9 @@ export default function CreateListing() {
               </div>
             </div>
 
-            {/* Images */}
-            <div className="space-y-6">
-              <h3 className="text-heading-md border-b border-neutral-200 pb-3">Photos</h3>
+            {/* Photos */}
+            <div>
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Photos</h2>
               <ImageUpload 
                 onImagesUploaded={setImages}
                 existingImages={images}
@@ -675,25 +663,27 @@ export default function CreateListing() {
               />
             </div>
 
+            {/* Message */}
             {message && (
-              <div style={{
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                backgroundColor: message.includes('error') ? 'var(--error-50)' : 'var(--success-50)',
-                border: `1px solid ${message.includes('error') ? 'var(--error-200)' : 'var(--success-200)'}`,
-                color: message.includes('error') ? 'var(--error-700)' : 'var(--success-700)'
-              }}>
+              <div className={`p-3 rounded-md ${
+                message.includes('error') 
+                  ? 'bg-red-50 text-red-700 border border-red-200' 
+                  : 'bg-green-50 text-green-700 border border-green-200'
+              }`}>
                 {message}
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary btn-lg w-full"
-            >
-              {loading ? 'Creating Listing...' : 'Create Listing'}
-            </button>
+            {/* Submit */}
+            <div className="pt-6 border-t border-gray-200">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gray-900 text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? 'Creating Listing...' : 'Create Listing'}
+              </button>
+            </div>
           </form>
         </div>
       </div>

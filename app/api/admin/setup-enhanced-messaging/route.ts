@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const results = [];
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     console.log('Creating enhanced conversation list view using queries...');
     
     // Test if we can query the base tables
-    const { data: testConversations, error: testError } = await supabase
+    const { error: testError } = await supabase
       .from('conversations')
       .select(`
         *,

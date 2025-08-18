@@ -10,13 +10,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { maskLocation, getMeetingLocationSuggestions } from '@/lib/locationUtils'
 
-interface ListingImage {
-  id: string
-  image_url: string
-  is_primary: boolean
-  sort_order: number
-}
-
 interface Listing {
   id: string
   title: string
@@ -40,13 +33,13 @@ interface Listing {
   total_loss_found?: boolean
   total_loss_details?: Record<string, unknown>
   vin_verification_date?: string
-  seller_id: string
+  user_id: string
   seller?: {
     first_name: string
     last_name: string
     created_at: string
   }
-  images?: ListingImage[]
+  images?: string[]
 }
 
 export default function ListingDetailPage() {
@@ -91,14 +84,10 @@ export default function ListingDetailPage() {
     try {
       setLoading(true)
       
-      // Load listing with seller info and images
+      // Load listing without join for now
       const { data: listingData, error: listingError } = await supabase
         .from('listings')
-        .select(`
-          *,
-          seller:user_profiles!seller_id(first_name, last_name, created_at),
-          images:listing_images(id, image_url, is_primary, sort_order)
-        `)
+        .select('*')
         .eq('id', listingId)
         .single()
 
@@ -109,18 +98,21 @@ export default function ListingDetailPage() {
         return
       }
 
-      // Sort images by sort_order, with primary image first
-      if (listingData.images) {
-        listingData.images.sort((a: ListingImage, b: ListingImage) => {
-          if (a.is_primary && !b.is_primary) return -1
-          if (!a.is_primary && b.is_primary) return 1
-          return a.sort_order - b.sort_order
-        })
+      // Images are stored as TEXT array, no sorting needed
+      
+      // Add placeholder seller info since we're not using joins
+      if (listingData) {
+        listingData.seller = {
+          first_name: 'Seller',
+          last_name: '',
+          created_at: listingData.created_at
+        }
       }
 
       setListing(listingData)
     } catch (err: unknown) {
       console.error('Error loading listing:', err)
+      console.error('Error details:', JSON.stringify(err, null, 2))
       const error = err as { message?: string }
       setError(error.message || 'Unknown error')
     } finally {
@@ -150,7 +142,7 @@ export default function ListingDetailPage() {
   }
 
   const updateListingStatus = async (newStatus: 'available' | 'in_talks' | 'sold') => {
-    if (!listing || !user || user.id !== listing.seller_id) return
+    if (!listing || !user || user.id !== listing.user_id) return
     
     try {
       setIsUpdatingStatus(true)
@@ -356,7 +348,7 @@ export default function ListingDetailPage() {
           </div>
           
           {/* Enhanced Seller Quick Actions - Vercel style */}
-          {user && user.id === listing.seller_id && (
+          {user && user.id === listing.user_id && (
             <div className="relative status-selector-container">
               <button
                 onClick={() => setShowStatusSelector(!showStatusSelector)}
@@ -430,7 +422,7 @@ export default function ListingDetailPage() {
                     backgroundColor: 'var(--neutral-50)'
                   }}>
                     <Image
-                      src={listing.images[selectedImageIndex]?.image_url || '/placeholder.jpg'}
+                      src={listing.images[selectedImageIndex] || '/placeholder.jpg'}
                       alt={listing.title}
                       fill
                       className="object-cover"
@@ -445,9 +437,9 @@ export default function ListingDetailPage() {
                       backgroundColor: 'var(--neutral-50)'
                     }}>
                       <div className="flex gap-2 overflow-x-auto">
-                        {listing.images.map((image, index) => (
+                        {listing.images.map((imageUrl, index) => (
                           <button
-                            key={image.id}
+                            key={index}
                             onClick={() => setSelectedImageIndex(index)}
                             className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all"
                             style={{
@@ -467,7 +459,7 @@ export default function ListingDetailPage() {
                             }}
                           >
                             <Image
-                              src={image.image_url || '/placeholder.jpg'}
+                              src={imageUrl || '/placeholder.jpg'}
                               alt={`${listing.title} - Image ${index + 1}`}
                               width={80}
                               height={80}
@@ -592,7 +584,7 @@ export default function ListingDetailPage() {
                         : maskLocation(listing.city, listing.zip_code).vicinity
                       }
                     </span>
-                    {user && user.id !== listing.seller_id && (
+                    {user && user.id !== listing.user_id && (
                       <div className="flex flex-col gap-1">
                         <button
                           onClick={() => setShowExactLocation(!showExactLocation)}
@@ -698,7 +690,7 @@ export default function ListingDetailPage() {
               </div>
 
               {user ? (
-                user.id === listing.seller_id ? (
+                user.id === listing.user_id ? (
                   <div className="space-y-4">
                     <div style={{
                       backgroundColor: 'var(--brand-50)',
@@ -832,7 +824,7 @@ export default function ListingDetailPage() {
                         id: listing.id,
                         title: listing.title,
                         price: listing.price,
-                        seller_id: listing.seller_id
+                        seller_id: listing.user_id
                       }}
                       currentUserId={user.id}
                       variant="primary"

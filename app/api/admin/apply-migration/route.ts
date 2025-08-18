@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Read the migration file
     const migrationPath = join(process.cwd(), 'supabase', 'migrations', 'add_enhanced_messaging.sql');
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`Executing statement ${i + 1}:`, statement.substring(0, 100) + '...');
         
-        const { data, error } = await supabase.rpc('execute_sql', {
+        const { error } = await supabase.rpc('execute_sql', {
           sql_statement: statement + ';'
         });
 

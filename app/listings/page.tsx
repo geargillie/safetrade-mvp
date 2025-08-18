@@ -16,7 +16,7 @@ export default function ListingsPage() {
     condition?: string;
     city?: string;
     created_at: string;
-    seller_id: string;
+    user_id: string;
     mileage?: number;
     vin_verified?: boolean;
     status?: 'available' | 'in_talks' | 'sold';
@@ -25,10 +25,7 @@ export default function ListingsPage() {
       last_name?: string;
       identity_verified?: boolean;
     };
-    listing_images?: {
-      image_url: string;
-      is_primary?: boolean;
-    }[];
+    images?: string[];
   }[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -84,20 +81,10 @@ export default function ListingsPage() {
   const fetchListings = async () => {
     setLoading(true);
     try {
+      // Simplified query without join for now to get it working
       let query = supabase
         .from('listings')
-        .select(`
-          *,
-          user_profiles:seller_id (
-            first_name,
-            last_name,
-            identity_verified
-          ),
-          listing_images (
-            image_url,
-            is_primary
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -134,7 +121,7 @@ export default function ListingsPage() {
         
         if (user) {
           // Logged in users: show available/active listings + their own listings regardless of status
-          return isAvailable || listing.seller_id === user.id;
+          return isAvailable || listing.user_id === user.id;
         } else {
           // Anonymous users: show only available/active listings
           return isAvailable;

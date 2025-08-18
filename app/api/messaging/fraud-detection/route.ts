@@ -312,7 +312,7 @@ async function logFraudAttempt(
 
 export async function POST(request: NextRequest) {
   try {
-    const { content, senderId, conversationId, participantIds }: FraudDetectionRequest = await request.json();
+    const { content, senderId, conversationId }: FraudDetectionRequest = await request.json();
 
     if (!content || !senderId || !conversationId) {
       return NextResponse.json(

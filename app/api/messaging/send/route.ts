@@ -38,7 +38,7 @@ function decryptMessage(encryptedContent: string, secretKey: string): string {
       return encryptedContent; // Not encrypted
     }
     
-    const [ivHex, encrypted] = encryptedContent.split(':');
+    const [, encrypted] = encryptedContent.split(':');
     const algorithm = 'aes-256-gcm';
     const decipher = crypto.createDecipher(algorithm, secretKey);
     

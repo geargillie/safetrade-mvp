@@ -43,7 +43,13 @@ export default function Navigation() {
       
       // Check verification status if user exists
       if (user) {
-        await checkVerificationStatus(user.id);
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('identity_verified')
+          .eq('id', user.id)
+          .single();
+        
+        setIsVerified(profile?.identity_verified || false);
       }
     } catch (error) {
       console.error('Error checking user:', error);
@@ -51,29 +57,6 @@ export default function Navigation() {
       setIsVerified(false);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const checkVerificationStatus = async (userId: string) => {
-    try {
-      // Check verification status from profiles table
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('verification_status, verified_at')
-        .eq('id', userId)
-        .single();
-      
-      if (error) {
-        console.error('Error fetching profile:', error);
-        setIsVerified(false);
-        return;
-      }
-      
-      const verified = profile?.verification_status === 'verified';
-      setIsVerified(verified);
-    } catch (error) {
-      console.error('Error checking verification status:', error);
-      setIsVerified(false);
     }
   };
 
@@ -105,82 +88,104 @@ export default function Navigation() {
           </Link>
 
           {/* Enhanced User Info - Vercel Style */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {loading ? (
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-md bg-gray-200 animate-pulse"></div>
-                <div className="hidden sm:block w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="w-8 h-8 rounded-xl bg-gray-200 animate-pulse"></div>
+                <div className="hidden lg:block w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
               </div>
             ) : user ? (
               <>
+                {/* Verification Status Badge - Desktop */}
+                <div className="hidden lg:flex items-center">
+                  {isVerified ? (
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full text-xs font-medium text-green-700 hover:bg-green-100 transition-colors">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>Identity Verified</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-700 hover:bg-amber-100 transition-colors">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                      <span>Verify Identity</span>
+                    </div>
+                  )}
+                </div>
+
                 {/* User Profile Section */}
                 <div className="flex items-center gap-3">
-                  {/* User Avatar with Verification Indicator */}
+                  {/* User Avatar with Enhanced Verification Indicator */}
                   <div className="relative">
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
                       <span className="text-sm font-semibold text-gray-700">
                         {(user.user_metadata?.first_name || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    {/* Verification Badge */}
+                    {/* Enhanced Verification Badge */}
                     {isVerified && (
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full flex items-center justify-center">
+                        <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
                     )}
                   </div>
                   
-                  {/* User Info */}
-                  <div className="hidden sm:flex flex-col">
+                  {/* User Info - Enhanced */}
+                  <div className="hidden md:flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-black">
+                      <span className="text-sm font-semibold text-black">
                         {user.user_metadata?.first_name || 'User'}
                       </span>
-                      {isVerified && (
-                        <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded-md text-xs font-medium text-green-700">
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                          </svg>
-                          <span>Verified</span>
-                        </div>
-                      )}
+                      {/* Mobile verification badge */}
+                      <div className="lg:hidden">
+                        {isVerified ? (
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        ) : (
+                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                        )}
+                      </div>
                     </div>
-                    <span className="text-xs text-gray-600">
-                      {user.email}
+                    <span className="text-xs text-gray-500 font-medium">
+                      {user.email?.split('@')[0]}
                     </span>
                   </div>
                 </div>
                 
-                {/* Menu Button */}
+                {/* Enhanced Menu Button */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
+                  className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm transition-all duration-200"
                   aria-label="User menu"
                 >
                   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M19 9l-7 7-7-7"} />
                   </svg>
                 </button>
               </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/auth/login"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-black transition-colors duration-200"
+                  className="hidden sm:inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-black rounded-lg hover:bg-gray-50 transition-all duration-200"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                  className="inline-flex items-center px-4 py-1.5 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 hover:shadow-sm transition-all duration-200"
                 >
                   Sign Up
                 </Link>
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="sm:hidden p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+                  className="sm:hidden p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:shadow-sm transition-all duration-200"
                   aria-label="Menu"
                 >
                   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                   </svg>
                 </button>
               </div>
@@ -190,7 +195,7 @@ export default function Navigation() {
 
         {/* Enhanced Dropdown Menu - Vercel Style */}
         {mobileMenuOpen && (
-          <div className="absolute top-16 right-6 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+          <div className="absolute top-16 right-6 w-72 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 backdrop-blur-sm">
             {loading ? (
               <div className="px-3 py-2">
                 <div className="w-20 h-3 bg-gray-200 rounded animate-pulse"></div>
@@ -198,35 +203,44 @@ export default function Navigation() {
             ) : user ? (
               <>
                 {/* User Profile Header */}
-                <div className="px-3 py-2 border-b border-gray-100">
+                <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 rounded-xl flex items-center justify-center shadow-sm">
                         <span className="text-sm font-semibold text-gray-700">
                           {(user.user_metadata?.first_name || 'U').charAt(0).toUpperCase()}
                         </span>
                       </div>
                       {isVerified && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full flex items-center justify-center">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-black truncate">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-semibold text-black truncate">
                           {user.user_metadata?.first_name || 'User'}
                         </span>
-                        {isVerified && (
-                          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded-md text-xs font-medium text-green-700">
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                            </svg>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 truncate">
+                          {user.email?.split('@')[0]}
+                        </span>
+                        {isVerified ? (
+                          <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 border border-green-200 rounded-full text-xs font-medium text-green-700">
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
                             <span>Verified</span>
+                          </div>
+                        ) : (
+                          <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-700">
+                            <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div>
+                            <span>Unverified</span>
                           </div>
                         )}
                       </div>
-                      <span className="text-xs text-gray-600 truncate block">
-                        {user.email}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -276,6 +290,19 @@ export default function Navigation() {
                 </div>
 
                 <div className="border-t border-gray-100 py-1">
+                  {!isVerified && (
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-amber-700 hover:bg-amber-50 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5 2a9 9 0 11-6.219-8.56" />
+                      </svg>
+                      <span>Verify Identity</span>
+                      <div className="ml-auto w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                    </Link>
+                  )}
                   <Link
                     href="/profile"
                     onClick={() => setMobileMenuOpen(false)}

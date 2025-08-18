@@ -1,7 +1,7 @@
 // app/messages-v2/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
@@ -19,14 +19,7 @@ export default function EnhancedMessagesPage() {
   const [showConversationList, setShowConversationList] = useState(true);
 
   // Check user authentication
-  useEffect(() => {
-    checkUser();
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push('/auth/login');
@@ -34,7 +27,14 @@ export default function EnhancedMessagesPage() {
     }
     setUser(user);
     setLoading(false);
-  };
+  }, [router]);
+
+  useEffect(() => {
+    checkUser();
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [checkUser]);
 
   const checkScreenSize = () => {
     setIsMobile(window.innerWidth < 768);

@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PageHeader from '@/components/PageHeader'
-import SimpleVerification from '@/components/SimpleVerification'
+import OnfidoVerification from '@/components/OnfidoVerification'
 
 function RegisterContent() {
   const searchParams = useSearchParams()
@@ -295,7 +295,7 @@ function RegisterContent() {
                 icon="🆔"
               />
               
-              <SimpleVerification
+              <OnfidoVerification
                 userId={userId}
                 onComplete={handleIdentityVerified}
                 onError={handleIdentityError}

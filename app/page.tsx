@@ -51,7 +51,7 @@ export default function HomePage() {
           {/* Trust Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-sm">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-gray-700">Trusted by 10,000+ motorcycle enthusiasts</span>
+            <span className="text-sm font-medium text-gray-700">Secure & Encrypted Platform</span>
           </div>
           
           {/* Main Heading Block */}
@@ -71,24 +71,24 @@ export default function HomePage() {
           </div>
 
           {/* Primary Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 max-w-lg mx-auto">
+          <div className="flex flex-col gap-4 justify-center mb-8 max-w-md mx-auto">
             <Link 
               href="/listings" 
-              className="touch-button inline-flex items-center justify-center gap-2 px-8 py-4 bg-black text-white text-base font-semibold rounded-xl-safe shadow-lg-consistent hover:shadow-xl hover:bg-gray-800 transition-all duration-200 button-focus-fix text-rendering-fix"
+              className="w-full touch-button inline-flex items-center justify-center gap-3 px-8 py-6 bg-black text-white text-xl font-semibold rounded-2xl shadow-lg-consistent hover:shadow-xl hover:bg-gray-800 transition-all duration-200 button-focus-fix text-rendering-fix"
             >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <span>Browse Listings</span>
+              <span className="whitespace-nowrap">Browse Listings</span>
             </Link>
             <button 
               onClick={handleStartSelling} 
-              className="touch-button inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black text-base font-semibold rounded-xl-safe border-2 border-gray-300 shadow-lg-consistent hover:shadow-xl hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 button-focus-fix text-rendering-fix"
+              className="w-full touch-button inline-flex items-center justify-center gap-3 px-8 py-6 bg-white text-black text-xl font-semibold rounded-2xl border-2 border-gray-300 shadow-lg-consistent hover:shadow-xl hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 button-focus-fix text-rendering-fix"
             >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              <span>{isAuthenticated === null ? 'Start Selling' : isAuthenticated ? 'Create Listing' : 'Start Selling'}</span>
+              <span className="whitespace-nowrap">{isAuthenticated === null ? 'Start Selling' : isAuthenticated ? 'Create Listing' : 'Start Selling'}</span>
             </button>
           </div>
 

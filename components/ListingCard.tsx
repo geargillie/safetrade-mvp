@@ -18,7 +18,7 @@ interface Listing {
   vin_verified?: boolean;
   condition?: string;
   created_at: string;
-  seller_id: string;
+  user_id: string;
   status?: 'available' | 'in_talks' | 'sold';
   theft_record_checked?: boolean;
   theft_record_found?: boolean;
@@ -27,7 +27,7 @@ interface Listing {
   total_loss_found?: boolean;
   total_loss_details?: Record<string, unknown>;
   vin_verification_date?: string;
-  listing_images?: { image_url: string; is_primary?: boolean }[];
+  images?: string[];
   user_profiles?: { identity_verified?: boolean; first_name?: string; last_name?: string };
 }
 
@@ -37,9 +37,8 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
-  // Get primary image
-  const primaryImage = listing.listing_images?.find((img) => img.is_primary) 
-    || listing.listing_images?.[0];
+  // Get first image from images array
+  const primaryImage = listing.images?.[0];
 
   // Check if seller is verified
   const sellerVerified = listing.user_profiles?.identity_verified || false;
@@ -76,7 +75,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         }}>
           {primaryImage ? (
             <Image
-              src={primaryImage.image_url}
+              src={primaryImage}
               alt={listing.title}
               fill
               className="object-cover"

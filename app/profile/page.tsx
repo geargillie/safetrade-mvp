@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
-import SimpleVerification from '@/components/SimpleVerification';
+import OnfidoVerification from '@/components/OnfidoVerification'
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -280,7 +280,7 @@ export default function ProfilePage() {
             {/* Verification Component */}
             {showVerification && user && (
               <div className="mt-6">
-                <SimpleVerification
+                <OnfidoVerification
                   userId={user.id}
                   onComplete={handleVerificationComplete}
                   onError={handleVerificationError}
