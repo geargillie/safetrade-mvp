@@ -43,10 +43,10 @@ export default function ProfilePage() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      // Check from the profiles table for verification status
+      // Check from the user_profiles table for verification status
       const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('verification_status, verified_at')
+        .from('user_profiles')
+        .select('identity_verified, verification_level, verified_at')
         .eq('id', userId)
         .single();
       
@@ -56,10 +56,30 @@ export default function ProfilePage() {
         return;
       }
       
-      const isVerified = profile?.verification_status === 'verified';
+      // Also check identity_verifications table for detailed status
+      const { data: verification } = await supabase
+        .from('identity_verifications')
+        .select('status, verified')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      const isVerified = profile?.identity_verified || false;
+      
+      // Determine status based on verification table or profile
+      let status = 'pending';
+      if (isVerified) {
+        status = 'verified';
+      } else if (verification?.status === 'failed') {
+        status = 'failed';
+      } else if (verification?.status === 'processing') {
+        status = 'processing';
+      }
+      
       setVerificationStatus({ 
         verified: isVerified, 
-        status: profile?.verification_status || 'pending'
+        status: status
       });
       setIsVerified(isVerified);
     } catch (error) {

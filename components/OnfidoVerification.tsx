@@ -181,6 +181,120 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
     onError(`Verification error: ${errorMessage}`);
   };
 
+  const simulateMockVerification = async () => {
+    try {
+      console.log('🧪 Starting simplified mock verification...');
+      
+      // Get session for auth with detailed logging
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('🔍 Session check:', { 
+        hasSession: !!session, 
+        hasToken: !!session?.access_token,
+        sessionError: sessionError?.message 
+      });
+      
+      if (!session?.access_token) {
+        console.error('❌ Authentication failed:', { session, sessionError });
+        
+        // Try alternative auth method
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log('🔄 Alternative auth check:', { 
+          hasUser: !!user, 
+          userId: user?.id?.substring(0, 8) + '...', 
+          userError: userError?.message 
+        });
+        
+        if (user) {
+          console.log('🔄 Trying alternative auth method with user:', user.id);
+          // For mock mode, directly update the database if we have user ID
+          const directUpdateResponse = await fetch('/api/mock-verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              userId: user.id,
+              bypassAuth: true // Special flag for mock mode
+            })
+          });
+          
+          if (directUpdateResponse.ok) {
+            const result = await directUpdateResponse.json();
+            console.log('🧪 Mock verification completed via alternative method:', result);
+            
+            onComplete({
+              verified: result.verified,
+              status: result.status,
+              message: result.message
+            });
+            return;
+          } else {
+            const errorData = await directUpdateResponse.json();
+            console.error('❌ Alternative auth method failed:', errorData);
+          }
+        }
+        
+        // Last resort: For new users in development, use ultra-simple endpoint
+        if (userId) {
+          console.log('🔄 Last resort: Attempting simple mock verification for userId:', userId);
+          const simpleResponse = await fetch('/api/simple-mock-verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId })
+          });
+          
+          if (simpleResponse.ok) {
+            const result = await simpleResponse.json();
+            console.log('🧪 Simple mock verification completed:', result);
+            
+            onComplete({
+              verified: result.verified,
+              status: result.status,
+              message: result.message
+            });
+            return;
+          } else {
+            const errorData = await simpleResponse.json();
+            console.error('❌ Simple mock verification failed:', errorData);
+          }
+        }
+        
+        throw new Error('User not authenticated - please log in again');
+      }
+
+      // Call the simplified mock verification endpoint
+      const response = await fetch('/api/mock-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Mock verification failed');
+      }
+
+      const result = await response.json();
+      console.log('🧪 Mock verification completed:', result);
+      
+      onComplete({
+        verified: result.verified,
+        status: result.status,
+        message: result.message
+      });
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Mock verification failed';
+      console.error('🧪 Mock verification error:', errorMessage);
+      onError(errorMessage);
+    }
+  };
+
   const initializeOnfido = useCallback(async () => {
     try {
       setLoading(true);
@@ -191,11 +305,9 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
         (!process.env.ONFIDO_API_TOKEN || process.env.ONFIDO_API_TOKEN === 'your_onfido_api_token_here');
 
       if (isDevelopmentMode) {
-        // Show development mode message
-        setTimeout(() => {
-          setLoading(false);
-          setError('Development Mode: Onfido credentials not configured. Add your API token to .env.local');
-        }, 1000);
+        // In development mode, simulate the Onfido flow using our mock API
+        setLoading(false);
+        await simulateMockVerification();
         return;
       }
 
