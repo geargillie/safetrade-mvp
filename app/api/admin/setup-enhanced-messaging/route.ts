@@ -1,8 +1,8 @@
 // app/api/admin/setup-enhanced-messaging/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   try {
     const results = [];
 

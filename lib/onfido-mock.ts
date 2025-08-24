@@ -44,7 +44,7 @@ export class MockOnfidoService {
     return applicant;
   }
 
-  static generateSdkToken(_applicantId: string): MockSdkToken {
+  static generateSdkToken(): MockSdkToken {
     return {
       token: `mock_token_${randomUUID()}`,
       expires_at: new Date(Date.now() + 90 * 60 * 1000).toISOString() // 90 minutes

@@ -1,10 +1,10 @@
 // app/api/admin/apply-migration/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   try {
     // Read the migration file
     const migrationPath = join(process.cwd(), 'supabase', 'migrations', 'add_enhanced_messaging.sql');

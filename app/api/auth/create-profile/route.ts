@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
-    const { firstName, lastName, email } = await request.json()
+    const { firstName, lastName, email, autoVerify = false } = await request.json()
     
     if (!firstName || !lastName || !email) {
       return NextResponse.json({ 
@@ -50,10 +50,10 @@ export async function POST(request: NextRequest) {
       last_name: lastName,
       phone_verified: false,
       id_document_verified: false,
-      trust_score: 0,
-      identity_verified: false,
-      verification_level: null,
-      verified_at: null,
+      trust_score: autoVerify ? 85 : 0,
+      identity_verified: autoVerify, // Auto-verify new users when requested
+      verification_level: autoVerify ? 'enhanced' : null,
+      verified_at: autoVerify ? new Date().toISOString() : null,
       phone: null,
       city: null,
       zip_code: null

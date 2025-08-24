@@ -30,7 +30,7 @@ export default function EnhancedConversationList({
       case 'unread':
         return conversations.filter(conv => conv.metrics.unread_count > 0);
       case 'flagged':
-        return conversations.filter(conv => conv.metrics.fraud_alerts > 0 || (conv.security_flags && conv.security_flags.length > 0));
+        return conversations.filter(conv => conv.metrics.fraud_alerts > 0);
       default:
         return conversations;
     }
@@ -43,7 +43,7 @@ export default function EnhancedConversationList({
   };
 
   const getSecurityIndicator = (conversation: EnhancedConversation) => {
-    if (conversation.security_flags && conversation.security_flags.length > 0) {
+    if (conversation.metrics.fraud_alerts > 0) {
       return { icon: '⚠️', color: 'text-red-500', title: 'Security Alert' };
     }
     
@@ -75,7 +75,7 @@ export default function EnhancedConversationList({
   const filteredConversations = getFilteredConversations();
   const totalUnread = conversations.reduce((sum, conv) => sum + conv.metrics.unread_count, 0);
   const totalFlagged = conversations.filter(conv => 
-    conv.metrics.fraud_alerts > 0 || (conv.security_flags && conv.security_flags.length > 0)
+    conv.metrics.fraud_alerts > 0
   ).length;
 
   if (loading) {
@@ -240,7 +240,7 @@ export default function EnhancedConversationList({
             const isSelected = conversation.id === selectedConversationId;
             const securityIndicator = getSecurityIndicator(conversation);
             const otherUserName = getOtherUserName(conversation);
-            const hasSecurityFlags = conversation.security_flags && conversation.security_flags.length > 0;
+            const hasSecurityFlags = conversation.metrics.fraud_alerts > 0;
             
             return (
               <div

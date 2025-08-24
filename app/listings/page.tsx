@@ -44,6 +44,25 @@ export default function ListingsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleDeleteListing = (deletedListingId: string) => {
+    
+    setListings(prev => {
+      const filtered = prev.filter(listing => listing.id !== deletedListingId);
+      
+      // Also force a fresh fetch from database after a delay to ensure consistency
+      setTimeout(() => {
+        fetchListings();
+      }, 1000);
+      
+      return filtered;
+    });
+  };
+
+  const handleEditListing = (listingId: string) => {
+    // Navigate to edit page
+    window.location.href = `/listings/${listingId}/edit`;
+  };
+
   useEffect(() => {
     fetchListings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,8 +80,23 @@ export default function ListingsPage() {
           filter: 'status=neq.null'
         }, 
         () => {
-          // Refresh listings when status changes
           fetchListings();
+        }
+      )
+      .on('postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'listings'
+        },
+        (payload) => {
+          if (payload.old?.id) {
+            // Remove from state immediately without fetching
+            setListings(prev => {
+              const filtered = prev.filter(listing => listing.id !== payload.old.id);
+              return filtered;
+            });
+          }
         }
       )
       .subscribe();
@@ -81,7 +115,8 @@ export default function ListingsPage() {
   const fetchListings = async () => {
     setLoading(true);
     try {
-      // Simplified query without join for now to get it working
+      // Add cache-busting timestamp to ensure fresh data
+      // const timestamp = Date.now();
       let query = supabase
         .from('listings')
         .select('*')
@@ -111,6 +146,7 @@ export default function ListingsPage() {
 
       if (error) throw error;
       
+      
       // Filter listings based on status and user context
       let filteredData = data || [];
       
@@ -127,6 +163,7 @@ export default function ListingsPage() {
           return isAvailable;
         }
       });
+      
       
       setListings(filteredData);
 
@@ -152,78 +189,45 @@ export default function ListingsPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Minimalistic Header */}
-      <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
-        <div className="text-center mb-12">
-          <h1 style={{
-            fontSize: 'clamp(1.875rem, 3vw, 2.25rem)',
-            fontWeight: '700',
-            color: 'var(--neutral-900)',
-            margin: '0 0 0.75rem 0',
-            letterSpacing: '-0.02em'
-          }}>
-            Browse Motorcycles
+      {/* Notion-Style Clean Hero */}
+      <section className="bg-white py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+            Browse motorcycles
           </h1>
-          <p style={{
-            fontSize: '1rem',
-            color: 'var(--neutral-600)',
-            margin: '0',
-            maxWidth: '480px',
-            marginLeft: 'auto',
-            marginRight: 'auto'
-          }}>
-            Find your perfect ride from verified sellers
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+            Find your perfect ride from verified sellers across the marketplace
           </p>
         </div>
+      </section>
 
-        {/* Simplified Search */}
-        <div className="mb-12">
-          <div className="relative max-w-2xl mx-auto">
-            <input
-              type="text"
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              placeholder="Search motorcycles..."
-              style={{
-                width: '100%',
-                padding: '1rem 1rem 1rem 3rem',
-                fontSize: '1rem',
-                border: '1px solid var(--neutral-300)',
-                borderRadius: '0.75rem',
-                backgroundColor: 'white',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                (e.target as HTMLElement).style.borderColor = 'var(--brand-primary)';
-                (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.1)';
-              }}
-              onBlur={(e) => {
-                (e.target as HTMLElement).style.borderColor = 'var(--neutral-300)';
-                (e.target as HTMLElement).style.boxShadow = 'none';
-              }}
-            />
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--neutral-400)'}}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+      {/* Notion-Style Search and Filters */}
+      <div className="max-w-4xl mx-auto px-6 mb-12">
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          {/* Clean Search */}
+          <div className="mb-6">
+            <div className="relative">
+              <input
+                type="text"
+                value={filters.search}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                placeholder="Search motorcycles..."
+                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Compact Filters */}
-        <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-3 mb-6">
+          {/* Simple Filters */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <select
               value={filters.make}
               onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                border: '1px solid var(--neutral-300)',
-                borderRadius: '2rem',
-                backgroundColor: 'white',
-                minWidth: '120px'
-              }}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">All Brands</option>
               <option value="Harley-Davidson">Harley-Davidson</option>
@@ -241,14 +245,7 @@ export default function ListingsPage() {
               value={filters.priceMax}
               onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
               placeholder="Max Price"
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                border: '1px solid var(--neutral-300)',
-                borderRadius: '2rem',
-                backgroundColor: 'white',
-                width: '120px'
-              }}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
 
             <input
@@ -256,80 +253,44 @@ export default function ListingsPage() {
               value={filters.year}
               onChange={(e) => setFilters({ ...filters, year: e.target.value })}
               placeholder="Year"
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                border: '1px solid var(--neutral-300)',
-                borderRadius: '2rem',
-                backgroundColor: 'white',
-                width: '100px'
-              }}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
+          </div>
 
+          {/* Results Summary */}
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <span>{listings.length} motorcycles found</span>
             {Object.values(filters).some(value => value !== '') && (
               <button
                 onClick={clearFilters}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '0.875rem',
-                  color: 'var(--neutral-600)',
-                  backgroundColor: 'var(--neutral-100)',
-                  border: '1px solid var(--neutral-300)',
-                  borderRadius: '2rem',
-                  cursor: 'pointer'
-                }}
+                className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Clear
+                Clear filters
               </button>
             )}
           </div>
-          
-          {/* Results Count */}
-          <div className="text-center">
-            <span style={{
-              fontSize: '0.875rem',
-              color: 'var(--neutral-600)'
-            }}>
-              {listings.length} motorcycles found
-            </span>
-          </div>
         </div>
       </div>
-
-      {/* Clean Loading State */}
+      {/* Notion-Style Loading State */}
       {loading && (
-        <div className="text-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 mx-auto mb-4" style={{
-            borderWidth: '2px',
-            borderColor: 'var(--neutral-200)',
-            borderTopColor: 'var(--brand-primary)'
-          }}></div>
-          <p style={{fontSize: '0.875rem', color: 'var(--neutral-600)'}}>Loading motorcycles...</p>
+        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
+          <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading motorcycles...</p>
         </div>
       )}
 
-      {/* Clean No Results State */}
+      {/* Notion-Style Empty State */}
       {!loading && listings.length === 0 && (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{
-            backgroundColor: 'var(--neutral-100)'
-          }}>
-            <span className="text-2xl">🔍</span>
+        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
+          <div className="mb-6">
+            <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
-          <h3 style={{
-            fontSize: '1.5rem',
-            fontWeight: '600',
-            color: 'var(--neutral-900)',
-            margin: '0 0 1rem 0'
-          }}>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
             No motorcycles found
           </h3>
-          <p style={{
-            fontSize: '1rem',
-            color: 'var(--neutral-600)',
-            margin: '0 auto 2rem auto',
-            maxWidth: '400px'
-          }}>
+          <p className="text-gray-600 mb-6">
             {Object.values(filters).some(value => value !== '') 
               ? "Try adjusting your search criteria"
               : "Be the first to list a motorcycle"
@@ -338,29 +299,26 @@ export default function ListingsPage() {
           {Object.values(filters).some(value => value !== '') && (
             <button
               onClick={clearFilters}
-              className="btn btn-primary"
-              style={{
-                padding: '0.75rem 1.5rem',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                borderRadius: '0.5rem'
-              }}
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
-              View All Motorcycles
+              View all motorcycles
             </button>
           )}
         </div>
       )}
 
-      {/* Clean Listings Grid */}
+      {/* Clean Listings Grid - Notion Style */}
       {!loading && listings.length > 0 && (
-        <div className="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 pb-16">
-          <div className="grid grid-cols-1 md-grid-cols-2 lg-grid-cols-3 gap-6">
+        <div className="max-w-4xl mx-auto px-6 pb-16">
+          <div className="grid gap-6 w-full" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
             {listings.map((listing) => (
               <ListingCard 
                 key={listing.id} 
                 listing={listing}
                 showVerificationBadge={true}
+                currentUserId={user?.id}
+                onDelete={handleDeleteListing}
+                onEdit={handleEditListing}
               />
             ))}
           </div>

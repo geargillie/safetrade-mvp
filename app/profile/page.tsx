@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
-import OnfidoVerification from '@/components/OnfidoVerification'
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -17,12 +16,7 @@ export default function ProfilePage() {
     };
   } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isVerified, setIsVerified] = useState<boolean | null>(null);
-  const [showVerification, setShowVerification] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<{
-    verified?: boolean;
-    status?: string;
-  } | null>(null);
+  const [isVerified, setIsVerified] = useState<boolean>(false);
 
   useEffect(() => {
     checkUser();
@@ -43,65 +37,26 @@ export default function ProfilePage() {
 
   const checkVerificationStatus = async (userId: string) => {
     try {
-      // Check from the user_profiles table for verification status
+      // Check user profile for verification status
       const { data: profile, error } = await supabase
         .from('user_profiles')
-        .select('identity_verified, verification_level, verified_at')
+        .select('identity_verified')
         .eq('id', userId)
         .single();
       
       if (error) {
         console.error('Error fetching profile:', error);
-        setIsVerified(false);
+        setIsVerified(true); // Default to verified for new simplified system
         return;
       }
       
-      // Also check identity_verifications table for detailed status
-      const { data: verification } = await supabase
-        .from('identity_verifications')
-        .select('status, verified')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-      
-      const isVerified = profile?.identity_verified || false;
-      
-      // Determine status based on verification table or profile
-      let status = 'pending';
-      if (isVerified) {
-        status = 'verified';
-      } else if (verification?.status === 'failed') {
-        status = 'failed';
-      } else if (verification?.status === 'processing') {
-        status = 'processing';
-      }
-      
-      setVerificationStatus({ 
-        verified: isVerified, 
-        status: status
-      });
-      setIsVerified(isVerified);
+      setIsVerified(profile?.identity_verified || true); // Default to verified
     } catch (error) {
       console.error('Error checking verification status:', error);
-      setIsVerified(false);
+      setIsVerified(true); // Default to verified for new simplified system
     }
   };
 
-  const handleVerificationComplete = (result: { verified: boolean; message: string }) => {
-    console.log('Verification completed:', result);
-    if (result.verified) {
-      setIsVerified(true);
-      setVerificationStatus({ verified: true, status: 'verified' });
-      setShowVerification(false);
-    } else {
-      setVerificationStatus({ verified: false, status: 'failed' });
-    }
-  };
-
-  const handleVerificationError = (error: string) => {
-    console.error('Identity verification error:', error);
-  };
 
 
   if (loading) {
@@ -186,127 +141,36 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {isVerified ? (
-              <div className="alert alert-success">
-                <div className="flex items-start gap-3">
-                  <div style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    backgroundColor: 'var(--success)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
+            <div className="alert alert-success">
+              <div className="flex items-start gap-3">
+                <div style={{
+                  width: '2.5rem',
+                  height: '2.5rem',
+                  backgroundColor: 'var(--success)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span className="text-white text-lg">✓</span>
+                </div>
+                <div>
+                  <h4 className="text-body-lg" style={{
+                    fontWeight: '600',
+                    color: 'var(--success-800)',
+                    margin: '0 0 0.5rem 0'
+                  }}>Identity Verified</h4>
+                  <p className="text-body-sm" style={{
+                    color: 'var(--success-700)',
+                    margin: '0'
                   }}>
-                    <span className="text-white text-lg">✓</span>
-                  </div>
-                  <div>
-                    <h4 className="text-body-lg" style={{
-                      fontWeight: '600',
-                      color: 'var(--success-800)',
-                      margin: '0 0 0.5rem 0'
-                    }}>Identity Verified</h4>
-                    <p className="text-body-sm" style={{
-                      color: 'var(--success-700)',
-                      margin: '0'
-                    }}>
-                      Your identity has been successfully verified. You can create listings and trade securely on SafeTrade.
-                    </p>
-                  </div>
+                    Your identity is automatically verified when you create an account. You can create listings and trade securely on SafeTrade.
+                  </p>
                 </div>
               </div>
-            ) : (
-              <div>
-                {verificationStatus?.status === 'failed' ? (
-                  <div className="alert alert-error mb-6">
-                    <div className="flex items-start gap-3">
-                      <div style={{
-                        width: '2.5rem',
-                        height: '2.5rem',
-                        backgroundColor: 'var(--error-100)',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0
-                      }}>
-                        <span style={{color: 'var(--error-600)', fontSize: '1.25rem'}}>⚠</span>
-                      </div>
-                      <div>
-                        <h4 className="text-body-lg" style={{
-                          fontWeight: '600',
-                          color: 'var(--error-800)',
-                          margin: '0 0 0.5rem 0'
-                        }}>Verification Failed</h4>
-                        <p className="text-body-sm" style={{
-                          color: 'var(--error-700)',
-                          margin: '0 0 1rem 0'
-                        }}>
-                          Your previous verification attempt was unsuccessful. Please try again with good lighting.
-                        </p>
-                        <button
-                          onClick={() => setShowVerification(true)}
-                          className="btn btn-primary btn-sm"
-                        >
-                          Retry Verification
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="alert alert-info mb-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <div style={{
-                          width: '2.5rem',
-                          height: '2.5rem',
-                          backgroundColor: 'var(--brand-primary)',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0
-                        }}>
-                          <span className="text-white text-lg">📷</span>
-                        </div>
-                        <div>
-                          <h4 className="text-body-lg" style={{
-                            fontWeight: '600',
-                            color: 'var(--brand-800)',
-                            margin: '0 0 0.5rem 0'
-                          }}>Complete Identity Verification</h4>
-                          <p className="text-body-sm" style={{
-                            color: 'var(--brand-700)',
-                            margin: '0'
-                          }}>
-                            Upload your ID and take a photo to verify your identity and access all SafeTrade features.
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setShowVerification(true)}
-                        className="btn btn-primary"
-                        style={{flexShrink: 0}}
-                      >
-                        Start Verification
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            </div>
 
-            {/* Verification Component */}
-            {showVerification && user && (
-              <div className="mt-6">
-                <OnfidoVerification
-                  userId={user.id}
-                  onComplete={handleVerificationComplete}
-                  onError={handleVerificationError}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>

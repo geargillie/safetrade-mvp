@@ -12,6 +12,9 @@ export interface EnhancedMessage {
   is_encrypted: boolean;
   fraud_score?: number;
   fraud_flags?: string[];
+  fraud_patterns?: string[];
+  fraud_confidence?: number;
+  fraud_risk_level?: 'low' | 'medium' | 'high' | 'critical';
   created_at: string;
   updated_at?: string;
   sender?: {
@@ -56,7 +59,6 @@ export interface EnhancedConversation {
   last_message_at: string;
   metrics: ConversationMetrics;
   is_verified: boolean;
-  security_flags: string[];
 }
 
 export const useEnhancedMessaging = (currentUserId: string) => {
@@ -75,43 +77,120 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     try {
       setLoading(true);
       
-      // Get conversations without joins for now
-      const { data, error } = await supabase
-        .from('conversations')
+      // Try to use the conversation_list view first (with full data)
+      const { data: conversationListData, error: viewError } = await supabase
+        .from('conversation_list')
         .select('*')
         .or(`buyer_id.eq.${currentUserId},seller_id.eq.${currentUserId}`)
         .order('updated_at', { ascending: false });
 
-      if (error) throw error;
+      let conversationsData = conversationListData;
 
-      // Transform basic conversation data to EnhancedConversation format
-      const enhancedConversations = (data || []).map((conv: any) => ({
-        ...conv,
-        // Add placeholder data for missing fields
-        listing_title: 'Motorcycle Listing',
-        listing_price: 0,
-        listing_make: 'Unknown',
-        listing_model: 'Unknown',
-        listing_year: 2020,
-        buyer_first_name: 'Buyer',
-        buyer_last_name: '',
-        seller_first_name: 'Seller',
-        seller_last_name: '',
-        last_message: '',
-        last_message_at: conv.updated_at,
-        security_level: conv.security_level || 'standard',
-        security_flags: conv.security_flags || [],
-        fraud_alerts_count: conv.fraud_alerts_count || 0,
-        encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,
-        metrics: {
-          total_messages: 0,
-          unread_count: 0,
-          last_activity: conv.updated_at,
-          fraud_alerts: conv.fraud_alerts_count || 0,
-          security_level: conv.security_level || 'standard' as const
-        },
-        is_verified: true // Assume verified for now
-      }));
+      // If the view doesn't exist, fall back to basic conversations table
+      if (viewError && (viewError.message.includes('relation "conversation_list" does not exist') || 
+                       viewError.message.includes('Could not find the table'))) {
+        console.log('conversation_list view not found, using simplified approach');
+        
+        // Get basic conversations first
+        const { data: basicConversations, error: basicError } = await supabase
+          .from('conversations')
+          .select('*')
+          .or(`buyer_id.eq.${currentUserId},seller_id.eq.${currentUserId}`)
+          .order('updated_at', { ascending: false });
+
+        if (basicError) throw basicError;
+
+        // Enrich each conversation with listing and user data
+        const enrichedData = await Promise.all(
+          (basicConversations || []).map(async (conv) => {
+            // Get listing details
+            const { data: listing } = await supabase
+              .from('listings')
+              .select('title, price, make, model, year')
+              .eq('id', conv.listing_id)
+              .single();
+
+            // Get buyer details
+            const { data: buyer } = await supabase
+              .from('user_profiles')
+              .select('first_name, last_name, identity_verified')
+              .eq('id', conv.buyer_id)
+              .single();
+
+            // Get seller details
+            const { data: seller } = await supabase
+              .from('user_profiles')
+              .select('first_name, last_name, identity_verified')
+              .eq('id', conv.seller_id)
+              .single();
+
+            // Get last message
+            const { data: lastMessage } = await supabase
+              .from('messages')
+              .select('content, created_at')
+              .eq('conversation_id', conv.id)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .single();
+
+            // Get unread count
+            const { count: unreadCount } = await supabase
+              .from('messages')
+              .select('*', { count: 'exact', head: true })
+              .eq('conversation_id', conv.id)
+              .eq('is_read', false)
+              .neq('sender_id', currentUserId);
+
+            return {
+              ...conv,
+              listings: listing,
+              buyer: buyer,
+              seller: seller,
+              last_message: lastMessage?.content || '',
+              last_message_at: lastMessage?.created_at || conv.updated_at,
+              unread_count: unreadCount || 0
+            };
+          })
+        );
+
+        conversationsData = enrichedData;
+      } else if (viewError) {
+        throw viewError;
+      }
+
+      // Transform conversation data to EnhancedConversation format
+      const enhancedConversations = (conversationsData || []).map((conv: any) => {
+        // Handle both view format and joined table format
+        const listing = conv.listings || {};
+        const buyer = conv.buyer || {};
+        const seller = conv.seller || {};
+
+        return {
+          ...conv,
+          listing_title: conv.listing_title || listing.title || 'Motorcycle Listing',
+          listing_price: conv.listing_price || listing.price || 0,
+          listing_make: conv.listing_make || listing.make || 'Unknown',
+          listing_model: conv.listing_model || listing.model || 'Unknown',
+          listing_year: conv.listing_year || listing.year || 2020,
+          buyer_first_name: conv.buyer_first_name || buyer.first_name || 'Buyer',
+          buyer_last_name: conv.buyer_last_name || buyer.last_name || '',
+          seller_first_name: conv.seller_first_name || seller.first_name || 'Seller',
+          seller_last_name: conv.seller_last_name || seller.last_name || '',
+          last_message: conv.last_message || '',
+          last_message_at: conv.last_message_at || conv.updated_at,
+          security_level: conv.security_level || 'standard',
+          fraud_alerts_count: conv.fraud_alerts_count || 0,
+          encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,
+          metrics: {
+            total_messages: conv.total_messages || 0,
+            unread_count: conv.unread_count || 0,
+            last_activity: conv.last_message_at || conv.updated_at,
+            fraud_alerts: conv.fraud_alerts_count || 0,
+            security_level: conv.security_level || 'standard' as const
+          },
+          is_verified: (buyer.identity_verified && seller.identity_verified) || true
+        };
+      });
 
       setConversations(enhancedConversations);
       setError(null);
@@ -130,31 +209,22 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     sellerId: string
   ) => {
     try {
-      // Check if users are verified before allowing conversation
-      const { data: buyerProfile } = await supabase
-        .from('user_profiles')
-        .select('identity_verified, security_flags')
-        .eq('id', buyerId)
-        .single();
-
-      const { data: sellerProfile } = await supabase
-        .from('user_profiles')
-        .select('identity_verified, security_flags')
-        .eq('id', sellerId)
-        .single();
-
-      if (!buyerProfile?.identity_verified || !sellerProfile?.identity_verified) {
-        throw new Error('Both users must complete identity verification to start messaging');
-      }
-
-      // Create conversation with fallback compatibility
-      const { data, error } = await supabase.rpc('create_conversation', {
+      // Verification check is now handled server-side in the create_conversation_simple function
+      // This avoids RLS issues with frontend access to user_profiles table
+      
+      const { data, error } = await supabase.rpc('create_conversation_simple', {
         p_listing_id: listingId,
         p_buyer_id: buyerId,
         p_seller_id: sellerId
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle verification error specifically
+        if (error.message.includes('identity verification')) {
+          throw new Error('Both users must complete identity verification to start messaging');
+        }
+        throw error;
+      }
 
       await loadConversations();
       return data;
@@ -287,29 +357,61 @@ export const useEnhancedConversationMessages = (
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
-        .from('messages') // Use existing messages table
-        .select(`
-          *,
-          sender:user_profiles!sender_id(first_name, last_name)
-        `)
+      // Get messages without joins to avoid relationship issues
+      const { data: rawMessages, error } = await supabase
+        .from('messages')
+        .select('*')
         .eq('conversation_id', conversationId)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
 
-      // Process messages with fallback compatibility
-      const processedMessages = (data || []).map(msg => ({
-        ...msg,
-        message_type: msg.message_type || 'text',
-        is_encrypted: msg.is_encrypted || false,
-        fraud_score: msg.fraud_score || 0,
-        fraud_flags: msg.fraud_flags || [],
-        status: msg.status || (msg.sender_id === currentUserId ? 
-          (msg.is_read ? 'read' : 'delivered') : 'received')
-      }));
+      // Enrich messages with sender information
+      const messagesWithSenders = await Promise.all(
+        (rawMessages || []).map(async (msg) => {
+          const { data: sender } = await supabase
+            .from('user_profiles')
+            .select('first_name, last_name')
+            .eq('id', msg.sender_id)
+            .single();
 
-      setMessages(processedMessages);
+          return {
+            ...msg,
+            sender: sender
+          };
+        })
+      );
+
+      const data = messagesWithSenders;
+
+      // Process messages with proper status tracking
+      const processedMessages = (data || []).map(msg => {
+        // Determine message status based on sender and read state
+        let status = 'sent';
+        if (msg.sender_id === currentUserId) {
+          // Message sent by current user
+          status = msg.is_read ? 'read' : 'delivered';
+        } else {
+          // Message received by current user
+          status = msg.is_read ? 'delivered' : 'delivered'; // Use 'delivered' as valid status
+        }
+
+        return {
+          ...msg,
+          message_type: msg.message_type || 'text',
+          is_encrypted: msg.is_encrypted || false,
+          fraud_score: msg.fraud_score || 0,
+          fraud_flags: msg.fraud_flags || [],
+          status: status
+        };
+      });
+
+      // Remove duplicates based on message ID
+      const uniqueMessages = processedMessages.filter((message, index, self) => 
+        index === self.findIndex(m => m.id === message.id)
+      );
+      
+      setMessages(uniqueMessages);
 
       // Mark messages as read using existing function
       if (data && data.length > 0) {
@@ -372,8 +474,14 @@ export const useEnhancedConversationMessages = (
         if (result.blocked) {
           // Remove temp message and show fraud warning
           setMessages(prev => prev.filter(msg => msg.temp_id !== tempId));
-          throw new Error(result.error || 'Message blocked for security reasons');
+          throw new Error(result.fraudAnalysis?.recommendations?.[0] || result.error || 'Message blocked for security reasons');
         }
+        throw new Error(result.error || 'Failed to send message');
+      }
+
+      // Check if message was successful
+      if (!result.success) {
+        setMessages(prev => prev.filter(msg => msg.temp_id !== tempId));
         throw new Error(result.error || 'Failed to send message');
       }
 
@@ -384,10 +492,17 @@ export const useEnhancedConversationMessages = (
           : msg
       ));
 
-      // Show fraud warning if needed
-      if (result.fraudScore?.warning) {
-        console.warn('Message fraud warning:', result.fraudScore.warning);
+      // Show advanced fraud analysis warnings
+      if (result.fraudAnalysis?.warning) {
+        console.warn('Message fraud warning:', result.fraudAnalysis.warning);
         // You could show a user notification here
+      }
+
+      // Handle blocked messages
+      if (result.blocked && result.fraudAnalysis) {
+        console.error('Message blocked by AI fraud detection:', result.fraudAnalysis);
+        // Show user-friendly blocked message notification
+        throw new Error(result.fraudAnalysis.recommendations?.[0] || 'Message blocked for security reasons');
       }
 
     } catch (err: any) {
@@ -453,29 +568,42 @@ export const useEnhancedConversationMessages = (
       }, async (payload) => {
         const newMessage = payload.new as any;
         
+        // Get sender info for all messages
+        const { data: senderData } = await supabase
+          .from('user_profiles')
+          .select('first_name, last_name')
+          .eq('id', newMessage.sender_id)
+          .single();
+
+        const messageWithSender = {
+          ...newMessage,
+          sender: senderData,
+          status: newMessage.sender_id === currentUserId ? 'sent' : 'delivered'
+        };
+
+        // Add message to state with better duplicate prevention
+        setMessages(prev => {
+          // Remove any duplicates (including temp messages) and add the new one
+          const filteredMessages = prev.filter(msg => 
+            msg.id !== newMessage.id && msg.temp_id !== newMessage.temp_id
+          );
+          return [...filteredMessages, messageWithSender].sort((a, b) => 
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+        });
+
+        // Auto-mark messages as read if not from current user
         if (newMessage.sender_id !== currentUserId) {
-          // Get sender info
-          const { data: senderData } = await supabase
-            .from('user_profiles')
-            .select('first_name, last_name')
-            .eq('id', newMessage.sender_id)
-            .single();
-
-          setMessages(prev => [...prev, {
-            ...newMessage,
-            sender: senderData,
-            status: 'received'
-          }]);
-
-          // Mark as read
-          await supabase.rpc('mark_messages_read_enhanced', {
-            p_conversation_id: conversationId,
-            p_user_id: currentUserId
-          });
+          setTimeout(async () => {
+            await supabase.rpc('mark_messages_read', {
+              p_conversation_id: conversationId,
+              p_user_id: currentUserId
+            });
+          }, 1000); // Small delay to ensure message is displayed first
         }
       })
       
-      // Listen for message status updates
+      // Listen for message status updates (read/unread changes)
       .on('postgres_changes', {
         event: 'UPDATE',
         schema: 'public',
@@ -483,9 +611,22 @@ export const useEnhancedConversationMessages = (
         filter: `conversation_id=eq.${conversationId}`
       }, (payload) => {
         const updatedMessage = payload.new as any;
-        setMessages(prev => prev.map(msg => 
-          msg.id === updatedMessage.id ? { ...msg, ...updatedMessage } : msg
-        ));
+        
+        setMessages(prev => prev.map(msg => {
+          if (msg.id === updatedMessage.id) {
+            // Update message status based on read state
+            const newStatus = updatedMessage.is_read 
+              ? (msg.sender_id === currentUserId ? 'read' : 'delivered')
+              : (msg.sender_id === currentUserId ? 'delivered' : 'delivered');
+              
+            return { 
+              ...msg, 
+              is_read: updatedMessage.is_read,
+              status: newStatus
+            };
+          }
+          return msg;
+        }));
       })
       
       // Listen for typing indicators
@@ -547,6 +688,28 @@ export const useEnhancedConversationMessages = (
     loadMessages();
   }, [loadMessages]);
 
+  // Manual mark as read function
+  const markAsRead = useCallback(async () => {
+    if (!conversationId || !currentUserId) return;
+    
+    try {
+      await supabase.rpc('mark_messages_read', {
+        p_conversation_id: conversationId,
+        p_user_id: currentUserId
+      });
+      
+      // Update local state immediately
+      setMessages(prev => prev.map(msg => ({
+        ...msg,
+        is_read: msg.sender_id !== currentUserId ? true : msg.is_read,
+        status: msg.sender_id !== currentUserId ? 'delivered' : msg.status
+      })));
+      
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  }, [conversationId, currentUserId]);
+
   return {
     messages,
     loading,
@@ -555,6 +718,7 @@ export const useEnhancedConversationMessages = (
     typingUsers,
     sendMessage,
     sendTypingIndicator,
-    loadMessages
+    loadMessages,
+    markAsRead
   };
 };

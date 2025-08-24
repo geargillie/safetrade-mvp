@@ -8,7 +8,6 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PageHeader from '@/components/PageHeader'
-import OnfidoVerification from '@/components/OnfidoVerification'
 
 function RegisterContent() {
   const searchParams = useSearchParams()
@@ -19,7 +18,7 @@ function RegisterContent() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
-  const [step, setStep] = useState<'register' | 'verify_identity' | 'complete'>('register')
+  const [step, setStep] = useState<'register' | 'complete'>('register')
 
   // Check user registration progress on component mount
   useEffect(() => {
@@ -28,34 +27,8 @@ function RegisterContent() {
       
       if (session?.user) {
         setUserId(session.user.id)
-        
-        // Check what step the user should be on
-        try {
-          // Check identity verification status
-          const { data: profile } = await supabase
-            .from('user_profiles')
-            .select('identity_verified')
-            .eq('id', session.user.id)
-            .single()
-          
-          if (profile?.identity_verified) {
-            setStep('complete')
-            setMessage('Welcome back! Your account is fully verified.')
-          } else {
-            setStep('verify_identity')
-            setMessage('Account created! Please verify your identity.')
-          }
-        } catch (error) {
-          console.error('Error checking verification status:', error)
-          setStep('verify_identity')
-          setMessage('Please verify your identity to continue.')
-        }
-      } else {
-        // Check URL parameters for step
-        const urlStep = searchParams.get('step')
-        if (urlStep && ['register', 'verify_identity', 'complete'].includes(urlStep)) {
-          setStep(urlStep as typeof step)
-        }
+        setStep('complete')
+        setMessage('Welcome back! Your account is ready to use.')
       }
     }
 
@@ -68,7 +41,6 @@ function RegisterContent() {
     setMessage('')
 
     try {
-      console.log('Starting user registration for:', email)
       
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
@@ -83,7 +55,6 @@ function RegisterContent() {
         }
       })
 
-      console.log('Supabase signup response:', { data, error })
 
       if (error) {
         console.error('Signup error:', error)
@@ -91,15 +62,8 @@ function RegisterContent() {
       }
 
       if (data.user) {
-        console.log('User created successfully:', {
-          id: data.user.id,
-          email: data.user.email,
-          emailConfirmed: data.user.email_confirmed_at,
-          confirmationSentAt: data.user.confirmation_sent_at
-        })
         setUserId(data.user.id)
         
-        console.log('User signup successful, skipping profile creation until email confirmation')
         
         // Store user info in localStorage for profile creation after email confirmation
         if (typeof window !== 'undefined') {
@@ -111,7 +75,7 @@ function RegisterContent() {
           }))
         }
 
-        // Create profile and proceed to identity verification
+        // Create profile with automatic verification
         try {
           const { data: { session } } = await supabase.auth.getSession()
           if (session?.access_token) {
@@ -124,12 +88,12 @@ function RegisterContent() {
               body: JSON.stringify({
                 firstName,
                 lastName,
-                email
+                email,
+                autoVerify: true // Automatically verify new users
               })
             })
             
             if (response.ok) {
-              console.log('Profile created successfully')
             } else {
               console.error('Failed to create profile')
             }
@@ -138,8 +102,8 @@ function RegisterContent() {
           console.error('Error creating profile:', error)
         }
         
-        setStep('verify_identity')
-        setMessage('Account created! Please verify your identity.')
+        setStep('complete')
+        setMessage('Account created successfully! You are ready to start using SafeTrade.')
       }
     } catch (error: unknown) {
       const err = error as { message?: string }
@@ -151,28 +115,6 @@ function RegisterContent() {
 
 
 
-  const handleIdentityVerified = (result: { verified?: boolean; status?: string; score?: number; message?: string }) => {
-    console.log('Identity verification completed:', result)
-    if (result.verified) {
-      setStep('complete')
-      setMessage('Identity verified successfully!')
-    } else {
-      setMessage(`Identity verification: ${result.message || 'Failed'}`)
-      // Still allow completion even if identity verification failed/pending
-      setTimeout(() => setStep('complete'), 3000)
-    }
-  }
-
-  const handleIdentityError = (error: string) => {
-    console.error('Identity verification error:', error)
-    setMessage(`Identity verification error: ${error}`)
-    // Allow user to skip identity verification for now and complete later
-  }
-
-  const skipIdentityVerification = () => {
-    setStep('complete')
-    setMessage('You can complete identity verification later in your profile settings.')
-  }
 
 
   // Breadcrumbs for potential future use
@@ -187,9 +129,9 @@ function RegisterContent() {
         
         {/* Progress indicator */}
         <div className="flex items-center justify-center mb-8">
-          {['register', 'verify_identity', 'complete'].map((stepName, index) => {
-            const stepLabels = ['Sign Up', 'Identity', 'Complete'];
-            const currentIndex = ['register', 'verify_identity', 'complete'].indexOf(step);
+          {['register', 'complete'].map((stepName, index) => {
+            const stepLabels = ['Sign Up', 'Complete'];
+            const currentIndex = ['register', 'complete'].indexOf(step);
             const isActive = index === currentIndex;
             const isCompleted = index < currentIndex;
             
@@ -287,30 +229,6 @@ function RegisterContent() {
             </>
           )}
 
-          {step === 'verify_identity' && userId && (
-            <div className="space-y-4">
-              <PageHeader
-                title="Identity Verification"
-                subtitle="Upload your ID and take a photo to verify your identity"
-                icon="🆔"
-              />
-              
-              <OnfidoVerification
-                userId={userId}
-                onComplete={handleIdentityVerified}
-                onError={handleIdentityError}
-              />
-              
-              <div className="text-center">
-                <button
-                  onClick={skipIdentityVerification}
-                  className="text-sm text-muted-foreground hover:text-foreground underline"
-                >
-                  Skip for now (complete later)
-                </button>
-              </div>
-            </div>
-          )}
 
           {step === 'complete' && (
             <div className="text-center space-y-4">
@@ -332,7 +250,7 @@ function RegisterContent() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-600 mr-2">✅</span>
-                    <span>Identity verified</span>
+                    <span>Identity automatically verified</span>
                   </div>
                 </div>
               </div>
@@ -345,14 +263,6 @@ function RegisterContent() {
                   Start Browsing Listings
                 </Link>
                 
-                <div>
-                  <Link 
-                    href="/profile"
-                    className="text-sm text-blue-600 hover:text-blue-800 underline"
-                  >
-                    Complete identity verification in profile
-                  </Link>
-                </div>
               </div>
             </div>
           )}

@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       let sdkToken: { data: { token: string } };
       
       if (useMockMode) {
-        const mockToken = MockOnfidoService.generateSdkToken(applicantId);
+        const mockToken = MockOnfidoService.generateSdkToken();
         sdkToken = { data: mockToken };
         console.log('🧪 Mock Mode: Generated mock SDK token');
       } else {

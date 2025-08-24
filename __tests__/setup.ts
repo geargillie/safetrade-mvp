@@ -12,11 +12,16 @@ if (typeof globalThis.Request === 'undefined') {
     method: string;
     headers: Map<string, string>;
     body?: ReadableStream;
+    private _bodyText?: string;
     
     constructor(input: string | URL, init?: RequestInit) {
       this.url = typeof input === 'string' ? input : input.toString();
       this.method = init?.method || 'GET';
       this.headers = new Map();
+      
+      if (init?.body) {
+        this._bodyText = init.body as string;
+      }
       
       if (init?.headers) {
         if (init.headers instanceof Headers) {
@@ -32,11 +37,11 @@ if (typeof globalThis.Request === 'undefined') {
     }
     
     async json() {
-      return JSON.parse(this.body as any);
+      return JSON.parse(this._bodyText || 'undefined');
     }
     
     async text() {
-      return this.body as string;
+      return this._bodyText || '';
     }
   } as any;
 }
@@ -149,3 +154,55 @@ if (typeof globalThis.ReadableStream === 'undefined') {
     constructor() {}
   } as any;
 }
+
+// Mock NextRequest and NextResponse
+jest.mock('next/server', () => ({
+  NextRequest: class MockNextRequest {
+    url: string;
+    method: string;
+    headers: Map<string, string>;
+    body?: ReadableStream;
+    private _bodyText?: string;
+    
+    constructor(input: string | URL, init?: RequestInit) {
+      this.url = typeof input === 'string' ? input : input.toString();
+      this.method = init?.method || 'GET';
+      this.headers = new Map();
+      
+      if (init?.body) {
+        this._bodyText = init.body as string;
+      }
+      
+      if (init?.headers) {
+        if (init.headers instanceof Headers) {
+          init.headers.forEach((value, key) => this.headers.set(key, value));
+        } else if (Array.isArray(init.headers)) {
+          init.headers.forEach(([key, value]) => this.headers.set(key, value));
+        } else {
+          Object.entries(init.headers).forEach(([key, value]) => 
+            this.headers.set(key, Array.isArray(value) ? value[0] : value)
+          );
+        }
+      }
+    }
+    
+    async json() {
+      return JSON.parse(this._bodyText || 'undefined');
+    }
+    
+    async text() {
+      return this._bodyText || '';
+    }
+  },
+  NextResponse: {
+    json: (body: any, init?: ResponseInit) => {
+      return new Response(JSON.stringify(body), {
+        status: init?.status || 200,
+        headers: {
+          'Content-Type': 'application/json',
+          ...init?.headers
+        }
+      });
+    }
+  }
+}));

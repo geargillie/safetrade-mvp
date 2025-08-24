@@ -3,11 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import twilio from 'twilio'
 import { supabase } from '@/lib/supabase'
 
-// Debug: Log environment variables (remove in production)
-console.log('Twilio Config Check:')
-console.log('Account SID:', process.env.TWILIO_ACCOUNT_SID ? 'Set' : 'Missing')
-console.log('Auth Token:', process.env.TWILIO_AUTH_TOKEN ? 'Set' : 'Missing')
-console.log('Phone Number:', process.env.TWILIO_PHONE_NUMBER)
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -19,7 +14,6 @@ export async function POST(request: NextRequest) {
     const requestBody = await request.json()
     const { phone, action } = requestBody
 
-    console.log('Phone verification request:', { phone, action })
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 })
@@ -35,12 +29,10 @@ export async function POST(request: NextRequest) {
 
     // Format phone number (add +1 if US number)
     const formattedPhone = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`
-    console.log('Formatted phone:', formattedPhone)
 
     if (action === 'send') {
       // Check if user is trying to verify the same number as our Twilio sender number
       if (formattedPhone === process.env.TWILIO_PHONE_NUMBER) {
-        console.log('User trying to verify Twilio sender number - using development bypass')
         const verificationCode = '123456' // Fixed code for development/testing
         
         return NextResponse.json({ 

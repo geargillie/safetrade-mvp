@@ -95,47 +95,7 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
     return data.token;
   }, [userId]);
 
-  const setupOnfidoSDK = useCallback(async (token: string): Promise<void> => {
-    if (!onfidoContainerRef.current || !window.Onfido) {
-      throw new Error('Onfido SDK not ready');
-    }
-
-    // Clear any existing content
-    onfidoContainerRef.current.innerHTML = '';
-
-    // Initialize Onfido SDK
-    onfidoInstanceRef.current = window.Onfido.init({
-      token,
-      containerId: onfidoContainerRef.current.id,
-      steps: [
-        'welcome',
-        {
-          type: 'document',
-          options: {
-            documentTypes: {
-              driving_licence: true,
-              passport: true,
-              national_identity_card: true
-            },
-            hideCountrySelection: false
-          }
-        },
-        'face',
-        'complete'
-      ],
-      onComplete: handleOnfidoComplete,
-      onError: handleOnfidoError,
-      customUI: {
-        fontFamilyTitle: 'system-ui, -apple-system, sans-serif',
-        fontFamilySubtitle: 'system-ui, -apple-system, sans-serif',
-        fontFamilyBody: 'system-ui, -apple-system, sans-serif',
-        primaryColor: '#000000',
-        primaryColorHover: '#1a1a1a'
-      }
-    });
-  }, []);
-
-  const handleOnfidoComplete = async (data: OnfidoCompletionData) => {
+  const handleOnfidoComplete = useCallback(async (data: OnfidoCompletionData) => {
     try {
       console.log('Onfido verification completed:', data);
 
@@ -173,15 +133,15 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
       const errorMessage = err instanceof Error ? err.message : 'Verification processing failed';
       onError(errorMessage);
     }
-  };
+  }, [onComplete, onError, userId]);
 
-  const handleOnfidoError = (error: OnfidoError) => {
+  const handleOnfidoError = useCallback((error: OnfidoError) => {
     console.error('Onfido error:', error);
     const errorMessage = error.message || error.type || 'Verification failed';
     onError(`Verification error: ${errorMessage}`);
-  };
+  }, [onError]);
 
-  const simulateMockVerification = async () => {
+  const simulateMockVerification = useCallback(async () => {
     try {
       console.log('🧪 Starting simplified mock verification...');
       
@@ -293,7 +253,47 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
       console.error('🧪 Mock verification error:', errorMessage);
       onError(errorMessage);
     }
-  };
+  }, [onComplete, onError, userId]);
+
+  const setupOnfidoSDK = useCallback(async (token: string): Promise<void> => {
+    if (!onfidoContainerRef.current || !window.Onfido) {
+      throw new Error('Onfido SDK not ready');
+    }
+
+    // Clear any existing content
+    onfidoContainerRef.current.innerHTML = '';
+
+    // Initialize Onfido SDK
+    onfidoInstanceRef.current = window.Onfido.init({
+      token,
+      containerId: onfidoContainerRef.current.id,
+      steps: [
+        'welcome',
+        {
+          type: 'document',
+          options: {
+            documentTypes: {
+              driving_licence: true,
+              passport: true,
+              national_identity_card: true
+            },
+            hideCountrySelection: false
+          }
+        },
+        'face',
+        'complete'
+      ],
+      onComplete: handleOnfidoComplete,
+      onError: handleOnfidoError,
+      customUI: {
+        fontFamilyTitle: 'system-ui, -apple-system, sans-serif',
+        fontFamilySubtitle: 'system-ui, -apple-system, sans-serif',
+        fontFamilyBody: 'system-ui, -apple-system, sans-serif',
+        primaryColor: '#000000',
+        primaryColorHover: '#1a1a1a'
+      }
+    });
+  }, [handleOnfidoComplete, handleOnfidoError]);
 
   const initializeOnfido = useCallback(async () => {
     try {
@@ -327,7 +327,7 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
     } finally {
       setLoading(false);
     }
-  }, [onError, loadOnfidoScript, getOnfidoToken, setupOnfidoSDK]);
+  }, [onError, loadOnfidoScript, getOnfidoToken, setupOnfidoSDK, simulateMockVerification]);
 
   useEffect(() => {
     initializeOnfido();

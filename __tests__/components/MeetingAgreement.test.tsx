@@ -61,13 +61,6 @@ describe('MeetingAgreement', () => {
   })
 
   describe('Price Step', () => {
-    beforeEach(() => {
-      // Navigate to price step
-      const { rerender } = render(<MeetingAgreement {...defaultProps} />)
-      fireEvent.click(screen.getByText(/yes, i want to buy/i))
-      rerender(<MeetingAgreement {...defaultProps} />)
-    })
-
     it('displays price negotiation form', async () => {
       const user = userEvent.setup()
       render(<MeetingAgreement {...defaultProps} />)
@@ -173,7 +166,7 @@ describe('MeetingAgreement', () => {
       })
 
       await waitFor(async () => {
-        const customRadio = screen.getByLabelText(/other public location/i)
+        const customRadio = screen.getByRole('radio', { name: /other public location/i })
         await user.click(customRadio)
         
         expect(screen.getByPlaceholderText(/walmart parking lot/i)).toBeInTheDocument()
@@ -206,19 +199,24 @@ describe('MeetingAgreement', () => {
         await user.click(screen.getByText(/agree on \$10,000/i))
       })
 
+      // Wait for location step to render first
+      await waitFor(() => {
+        expect(screen.getByText(/choose safe meeting location/i)).toBeInTheDocument()
+      })
+
       await waitFor(async () => {
         // Select a location
-        const locationRadio = screen.getAllByName('location')[0]
+        const locationRadio = screen.getAllByRole('radio')[0]
         await user.click(locationRadio)
         
         // Set date (tomorrow)
-        const dateInput = screen.getByLabelText(/date/i)
+        const dateInput = document.querySelector('input[type="date"]') as HTMLInputElement
         const tomorrow = new Date()
         tomorrow.setDate(tomorrow.getDate() + 1)
-        await user.type(dateInput, tomorrow.toISOString().split('T')[0])
+        fireEvent.change(dateInput, { target: { value: tomorrow.toISOString().split('T')[0] } })
         
         // Set time
-        const timeSelect = screen.getByLabelText(/time/i)
+        const timeSelect = screen.getByRole('combobox')
         await user.selectOptions(timeSelect, '2:00 PM')
         
         const continueButton = screen.getByText(/continue/i)
@@ -239,17 +237,22 @@ describe('MeetingAgreement', () => {
         await user.click(screen.getByText(/agree on \$10,000/i))
       })
 
+      // Wait for location step to render first
+      await waitFor(() => {
+        expect(screen.getByText(/choose safe meeting location/i)).toBeInTheDocument()
+      })
+
       await waitFor(async () => {
         // Fill location form
-        const locationRadio = screen.getAllByName('location')[0]
+        const locationRadio = screen.getAllByRole('radio')[0]
         await user.click(locationRadio)
         
-        const dateInput = screen.getByLabelText(/date/i)
+        const dateInput = document.querySelector('input[type="date"]') as HTMLInputElement
         const tomorrow = new Date()
         tomorrow.setDate(tomorrow.getDate() + 1)
-        await user.type(dateInput, tomorrow.toISOString().split('T')[0])
+        fireEvent.change(dateInput, { target: { value: tomorrow.toISOString().split('T')[0] } })
         
-        const timeSelect = screen.getByLabelText(/time/i)
+        const timeSelect = screen.getByRole('combobox')
         await user.selectOptions(timeSelect, '2:00 PM')
         
         await user.click(screen.getByText(/continue/i))
@@ -273,24 +276,29 @@ describe('MeetingAgreement', () => {
         await user.click(screen.getByText(/agree on \$10,000/i))
       })
 
+      // Wait for location step to render first
+      await waitFor(() => {
+        expect(screen.getByText(/choose safe meeting location/i)).toBeInTheDocument()
+      })
+
       await waitFor(async () => {
         // Fill location form
-        const locationRadio = screen.getAllByName('location')[0]
+        const locationRadio = screen.getAllByRole('radio')[0]
         await user.click(locationRadio)
         
-        const dateInput = screen.getByLabelText(/date/i)
+        const dateInput = document.querySelector('input[type="date"]') as HTMLInputElement
         const tomorrow = new Date()
         tomorrow.setDate(tomorrow.getDate() + 1)
-        await user.type(dateInput, tomorrow.toISOString().split('T')[0])
+        fireEvent.change(dateInput, { target: { value: tomorrow.toISOString().split('T')[0] } })
         
-        const timeSelect = screen.getByLabelText(/time/i)
+        const timeSelect = screen.getByRole('combobox')
         await user.selectOptions(timeSelect, '2:00 PM')
         
         await user.click(screen.getByText(/continue/i))
       })
 
       await waitFor(async () => {
-        const confirmButton = screen.getByText(/confirm meeting/i)
+        const confirmButton = screen.getByRole('button', { name: /confirm meeting/i })
         await user.click(confirmButton)
         
         expect(defaultProps.onSelectMeetingLocation).toHaveBeenCalledWith(

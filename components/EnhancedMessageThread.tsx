@@ -96,7 +96,7 @@ export default function EnhancedMessageThread({
 
   const otherUser = getOtherUser();
   const securityLevel = conversation.metrics.security_level;
-  const hasSecurityFlags = conversation.security_flags.length > 0;
+  const hasSecurityFlags = conversation.metrics.fraud_alerts > 0;
 
   return (
     <div className="flex flex-col h-full bg-white">
@@ -302,13 +302,13 @@ export default function EnhancedMessageThread({
           </div>
         ) : (
           <>
-            {messages.map((message) => {
+            {messages.map((message, index) => {
               const isOwn = message.sender_id === currentUserId;
               const hasFraudFlags = message.fraud_flags && message.fraud_flags.length > 0;
               
               return (
                 <div
-                  key={message.id}
+                  key={`${message.id}-${index}`}
                   className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                 >
                   <div className={`max-w-[70%] ${isOwn ? 'order-2' : 'order-1'}`}>
