@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function HomePage() {
   const router = useRouter();
@@ -33,30 +35,31 @@ export default function HomePage() {
       <section className="h-screen flex relative overflow-hidden bg-white">
         {/* Main hero content - Notion style */}
         <div className="relative w-full max-w-3xl mx-auto px-6 text-center flex flex-col justify-center min-h-full" style={{ transform: 'translateY(-10%)' }}>
-          {/* Notion-exact main heading */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+          {/* Main heading using unified design system */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             The motorcycle marketplace that works for you.
           </h1>
           
-          {/* Notion-exact subheading */}
-          <p className="text-base md:text-lg text-gray-600 mb-6 max-w-2xl mx-auto leading-relaxed font-light">
+          {/* Subheading using unified design system */}
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
             All-in-one platform that verifies identities, checks vehicle histories, and secures transactions, right where you buy and sell.
           </p>
 
-          {/* Notion-exact button layout */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <Link 
-              href="/listings" 
-              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-normal rounded-md transition-colors duration-150 h-9 min-w-[130px]"
-            >
-              Browse motorcycle
+          {/* Unified design system buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/listings">
+              <Button variant="primary" size="lg" className="min-w-48">
+                Browse motorcycles
+              </Button>
             </Link>
-            <button 
-              onClick={handleStartSelling} 
-              className="inline-flex items-center justify-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-900 text-sm font-normal rounded-md border border-gray-300 hover:border-gray-400 transition-all duration-150 h-9 min-w-[130px]"
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="min-w-48"
+              onClick={handleStartSelling}
             >
               Create listing
-            </button>
+            </Button>
           </div>
         </div>
       </section>

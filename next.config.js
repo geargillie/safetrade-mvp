@@ -1,10 +1,22 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const isTurbopack = process.env.TURBOPACK === 'true';
+
+const baseConfig = {
   // Production optimizations
   experimental: {
     optimizePackageImports: [
       '@supabase/supabase-js'
-    ]
+    ],
+    ...(isTurbopack && {
+      turbo: {
+        rules: {
+          '*.svg': {
+            loaders: ['@svgr/webpack'],
+            as: '*.js',
+          },
+        },
+      },
+    }),
   },
 
   // Image optimization
@@ -86,7 +98,43 @@ const nextConfig = {
     ]
   },
 
-  // Bundle analysis and optimization
+  // Compression
+  compress: true,
+  
+  // Environment variables
+  env: {
+    BUILD_TIME: new Date().toISOString(),
+    BUILD_ID: process.env.VERCEL_GIT_COMMIT_SHA || 'local'
+  },
+
+  // Performance monitoring
+  ...(process.env.ANALYZE === 'true' && {
+    experimental: {
+      bundlePagesRouterDependencies: true
+    }
+  }),
+
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+
+  // Logging
+  logging: {
+    fetches: {
+      fullUrl: process.env.NODE_ENV === 'development'
+    }
+  }
+};
+
+// Add webpack config only when not using Turbopack
+const nextConfig = isTurbopack ? baseConfig : {
+  ...baseConfig,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Production optimizations
     if (!dev && !isServer) {
@@ -119,46 +167,6 @@ const nextConfig = {
     });
 
     return config;
-  },
-
-  // Compression
-  compress: true,
-  
-  // Static export for better performance (if using static hosting)
-  // output: 'export',
-  // trailingSlash: true,
-
-  // Environment variables
-  env: {
-    BUILD_TIME: new Date().toISOString(),
-    BUILD_ID: process.env.VERCEL_GIT_COMMIT_SHA || 'local'
-  },
-
-  // Performance monitoring
-  ...(process.env.ANALYZE === 'true' && {
-    experimental: {
-      bundlePagesRouterDependencies: true
-    }
-  }),
-
-  // TypeScript configuration
-  typescript: {
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors. NOT recommended for production!
-    ignoreBuildErrors: false,
-  },
-
-  // ESLint configuration
-  eslint: {
-    // Don't ignore ESLint errors during builds
-    ignoreDuringBuilds: false,
-  },
-
-  // Logging
-  logging: {
-    fetches: {
-      fullUrl: process.env.NODE_ENV === 'development'
-    }
   }
 };
 

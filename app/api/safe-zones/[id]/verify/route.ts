@@ -1,0 +1,123 @@
+// PUT /api/safe-zones/[id]/verify - Verify safe zone (admin only)
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { 
+  requireAdmin,
+  rateLimit, 
+  RateLimits,
+  createErrorResponse,
+  createSuccessResponse,
+  handleDatabaseError,
+  logApiRequest,
+  sanitizeObject,
+  handleCorsPreFlight
+} from '@/lib/middleware/auth';
+import { 
+  VerifySafeZoneSchema,
+  UUIDSchema
+} from '@/lib/validations/safe-zones';
+
+// Handle CORS preflight requests
+export async function OPTIONS() {
+  return handleCorsPreFlight();
+}
+
+// PUT /api/safe-zones/[id]/verify - Verify or unverify a safe zone
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const resolvedParams = await params;
+  try {
+    // Rate limiting for admin operations
+    const rateLimitResponse = rateLimit(RateLimits.ADMIN)(request);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Require admin authentication
+    const { user, error: authError } = await requireAdmin(request);
+    if (authError) return authError;
+
+    logApiRequest(request, user);
+
+    // Validate UUID
+    const idValidation = UUIDSchema.safeParse(resolvedParams.id);
+    if (!idValidation.success) {
+      return createErrorResponse('INVALID_ID', 'Invalid safe zone ID format', 400);
+    }
+
+    const safeZoneId = idValidation.data;
+
+    // Parse and validate request body
+    const body = await request.json();
+    const sanitizedBody = sanitizeObject(body);
+
+    const validation = VerifySafeZoneSchema.safeParse(sanitizedBody);
+    if (!validation.success) {
+      return createErrorResponse(
+        'INVALID_INPUT',
+        'Invalid verification data',
+        400,
+        validation.error.issues
+      );
+    }
+
+    const { isVerified, verificationNotes } = validation.data;
+
+    // Check if safe zone exists
+    const { data: existingSafeZone, error: fetchError } = await supabase
+      .from('safe_zones')
+      .select('id, name, is_verified, status')
+      .eq('id', safeZoneId)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return createErrorResponse('NOT_FOUND', 'Safe zone not found', 404);
+      }
+      return handleDatabaseError(fetchError);
+    }
+
+    // Prepare update data
+    const updateData: any = {
+      is_verified: isVerified,
+      verified_by: user.id,
+      verification_date: new Date().toISOString(),
+      verification_notes: verificationNotes
+    };
+
+    // If verifying, also set status to active (if it was pending)
+    if (isVerified && existingSafeZone.status === 'pending_verification') {
+      updateData.status = 'active';
+    }
+
+    // If unverifying, set status back to pending
+    if (!isVerified && existingSafeZone.is_verified) {
+      updateData.status = 'pending_verification';
+    }
+
+    // Update safe zone
+    const { data: updatedSafeZone, error: updateError } = await supabase
+      .from('safe_zones')
+      .update(updateData)
+      .eq('id', safeZoneId)
+      .select()
+      .single();
+
+    if (updateError) {
+      return handleDatabaseError(updateError);
+    }
+
+    // Log admin action
+    const action = isVerified ? 'verified' : 'unverified';
+    console.log(`Admin ${user.id} ${action} safe zone: ${safeZoneId} (${existingSafeZone.name})`);
+
+    return createSuccessResponse(
+      updatedSafeZone,
+      `Safe zone ${action} successfully`
+    );
+
+  } catch (error) {
+    console.error(`Error in PUT /api/safe-zones/${resolvedParams.id}/verify:`, error);
+    return createErrorResponse('INTERNAL_ERROR', 'Failed to update verification status', 500);
+  }
+}

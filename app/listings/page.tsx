@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
 import ListingCard from '@/components/ListingCard';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function ListingsPage() {
   const [listings, setListings] = useState<{
@@ -189,45 +192,51 @@ export default function ListingsPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Notion-Style Clean Hero */}
-      <section className="bg-white py-16">
+      {/* Hero with unified design system */}
+      <section className="py-12 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Browse motorcycles
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Find your perfect ride from verified sellers across the marketplace
           </p>
         </div>
       </section>
 
-      {/* Notion-Style Search and Filters */}
+      {/* Unified Search and Filters */}
       <div className="max-w-4xl mx-auto px-6 mb-12">
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          {/* Clean Search */}
-          <div className="mb-6">
-            <div className="relative">
-              <input
-                type="text"
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                placeholder="Search motorcycles..."
-                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+        <Card>
+          <CardHeader>
+            <CardTitle size="lg">Search & Filter</CardTitle>
+            <CardDescription>Find motorcycles that match your criteria</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Unified Search */}
+            <div className="mb-6">
+              <div className="relative">
+                <Input
+                  type="text"
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  placeholder="Search motorcycles..."
+                  className="pl-11"
+                  size="lg"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
           {/* Simple Filters */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <select
               value={filters.make}
               onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white"
             >
               <option value="">All Brands</option>
               <option value="Harley-Davidson">Harley-Davidson</option>
@@ -240,20 +249,20 @@ export default function ListingsPage() {
               <option value="KTM">KTM</option>
             </select>
 
-            <input
+            <Input
               type="number"
               value={filters.priceMax}
               onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
               placeholder="Max Price"
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              size="md"
             />
 
-            <input
+            <Input
               type="number"
               value={filters.year}
               onChange={(e) => setFilters({ ...filters, year: e.target.value })}
               placeholder="Year"
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              size="md"
             />
           </div>
 
@@ -261,15 +270,17 @@ export default function ListingsPage() {
           <div className="flex items-center justify-between text-sm text-gray-600">
             <span>{listings.length} motorcycles found</span>
             {Object.values(filters).some(value => value !== '') && (
-              <button
+              <Button
                 onClick={clearFilters}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                variant="ghost-primary"
+                size="sm"
               >
                 Clear filters
-              </button>
+              </Button>
             )}
           </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
       {/* Notion-Style Loading State */}
       {loading && (

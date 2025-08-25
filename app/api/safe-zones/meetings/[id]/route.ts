@@ -1,0 +1,278 @@
+// PUT /api/safe-zones/meetings/[id] - Update meeting status
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { 
+  requireAuth,
+  checkResourceAccess,
+  rateLimit, 
+  RateLimits,
+  createErrorResponse,
+  createSuccessResponse,
+  handleDatabaseError,
+  logApiRequest,
+  sanitizeObject,
+  handleCorsPreFlight
+} from '@/lib/middleware/auth';
+import { 
+  UpdateMeetingSchema,
+  UUIDSchema,
+  type UpdateMeetingInput 
+} from '@/lib/validations/safe-zones';
+
+// Handle CORS preflight requests
+export async function OPTIONS() {
+  return handleCorsPreFlight();
+}
+
+// PUT /api/safe-zones/meetings/[id] - Update meeting status and details
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const resolvedParams = await params;
+  try {
+    // Rate limiting
+    const rateLimitResponse = rateLimit(RateLimits.STANDARD)(request);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Require authentication
+    const { user, error: authError } = await requireAuth(request);
+    if (authError) return authError;
+
+    logApiRequest(request, user);
+
+    // Validate UUID
+    const idValidation = UUIDSchema.safeParse(resolvedParams.id);
+    if (!idValidation.success) {
+      return createErrorResponse('INVALID_ID', 'Invalid meeting ID format', 400);
+    }
+
+    const meetingId = idValidation.data;
+
+    // Get existing meeting to verify access
+    const { data: existingMeeting, error: fetchError } = await supabase
+      .from('safe_zone_meetings')
+      .select(`
+        *,
+        safe_zone:safe_zone_id (name),
+        listing:listing_id (title)
+      `)
+      .eq('id', meetingId)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return createErrorResponse('NOT_FOUND', 'Meeting not found', 404);
+      }
+      return handleDatabaseError(fetchError);
+    }
+
+    // Check if user is involved in the meeting
+    if (user.id !== existingMeeting.buyer_id && 
+        user.id !== existingMeeting.seller_id && 
+        !user.isAdmin) {
+      return createErrorResponse(
+        'ACCESS_DENIED',
+        'You can only update meetings you are involved in',
+        403
+      );
+    }
+
+    // Parse and validate request body
+    const body = await request.json();
+    const sanitizedBody = sanitizeObject(body);
+
+    const validation = UpdateMeetingSchema.safeParse(sanitizedBody);
+    if (!validation.success) {
+      return createErrorResponse(
+        'INVALID_INPUT',
+        'Invalid update data',
+        400,
+        validation.error.issues
+      );
+    }
+
+    const updateData = validation.data;
+
+    // Prepare update object
+    const dbUpdateData: any = { updated_at: new Date().toISOString() };
+    
+    // Handle status updates
+    if (updateData.status !== undefined) {
+      // Validate status transitions
+      const validTransitions: Record<string, string[]> = {
+        'scheduled': ['confirmed', 'cancelled'],
+        'confirmed': ['in_progress', 'cancelled'],
+        'in_progress': ['completed', 'cancelled'],
+        'completed': [], // Cannot change from completed
+        'cancelled': [], // Cannot change from cancelled
+        'no_show': []    // Cannot change from no_show
+      };
+
+      const currentStatus = existingMeeting.status;
+      const allowedTransitions = validTransitions[currentStatus] || [];
+      if (!allowedTransitions.includes(updateData.status)) {
+        return createErrorResponse(
+          'INVALID_STATUS_TRANSITION',
+          `Cannot change status from ${currentStatus} to ${updateData.status}`,
+          400
+        );
+      }
+
+      dbUpdateData.status = updateData.status;
+
+      // Auto-set cancellation fields if status is cancelled
+      if (updateData.status === 'cancelled') {
+        dbUpdateData.cancelled_by = user.id;
+        dbUpdateData.cancelled_at = new Date().toISOString();
+      }
+    }
+
+    // Handle confirmation updates
+    if (updateData.buyerConfirmed !== undefined) {
+      if (user.id !== existingMeeting.buyer_id && !user.isAdmin) {
+        return createErrorResponse(
+          'UNAUTHORIZED_CONFIRMATION',
+          'Only the buyer can confirm for the buyer',
+          403
+        );
+      }
+      dbUpdateData.buyer_confirmed = updateData.buyerConfirmed;
+    }
+
+    if (updateData.sellerConfirmed !== undefined) {
+      if (user.id !== existingMeeting.seller_id && !user.isAdmin) {
+        return createErrorResponse(
+          'UNAUTHORIZED_CONFIRMATION',
+          'Only the seller can confirm for the seller',
+          403
+        );
+      }
+      dbUpdateData.seller_confirmed = updateData.sellerConfirmed;
+    }
+
+    // Handle check-in updates
+    if (updateData.buyerCheckedIn !== undefined) {
+      if (user.id !== existingMeeting.buyer_id && !user.isAdmin) {
+        return createErrorResponse(
+          'UNAUTHORIZED_CHECKIN',
+          'Only the buyer can check in for the buyer',
+          403
+        );
+      }
+      dbUpdateData.buyer_checked_in = updateData.buyerCheckedIn;
+      if (updateData.buyerCheckedIn) {
+        dbUpdateData.buyer_checkin_time = new Date().toISOString();
+      }
+    }
+
+    if (updateData.sellerCheckedIn !== undefined) {
+      if (user.id !== existingMeeting.seller_id && !user.isAdmin) {
+        return createErrorResponse(
+          'UNAUTHORIZED_CHECKIN',
+          'Only the seller can check in for the seller',
+          403
+        );
+      }
+      dbUpdateData.seller_checked_in = updateData.sellerCheckedIn;
+      if (updateData.sellerCheckedIn) {
+        dbUpdateData.seller_checkin_time = new Date().toISOString();
+      }
+    }
+
+    // Handle meeting outcome
+    if (updateData.meetingSuccessful !== undefined) {
+      dbUpdateData.meeting_successful = updateData.meetingSuccessful;
+    }
+
+    if (updateData.transactionCompleted !== undefined) {
+      dbUpdateData.transaction_completed = updateData.transactionCompleted;
+    }
+
+    // Handle cancellation reason
+    if (updateData.cancellationReason !== undefined) {
+      dbUpdateData.cancellation_reason = updateData.cancellationReason;
+      if (!dbUpdateData.cancelled_by) {
+        dbUpdateData.cancelled_by = user.id;
+        dbUpdateData.cancelled_at = new Date().toISOString();
+      }
+    }
+
+    // Handle meeting notes
+    if (updateData.meetingNotes !== undefined) {
+      dbUpdateData.meeting_notes = updateData.meetingNotes;
+    }
+
+    // Auto-complete meeting if both parties checked in and meeting was successful
+    const willBothBeCheckedIn = (dbUpdateData.buyer_checked_in ?? existingMeeting.buyer_checked_in) &&
+                               (dbUpdateData.seller_checked_in ?? existingMeeting.seller_checked_in);
+    
+    if (willBothBeCheckedIn && 
+        (dbUpdateData.meeting_successful ?? existingMeeting.meeting_successful) &&
+        existingMeeting.status !== 'completed') {
+      dbUpdateData.status = 'completed';
+      dbUpdateData.meeting_completed_time = new Date().toISOString();
+    }
+
+    // Update meeting
+    const { data: updatedMeeting, error: updateError } = await supabase
+      .from('safe_zone_meetings')
+      .update(dbUpdateData)
+      .eq('id', meetingId)
+      .select(`
+        *,
+        safe_zone:safe_zone_id (
+          id, name, address, zone_type
+        ),
+        listing:listing_id (
+          id, title, price, make, model, year
+        ),
+        buyer:buyer_id (
+          id, raw_user_meta_data
+        ),
+        seller:seller_id (
+          id, raw_user_meta_data
+        )
+      `)
+      .single();
+
+    if (updateError) {
+      return handleDatabaseError(updateError);
+    }
+
+    // Transform response
+    const transformedMeeting = {
+      ...updatedMeeting,
+      safe_zone: updatedMeeting.safe_zone,
+      listing: updatedMeeting.listing,
+      buyer: updatedMeeting.buyer ? {
+        id: updatedMeeting.buyer.id,
+        firstName: updatedMeeting.buyer.raw_user_meta_data?.first_name,
+        lastName: updatedMeeting.buyer.raw_user_meta_data?.last_name
+      } : null,
+      seller: updatedMeeting.seller ? {
+        id: updatedMeeting.seller.id,
+        firstName: updatedMeeting.seller.raw_user_meta_data?.first_name,
+        lastName: updatedMeeting.seller.raw_user_meta_data?.last_name
+      } : null
+    };
+
+    // Log update
+    const updateActions = Object.keys(updateData).join(', ');
+    console.log(`User ${user.id} updated meeting ${meetingId}: ${updateActions}`);
+
+    // TODO: Send notifications for status changes
+    // if (dbUpdateData.status) {
+    //   await sendMeetingNotification(meetingId, dbUpdateData.status);
+    // }
+
+    return createSuccessResponse(
+      transformedMeeting,
+      'Meeting updated successfully'
+    );
+
+  } catch (error) {
+    console.error(`Error in PUT /api/safe-zones/meetings/${resolvedParams.id}:`, error);
+    return createErrorResponse('INTERNAL_ERROR', 'Failed to update meeting', 500);
+  }
+}

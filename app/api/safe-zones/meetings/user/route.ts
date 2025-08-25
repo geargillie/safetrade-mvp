@@ -1,0 +1,141 @@
+// GET /api/safe-zones/meetings/user - Get user's scheduled meetings
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { 
+  requireAuth,
+  rateLimit, 
+  RateLimits,
+  createErrorResponse,
+  createPaginatedResponse,
+  handleDatabaseError,
+  logApiRequest,
+  handleCorsPreFlight
+} from '@/lib/middleware/auth';
+import { 
+  MeetingQuerySchema,
+  type MeetingQueryInput 
+} from '@/lib/validations/safe-zones';
+
+// Handle CORS preflight requests
+export async function OPTIONS() {
+  return handleCorsPreFlight();
+}
+
+// GET /api/safe-zones/meetings/user - Get user's meetings with filtering
+export async function GET(request: NextRequest) {
+  try {
+    // Rate limiting
+    const rateLimitResponse = rateLimit(RateLimits.STANDARD)(request);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Require authentication
+    const { user, error: authError } = await requireAuth(request);
+    if (authError) return authError;
+
+    logApiRequest(request, user);
+
+    // Parse and validate query parameters
+    const url = new URL(request.url);
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    
+    const validation = MeetingQuerySchema.safeParse(queryParams);
+    if (!validation.success) {
+      return createErrorResponse(
+        'INVALID_QUERY_PARAMS',
+        'Invalid query parameters',
+        400,
+        validation.error.issues
+      );
+    }
+
+    const { page, limit, status, upcoming, past, sortBy } = validation.data;
+
+    // Build query for user's meetings (both as buyer and seller)
+    let query = supabase
+      .from('safe_zone_meetings')
+      .select(`
+        *,
+        safe_zone:safe_zone_id (
+          id, name, address, city, state, zone_type, average_rating, is_verified
+        ),
+        listing:listing_id (
+          id, title, price, make, model, year, images
+        ),
+        buyer:buyer_id (
+          id, raw_user_meta_data
+        ),
+        seller:seller_id (
+          id, raw_user_meta_data
+        )
+      `, { count: 'exact' })
+      .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`);
+
+    // Apply status filter
+    if (status) {
+      query = query.eq('status', status);
+    }
+
+    // Apply time-based filters
+    const now = new Date().toISOString();
+    if (upcoming) {
+      query = query.gte('scheduled_datetime', now);
+    }
+    if (past) {
+      query = query.lt('scheduled_datetime', now);
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'date_asc':
+        query = query.order('scheduled_datetime', { ascending: true });
+        break;
+      case 'date_desc':
+        query = query.order('scheduled_datetime', { ascending: false });
+        break;
+      case 'created_desc':
+        query = query.order('created_at', { ascending: false });
+        break;
+      default:
+        query = query.order('scheduled_datetime', { ascending: true });
+    }
+
+    // Apply pagination
+    const offset = (page - 1) * limit;
+    query = query.range(offset, offset + limit - 1);
+
+    const { data: meetings, error, count } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    // Transform meetings to include user role and clean data
+    const transformedMeetings = meetings?.map(meeting => {
+      const userRole = meeting.buyer_id === user.id ? 'buyer' : 'seller';
+      const otherParty = userRole === 'buyer' ? meeting.seller : meeting.buyer;
+
+      return {
+        ...meeting,
+        userRole,
+        safe_zone: meeting.safe_zone,
+        listing: meeting.listing,
+        otherParty: otherParty ? {
+          id: otherParty.id,
+          firstName: otherParty.raw_user_meta_data?.first_name,
+          lastName: otherParty.raw_user_meta_data?.last_name
+        } : null,
+        // Remove sensitive data from response
+        buyer: undefined,
+        seller: undefined,
+        // Keep safety code only for future meetings
+        safety_code: new Date(meeting.scheduled_datetime) > new Date() ? meeting.safety_code : undefined
+      };
+    }) || [];
+
+    return createPaginatedResponse(transformedMeetings, page, limit, count || 0);
+
+  } catch (error) {
+    console.error('Error in GET /api/safe-zones/meetings/user:', error);
+    return createErrorResponse('INTERNAL_ERROR', 'An internal error occurred', 500);
+  }
+}

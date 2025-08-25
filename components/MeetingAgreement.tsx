@@ -16,8 +16,8 @@ interface MeetingAgreementProps {
 }
 
 export default function MeetingAgreement({
-  listingId: _listingId, // eslint-disable-line @typescript-eslint/no-unused-vars
-  conversationId: _conversationId, // eslint-disable-line @typescript-eslint/no-unused-vars
+  listingId: _listingId,
+  conversationId: _conversationId,
   listingTitle,
   listingPrice,
   listingCity,

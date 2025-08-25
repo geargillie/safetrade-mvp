@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import Layout from '@/components/Layout'
 
 export default function Login() {
   const router = useRouter()
@@ -37,8 +38,8 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4" style={{backgroundColor: 'var(--neutral-50)'}}>
-      <div className="w-full max-w-md animate-fade-in">
+    <Layout showNavigation={false}>
+      <div className="w-full max-w-md mx-auto animate-fade-in">
         <div className="card">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{backgroundColor: 'var(--brand-primary)'}}>
@@ -124,6 +125,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

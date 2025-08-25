@@ -194,9 +194,9 @@ export default function EditListing() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading listing data</h3>
           <p className="text-sm text-gray-600">Please wait while we fetch your listing...</p>
         </div>
@@ -206,7 +206,7 @@ export default function EditListing() {
 
   if (listingNotFound) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="max-w-md mx-auto text-center">
           <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +217,7 @@ export default function EditListing() {
           <p className="text-gray-600 mb-6">The listing you&apos;re trying to edit doesn&apos;t exist or has been removed.</p>
           <Link
             href="/listings"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -231,7 +231,7 @@ export default function EditListing() {
 
   if (unauthorized) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="max-w-md mx-auto text-center">
           <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,7 +242,7 @@ export default function EditListing() {
           <p className="text-gray-600 mb-6">You can only edit your own listings.</p>
           <Link
             href="/listings"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -255,474 +255,310 @@ export default function EditListing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      {/* Header */}
-      <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href={`/listings/${listingId}`} className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <span className="text-sm font-medium">Back to listing</span>
-              </Link>
-              <div className="w-1 h-4 bg-gray-300 rounded-full" />
-              <h1 className="text-xl font-semibold text-gray-900">Edit Listing</h1>
-            </div>
+    <div className="min-h-screen bg-white">
+      {/* Navigation breadcrumb */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Link href={`/listings/${listingId}`} className="text-gray-500 hover:text-gray-700 transition-colors">
+              View listing
+            </Link>
+            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-gray-900 font-medium">Edit listing</span>
           </div>
         </div>
       </div>
 
+      {/* Compact Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Edit listing
+          </h1>
+          <p className="text-sm text-gray-600 mt-1">
+            Update your motorcycle details
+          </p>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden">
-          <form ref={formRef} onSubmit={handleSubmit} className="p-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-6 py-4 h-[calc(100vh-120px)]">
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden h-full flex flex-col">
+          <form ref={formRef} onSubmit={handleSubmit} className="h-full flex flex-col overflow-hidden">
             
-            {/* Basic Information Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
-                  📝
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Basic Information</h2>
-                  <p className="text-sm text-gray-600">Update your motorcycle details</p>
-                </div>
-              </div>
-              
-              {/* Title Field */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                  <span>Motorcycle Title & Description</span>
-                  <span className="text-red-500">*</span>
-                </label>
-                <div className="relative group">
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    onFocus={() => setFocusedField('title')}
-                    onBlur={() => setFocusedField(null)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.title 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : focusedField === 'title'
-                        ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    placeholder="e.g., 2019 Honda CBR600RR Sport Bike - Low Miles, Excellent Condition"
-                  />
-                </div>
-                {validationErrors.title && (
-                  <p className="text-xs text-red-600 flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                    </svg>
-                    <span>{validationErrors.title}</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Description Field */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                  <span>Detailed Description</span>
-                  <span className="text-red-500">*</span>
-                </label>
-                <div className="relative group">
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    onFocus={() => setFocusedField('description')}
-                    onBlur={() => setFocusedField(null)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none resize-none ${
-                      validationErrors.description 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : focusedField === 'description'
-                        ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    rows={6}
-                    placeholder="Detailed description of your motorcycle..."
-                  />
-                </div>
-                {validationErrors.description && (
-                  <p className="text-xs text-red-600 flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                    </svg>
-                    <span>{validationErrors.description}</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Price and Condition Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Price Field */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Asking Price (USD)</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">
-                      $
-                    </div>
+            {/* All fields in compact layout */}
+            <div className="p-6 flex-1 overflow-y-auto">
+              <div className="space-y-6">
+                
+                {/* Basic Info Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                  <div className="lg:col-span-2">
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      Title *
+                    </label>
                     <input
-                      type="number"
-                      name="price"
-                      value={formData.price}
+                      type="text"
+                      name="title"
+                      value={formData.title}
                       onChange={handleInputChange}
-                      onFocus={() => setFocusedField('price')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`w-full pl-8 pr-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                        validationErrors.price 
-                          ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                          : focusedField === 'price'
-                          ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                          : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.title ? 'border-red-300 focus:border-red-500' : ''
                       }`}
-                      min="0"
-                      step="100"
-                      placeholder="15000"
+                      placeholder="2019 Honda CBR600RR Sport Bike"
                     />
+                    {validationErrors.title && (
+                      <p className="text-xs text-red-600 mt-1">{validationErrors.title}</p>
+                    )}
                   </div>
-                  {validationErrors.price && (
-                    <p className="text-xs text-red-600 flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                      </svg>
-                      <span>{validationErrors.price}</span>
-                    </p>
-                  )}
-                </div>
-
-                {/* Condition Field */}
-                <div className="space-y-3 md:col-span-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Overall Condition</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative group">
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      Price (USD) *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</div>
+                      <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        className={`w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                          validationErrors.price ? 'border-red-300 focus:border-red-500' : ''
+                        }`}
+                        min="0"
+                        step="100"
+                        placeholder="15000"
+                      />
+                    </div>
+                    {validationErrors.price && (
+                      <p className="text-xs text-red-600 mt-1">{validationErrors.price}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      Condition *
+                    </label>
                     <select
                       name="condition"
                       value={formData.condition}
                       onChange={handleInputChange}
-                      onFocus={() => setFocusedField('condition')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none appearance-none bg-white ${
-                        validationErrors.condition 
-                          ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                          : focusedField === 'condition'
-                          ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                          : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 appearance-none bg-white ${
+                        validationErrors.condition ? 'border-red-300 focus:border-red-500' : ''
                       }`}
                     >
-                      <option value="">Select overall condition</option>
-                      <option value="excellent">🌟 Excellent - Like new, minimal signs of use</option>
-                      <option value="good">✨ Good - Well maintained, minor cosmetic wear</option>
-                      <option value="fair">⚙️ Fair - Some mechanical or cosmetic issues</option>
-                      <option value="poor">🔧 Poor - Requires significant repair work</option>
+                      <option value="">Select</option>
+                      <option value="excellent">Excellent</option>
+                      <option value="good">Good</option>
+                      <option value="fair">Fair</option>
+                      <option value="poor">Poor</option>
                     </select>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
+                    {validationErrors.condition && (
+                      <p className="text-xs text-red-600 mt-1">{validationErrors.condition}</p>
+                    )}
                   </div>
-                  {validationErrors.condition && (
-                    <p className="text-xs text-red-600 flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                      </svg>
-                      <span>{validationErrors.condition}</span>
-                    </p>
-                  )}
                 </div>
-              </div>
-            </div>
 
-            {/* Vehicle Details Section */}
-            <div className="space-y-6 pt-6 border-t border-gray-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
-                  🏍️
-                </div>
+                {/* Description */}
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Vehicle Details</h2>
-                  <p className="text-sm text-gray-600">Technical specifications</p>
-                </div>
-              </div>
-              
-              {/* Vehicle Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {/* Make */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Make</span>
-                    <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">
+                    Description *
                   </label>
-                  <input
-                    type="text"
-                    name="make"
-                    value={formData.make}
+                  <textarea
+                    name="description"
+                    value={formData.description}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.make 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 resize-none ${
+                      validationErrors.description ? 'border-red-300 focus:border-red-500' : ''
                     }`}
-                    placeholder="Honda"
+                    rows={2}
+                    placeholder="Describe condition, maintenance history, and key details..."
                   />
-                  {validationErrors.make && (
-                    <p className="text-xs text-red-600">{validationErrors.make}</p>
+                  {validationErrors.description && (
+                    <p className="text-xs text-red-600 mt-1">{validationErrors.description}</p>
                   )}
                 </div>
 
-                {/* Model */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Model</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="model"
-                    value={formData.model}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.model 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    placeholder="CBR600RR"
-                  />
-                  {validationErrors.model && (
-                    <p className="text-xs text-red-600">{validationErrors.model}</p>
-                  )}
-                </div>
-
-                {/* Year */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Year</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.year 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    min="1900"
-                    max={new Date().getFullYear() + 1}
-                    placeholder="2019"
-                  />
-                  {validationErrors.year && (
-                    <p className="text-xs text-red-600">{validationErrors.year}</p>
-                  )}
-                </div>
-
-                {/* Mileage */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>Mileage</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
+                {/* Vehicle Details Row */}
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Make *</label>
+                    <input
+                      type="text"
+                      name="make"
+                      value={formData.make}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.make ? 'border-red-300' : ''
+                      }`}
+                      placeholder="Honda"
+                    />
+                    {validationErrors.make && <p className="text-xs text-red-600 mt-1">{validationErrors.make}</p>}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Model *</label>
+                    <input
+                      type="text"
+                      name="model"
+                      value={formData.model}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.model ? 'border-red-300' : ''
+                      }`}
+                      placeholder="CBR600RR"
+                    />
+                    {validationErrors.model && <p className="text-xs text-red-600 mt-1">{validationErrors.model}</p>}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Year *</label>
+                    <input
+                      type="number"
+                      name="year"
+                      value={formData.year}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.year ? 'border-red-300' : ''
+                      }`}
+                      min="1900"
+                      max={new Date().getFullYear() + 1}
+                      placeholder="2019"
+                    />
+                    {validationErrors.year && <p className="text-xs text-red-600 mt-1">{validationErrors.year}</p>}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">Miles *</label>
                     <input
                       type="number"
                       name="mileage"
                       value={formData.mileage}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                        validationErrors.mileage 
-                          ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                          : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.mileage ? 'border-red-300' : ''
                       }`}
                       min="0"
-                      placeholder="12,000"
+                      placeholder="12000"
                     />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm font-medium">
-                      miles
-                    </div>
+                    {validationErrors.mileage && <p className="text-xs text-red-600 mt-1">{validationErrors.mileage}</p>}
                   </div>
-                  {validationErrors.mileage && (
-                    <p className="text-xs text-red-600">{validationErrors.mileage}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* VIN Field */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                  <span>Vehicle Identification Number (VIN)</span>
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="vin"
-                  value={formData.vin}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg font-mono text-sm transition-all duration-200 focus:outline-none ${
-                    validationErrors.vin 
-                      ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                      : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                  }`}
-                  maxLength={17}
-                  placeholder="1HGBH41JXMN109186"
-                />
-                {validationErrors.vin && (
-                  <p className="text-xs text-red-600">{validationErrors.vin}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Location Section */}
-            <div className="space-y-6 pt-6 border-t border-gray-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
-                  📍
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Location</h2>
-                  <p className="text-sm text-gray-600">Where you&apos;re located</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* City */}
-                <div className="space-y-3 md:col-span-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>City</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.city 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    placeholder="San Francisco"
-                  />
-                  {validationErrors.city && (
-                    <p className="text-xs text-red-600">{validationErrors.city}</p>
-                  )}
-                </div>
-
-                {/* ZIP Code */}
-                <div className="space-y-3 md:col-span-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                    <span>ZIP Code</span>
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="zipCode"
-                    value={formData.zipCode}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                      validationErrors.zipCode 
-                        ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                        : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                    }`}
-                    placeholder="94102"
-                  />
-                  {validationErrors.zipCode && (
-                    <p className="text-xs text-red-600">{validationErrors.zipCode}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Photos Section */}
-            <div className="space-y-6 pt-6 border-t border-gray-100">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
-                    📷
-                  </div>
+                  
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Photos</h2>
-                    <p className="text-sm text-gray-600">Update your motorcycle images</p>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">City *</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.city ? 'border-red-300' : ''
+                      }`}
+                      placeholder="San Francisco"
+                    />
+                    {validationErrors.city && <p className="text-xs text-red-600 mt-1">{validationErrors.city}</p>}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">ZIP *</label>
+                    <input
+                      type="text"
+                      name="zipCode"
+                      value={formData.zipCode}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 ${
+                        validationErrors.zipCode ? 'border-red-300' : ''
+                      }`}
+                      placeholder="94102"
+                    />
+                    {validationErrors.zipCode && <p className="text-xs text-red-600 mt-1">{validationErrors.zipCode}</p>}
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">
-                  {images.length}/10 photos
+
+                {/* VIN Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">
+                    Vehicle Identification Number (VIN) *
+                  </label>
+                  <input
+                    type="text"
+                    name="vin"
+                    value={formData.vin}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm focus:outline-none focus:border-blue-500 ${
+                      validationErrors.vin ? 'border-red-300 focus:border-red-500' : ''
+                    }`}
+                    maxLength={17}
+                    placeholder="1HGBH41JXMN109186"
+                  />
+                  {validationErrors.vin && (
+                    <p className="text-xs text-red-600 mt-1">{validationErrors.vin}</p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">17-character code found on frame or registration</p>
                 </div>
-              </div>
-              
-              <div className="relative">
-                <ImageUpload 
-                  onImagesUploaded={setImages}
-                  existingImages={images}
-                  maxImages={10}
-                />
-                {validationErrors.images && (
-                  <p className="text-xs text-red-600 flex items-center gap-1 mt-2">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                    </svg>
-                    <span>{validationErrors.images}</span>
-                  </p>
-                )}
+
+                {/* Photos */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-gray-900">Photos *</label>
+                    <span className="text-xs text-gray-600">{images.length}/10</span>
+                  </div>
+                  <ImageUpload 
+                    onImagesUploaded={setImages}
+                    existingImages={images}
+                    maxImages={10}
+                  />
+                  {validationErrors.images && (
+                    <p className="text-xs text-red-600 mt-1">{validationErrors.images}</p>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Message */}
-            {message && (
-              <div className={`p-4 rounded-lg border ${
-                message.includes('error') || message.includes('failed') || message.includes('correct')
-                  ? 'bg-red-50 border-red-200 text-red-800' 
-                  : 'bg-green-50 border-green-200 text-green-800'
-              }`}>
-                <div className="flex items-center gap-2">
-                  {message.includes('error') || message.includes('failed') || message.includes('correct') ? (
-                    <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                  <span className="text-sm font-medium">{message}</span>
+            {/* Footer with Message and Submit */}
+            <div className="p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+              {message && (
+                <div className={`p-3 rounded-lg mb-3 ${message.includes('error') || message.includes('failed') || message.includes('correct')
+                  ? 'bg-red-50 border border-red-200 text-red-800' 
+                  : 'bg-green-50 border border-green-200 text-green-800'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    {message.includes('error') || message.includes('failed') || message.includes('correct') ? (
+                      <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span className="text-sm font-medium">{message}</span>
+                  </div>
                 </div>
+              )}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-md transition-colors"
+                >
+                  {saving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Save Changes</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </>
+                  )}
+                </button>
               </div>
-            )}
-
-            {/* Submit Button */}
-            <div className="flex justify-end pt-6 border-t border-gray-100">
-              <button
-                type="submit"
-                disabled={saving}
-                className="inline-flex items-center gap-3 px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-sm font-semibold rounded-lg border border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                {saving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Saving Changes...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Save Changes</span>
-                  </>
-                )}
-              </button>
             </div>
           </form>
         </div>

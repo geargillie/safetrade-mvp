@@ -1,0 +1,172 @@
+[
+  {
+    "timestamp": "2025-08-25T16:45:34.059Z",
+    "type": "start",
+    "message": "🚀 Starting Comprehensive Safe Zone Tests"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.234Z",
+    "type": "info",
+    "message": "✅ Server is running and accessible"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.234Z",
+    "type": "test",
+    "message": "🧪 Testing Safe Zone API Endpoints"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.234Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.543Z",
+    "type": "info",
+    "message": "Found 3 safe zones"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.543Z",
+    "type": "success",
+    "message": "✅ PASSED: GET /api/safe-zones"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.543Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones?zoneType=library"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.765Z",
+    "type": "info",
+    "message": "Found 1 libraries"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.766Z",
+    "type": "success",
+    "message": "✅ PASSED: GET /api/safe-zones?zoneType=library"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.766Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones?verifiedOnly=true"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.986Z",
+    "type": "info",
+    "message": "Found 3 verified zones"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.986Z",
+    "type": "success",
+    "message": "✅ PASSED: GET /api/safe-zones?verifiedOnly=true"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:34.986Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones?search=Los"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.156Z",
+    "type": "info",
+    "message": "Search found 1 results"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.156Z",
+    "type": "success",
+    "message": "✅ PASSED: GET /api/safe-zones?search=Los"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.156Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones/[id]"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.809Z",
+    "type": "error",
+    "message": "❌ FAILED: GET /api/safe-zones/[id] - Request failed with status code 500"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.809Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones/nearby"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.831Z",
+    "type": "error",
+    "message": "❌ FAILED: GET /api/safe-zones/nearby - Request failed with status code 500"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.831Z",
+    "type": "test",
+    "message": "Starting test: GET /api/safe-zones/invalid-uuid (error handling)"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.854Z",
+    "type": "error",
+    "message": "❌ FAILED: GET /api/safe-zones/invalid-uuid (error handling) - Request failed with status code 500"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.854Z",
+    "type": "test",
+    "message": "🌐 Testing Safe Zone Page Functionality"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:35.854Z",
+    "type": "test",
+    "message": "Starting test: GET /safe-zones page"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.015Z",
+    "type": "error",
+    "message": "❌ FAILED: GET /safe-zones page - Page is stuck in loading state"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.015Z",
+    "type": "test",
+    "message": "Starting test: GET /safe-zones/[id] page"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.196Z",
+    "type": "error",
+    "message": "❌ FAILED: GET /safe-zones/[id] page - Request failed with status code 500"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.196Z",
+    "type": "test",
+    "message": "🔧 Testing Safe Zone Components"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.196Z",
+    "type": "test",
+    "message": "Starting test: SafeZoneListingCard data handling"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "info",
+    "message": "All zones have required fields for components"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "success",
+    "message": "✅ PASSED: SafeZoneListingCard data handling"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "summary",
+    "message": "📊 TEST SUMMARY"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "summary",
+    "message": "✅ Passed: 5"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "summary",
+    "message": "❌ Failed: 5"
+  },
+  {
+    "timestamp": "2025-08-25T16:45:36.325Z",
+    "type": "warning",
+    "message": "⚠️  Some tests failed - check the logs above for details"
+  }
+]

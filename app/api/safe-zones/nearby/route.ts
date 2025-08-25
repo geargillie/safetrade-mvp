@@ -1,0 +1,136 @@
+// GET /api/safe-zones/nearby - Find nearby safe zones by coordinates
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { 
+  rateLimit, 
+  RateLimits,
+  createErrorResponse,
+  createSuccessResponse,
+  handleDatabaseError,
+  logApiRequest,
+  handleCorsPreFlight
+} from '@/lib/middleware/auth';
+import { 
+  NearbyZonesQuerySchema,
+  type NearbyZonesQueryInput 
+} from '@/lib/validations/safe-zones';
+
+// Handle CORS preflight requests
+export async function OPTIONS() {
+  return handleCorsPreFlight();
+}
+
+// GET /api/safe-zones/nearby - Find nearby safe zones
+export async function GET(request: NextRequest) {
+  try {
+    logApiRequest(request);
+
+    // Rate limiting
+    const rateLimitResponse = rateLimit(RateLimits.STANDARD)(request);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Parse and validate query parameters
+    const url = new URL(request.url);
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    
+    const validation = NearbyZonesQuerySchema.safeParse(queryParams);
+    if (!validation.success) {
+      return createErrorResponse(
+        'INVALID_QUERY_PARAMS',
+        'Invalid query parameters',
+        400,
+        validation.error.issues
+      );
+    }
+
+    const {
+      latitude,
+      longitude,
+      radiusKm,
+      limit,
+      zoneType,
+      verifiedOnly,
+      minRating,
+      features
+    } = validation.data;
+
+    // Use the database function for nearby search
+    let query = supabase.rpc('find_nearby_safe_zones', {
+      user_lat: latitude,
+      user_lng: longitude,
+      radius_km: radiusKm,
+      limit_count: limit
+    });
+
+    const { data: nearbyZones, error } = await query;
+
+    if (error) {
+      console.error('Database function error:', error);
+      return handleDatabaseError(error);
+    }
+
+    if (!nearbyZones || nearbyZones.length === 0) {
+      return createSuccessResponse([], 'No safe zones found in the specified area');
+    }
+
+    // Apply client-side filters that couldn't be done in the database function
+    let filteredZones = nearbyZones;
+
+    if (zoneType) {
+      filteredZones = filteredZones.filter((zone: any) => zone.zone_type === zoneType);
+    }
+
+    if (verifiedOnly) {
+      filteredZones = filteredZones.filter((zone: any) => zone.is_verified);
+    }
+
+    if (minRating > 0) {
+      filteredZones = filteredZones.filter((zone: any) => zone.average_rating >= minRating);
+    }
+
+    // Get full details for filtered zones
+    if (filteredZones.length > 0) {
+      const zoneIds = filteredZones.map((zone: any) => zone.id);
+      
+      let detailQuery = supabase
+        .from('safe_zones')
+        .select(`
+          *,
+          reviews_count:safe_zone_reviews(count)
+        `)
+        .in('id', zoneIds)
+        .eq('status', 'active');
+
+      // Apply features filter at database level
+      if (features && features.length > 0) {
+        detailQuery = detailQuery.overlaps('features', features);
+      }
+
+      const { data: detailedZones, error: detailError } = await detailQuery;
+
+      if (detailError) {
+        return handleDatabaseError(detailError);
+      }
+
+      // Merge distance information with detailed zone data
+      const zonesWithDistance = detailedZones?.map((zone: any) => {
+        const nearbyZone = filteredZones.find((nz: any) => nz.id === zone.id);
+        return {
+          ...zone,
+          distance_km: nearbyZone?.distance_km || 0
+        };
+      }).sort((a: any, b: any) => a.distance_km - b.distance_km) || [];
+
+      return createSuccessResponse(
+        zonesWithDistance,
+        `Found ${zonesWithDistance.length} safe zones within ${radiusKm}km`
+      );
+    }
+
+    return createSuccessResponse([], 'No safe zones found matching the criteria');
+
+  } catch (error) {
+    console.error('Error in GET /api/safe-zones/nearby:', error);
+    return createErrorResponse('INTERNAL_ERROR', 'An internal error occurred', 500);
+  }
+}

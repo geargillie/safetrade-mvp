@@ -1,4 +1,4 @@
-// app/messages-v2/page.tsx
+// app/messages/page.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -65,10 +65,11 @@ export default function EnhancedMessagesPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-64">
+        <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4 border-3 border-gray-200 border-t-blue-500"></div>
-            <p className="text-gray-600">Loading secure messaging...</p>
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 className="text-heading-md mb-2">Loading messages</h3>
+            <p className="text-body-sm">Setting up secure messaging...</p>
           </div>
         </div>
       </Layout>
@@ -81,85 +82,107 @@ export default function EnhancedMessagesPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Vercel-style Header */}
-      <div className="w-full border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {isMobile && !showConversationList && (
-                <button
-                  onClick={handleBackToList}
-                  className="p-2 rounded-md hover:bg-gray-100 transition-colors"
-                >
-                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              )}
-              
-              <div>
-                <h1 className="text-2xl font-semibold text-black">Messages</h1>
-                <div className="flex items-center gap-3 mt-1">
+      {/* Enhanced Main Content - Centered 70% Width */}
+      <div className="h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-br from-gray-50 to-slate-100">
+        <div className="w-[70%] h-4/5 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex">
+          
+          {/* Enhanced Conversation List Sidebar */}
+          <div className={`${
+            isMobile 
+              ? (showConversationList ? 'w-full' : 'hidden') 
+              : 'w-2/5'
+          } border-r border-gray-200 flex-shrink-0 bg-gradient-to-b from-slate-50 to-gray-50 h-full flex flex-col`}>
+            
+            {/* Compact Messages Header */}
+            <div className="px-3 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    <span className="text-xs text-gray-600 font-medium">End-to-end encrypted</span>
+                    {/* Mobile back button */}
+                    {isMobile && !showConversationList && (
+                      <button
+                        onClick={handleBackToList}
+                        className="p-1 rounded-lg hover:bg-white/50 transition-colors"
+                      >
+                        <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                    )}
+                    
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    
+                    <div>
+                      <h1 className="text-heading-md bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        Messages
+                      </h1>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <div className="flex items-center gap-1">
+                          <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-body-xs font-medium">Secure</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    <span className="text-xs text-gray-600 font-medium">AI protected</span>
+                  
+                  {/* Compact User Badge */}
+                  <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-lg px-2 py-1 border border-gray-200 shadow-sm">
+                    <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md flex items-center justify-center shadow-sm">
+                      <span className="text-xs font-bold text-white">
+                        {(user.user_metadata?.first_name || 'U').charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-body-xs font-semibold">
+                      {user.user_metadata?.first_name || 'User'}
+                    </span>
                   </div>
                 </div>
+                
+                {/* Status Indicators */}
+                {(securityAlerts > 0 || totalUnreadCount > 0) && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {securityAlerts > 0 && (
+                      <div className="inline-flex items-center gap-1 px-2 py-1 bg-red-100/80 backdrop-blur-sm border border-red-200 rounded-md text-xs font-semibold text-red-700 shadow-sm">
+                        <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
+                        {securityAlerts} alert{securityAlerts > 1 ? 's' : ''}
+                      </div>
+                    )}
+                    
+                    {totalUnreadCount > 0 && (
+                      <div className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100/80 backdrop-blur-sm border border-blue-200 rounded-md text-xs font-semibold text-blue-700 shadow-sm">
+                        <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
+                        {totalUnreadCount} unread
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              {/* Security alerts - Vercel badge style */}
-              {securityAlerts > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 px-2.5 py-1.5 rounded-md text-xs font-medium">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                  </svg>
-                  {securityAlerts} alert{securityAlerts > 1 ? 's' : ''}
+            {/* Conversations List Header */}
+            <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-white to-slate-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-6a2 2 0 012-2h2V4a2 2 0 012-2h4a2 2 0 012 2v4z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-body-sm font-bold">Conversations</h3>
                 </div>
-              )}
-              
-              {/* Unread counter - Vercel badge style */}
-              {totalUnreadCount > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1.5 rounded-md text-xs font-medium">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3 4a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm6 4a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm-4 3a1 1 0 000 2h8a1 1 0 100-2H5z" />
-                  </svg>
-                  {totalUnreadCount} unread
+                <div className="flex items-center gap-1.5 bg-emerald-50 px-2 py-1 rounded-full">
+                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <span className="text-body-xs text-emerald-700 font-medium">Secure</span>
                 </div>
-              )}
-              
-              {/* User info */}
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium text-gray-600">
-                    {(user.user_metadata?.first_name || 'U').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-sm text-gray-700 font-medium">
-                  {user.user_metadata?.first_name || 'User'}
-                </span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Main Messaging Interface - Vercel style */}
-      <div className="w-full max-w-7xl mx-auto">
-        <div className="bg-white border border-gray-200 overflow-hidden">
-          <div className="flex h-[calc(100vh-140px)]">
-            
-            {/* Enhanced Conversation List */}
-            <div className={`${
-              isMobile 
-                ? (showConversationList ? 'w-full' : 'hidden') 
-                : 'w-80'
-            } border-r border-gray-200 flex-shrink-0 bg-gray-50`}>
+            {/* Conversation List */}
+            <div className="flex-1 overflow-hidden">
               <EnhancedConversationList
                 conversations={conversations}
                 currentUserId={user.id}
@@ -170,73 +193,73 @@ export default function EnhancedMessagesPage() {
                 connectionStatus={connectionStatus}
               />
             </div>
+          </div>
 
-            {/* Enhanced Message Thread */}
-            <div className={`${
-              isMobile 
-                ? (showConversationList ? 'hidden' : 'w-full') 
-                : 'flex-1'
-            }`}>
-              {selectedConversation ? (
-                <EnhancedMessageThread
-                  conversation={selectedConversation}
-                  currentUserId={user.id}
-                />
-              ) : (
-                <div className="h-full flex items-center justify-center bg-white">
-                  <div className="text-center max-w-md px-6">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Enhanced Message Thread Area */}
+          <div className={`${
+            isMobile 
+              ? (showConversationList ? 'hidden' : 'w-full') 
+              : 'flex-1'
+          } h-full flex flex-col bg-gradient-to-b from-white to-gray-50/30`}>
+            {selectedConversation ? (
+              <EnhancedMessageThread
+                conversation={selectedConversation}
+                currentUserId={user.id}
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
+                <div className="text-center max-w-lg px-8">
+                  {/* Enhanced Empty State Icon */}
+                  <div className="relative mb-6">
+                    <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                      <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
                     </div>
-                    
-                    <h3 className="text-lg font-semibold text-black mb-2">
-                      Select a conversation
-                    </h3>
-                    
-                    <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                      Choose a conversation from the sidebar to start secure messaging.
-                    </p>
+                    {/* Floating decoration */}
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-80 animate-bounce"></div>
+                  </div>
+                  
+                  <h3 className="text-heading-lg bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3">
+                    Select a conversation
+                  </h3>
+                  
+                  <p className="text-body leading-relaxed mb-8">
+                    Choose a conversation from the sidebar to start secure messaging with buyers and sellers.
+                  </p>
 
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-left">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <span className="text-sm font-medium text-black">Secure messaging</span>
+                  {/* Enhanced Security Features Card */}
+                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 text-left shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center shadow-md">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
                       </div>
-                      <ul className="text-xs text-gray-600 space-y-1.5 ml-7">
-                        <li>End-to-end encryption</li>
-                        <li>AI fraud detection</li>
-                        <li>Identity verification required</li>
-                        <li>Real-time message status</li>
-                      </ul>
+                      <span className="text-heading-sm">Security Features</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-50/50 transition-colors">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full shadow-sm"></div>
+                        <span className="text-body-sm font-medium">End-to-end encryption</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50/50 transition-colors">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full shadow-sm"></div>
+                        <span className="text-body-sm font-medium">AI fraud detection</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-purple-50/50 transition-colors">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full shadow-sm"></div>
+                        <span className="text-body-sm font-medium">Identity verification</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50/50 transition-colors">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full shadow-sm"></div>
+                        <span className="text-body-sm font-medium">Real-time status</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer info - Vercel style */}
-      <div className="w-full max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-          <div className="flex items-center gap-1.5">
-            <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-            <span>Encrypted</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-            <span>AI Protected</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-            <span>Real-time</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

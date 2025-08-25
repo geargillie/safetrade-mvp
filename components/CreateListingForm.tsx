@@ -1,8 +1,12 @@
 // components/CreateListingForm.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, Shield, Star, ExternalLink } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { SafeZone, SafeZoneType } from '@/types/safe-zones';
 
 export interface ListingFormData {
   title: string;
@@ -16,6 +20,7 @@ export interface ListingFormData {
   condition: string;
   city: string;
   zipCode: string;
+  recommendedSafeZone?: string;
 }
 
 export interface ValidationErrors {
@@ -41,12 +46,59 @@ export default function CreateListingForm({
   onSubmit,
   loading
 }: CreateListingFormProps) {
+  const [nearbySafeZones, setNearbySafeZones] = useState<SafeZone[]>([]);
+  const [loadingSafeZones, setLoadingSafeZones] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  // Fetch nearby safe zones when location changes
+  useEffect(() => {
+    if (formData.city && formData.zipCode) {
+      fetchNearbySafeZones();
+    }
+  }, [formData.city, formData.zipCode]);
+
+  const fetchNearbySafeZones = async () => {
+    setLoadingSafeZones(true);
+    try {
+      const params = new URLSearchParams({
+        city: formData.city,
+        zipCode: formData.zipCode,
+        limit: '3'
+      });
+      
+      const response = await fetch(`/api/safe-zones/nearby?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        setNearbySafeZones(data.safeZones || []);
+      }
+    } catch (error) {
+      console.error('Error fetching nearby safe zones:', error);
+    } finally {
+      setLoadingSafeZones(false);
+    }
+  };
+
+  const getTypeLabel = (type: SafeZoneType): string => {
+    const labels: Record<SafeZoneType, string> = {
+      [SafeZoneType.POLICE_STATION]: 'Police Station',
+      [SafeZoneType.FIRE_STATION]: 'Fire Station',
+      [SafeZoneType.HOSPITAL]: 'Hospital',
+      [SafeZoneType.LIBRARY]: 'Library',
+      [SafeZoneType.COMMUNITY_CENTER]: 'Community Center',
+      [SafeZoneType.GOVERNMENT_BUILDING]: 'Government Building',
+      [SafeZoneType.MALL]: 'Shopping Center',
+      [SafeZoneType.BANK]: 'Bank',
+      [SafeZoneType.RETAIL_STORE]: 'Retail Store',
+      [SafeZoneType.OTHER]: 'Other'
+    };
+    return labels[type] || type;
   };
 
   return (
@@ -316,6 +368,176 @@ export default function CreateListingForm({
           </div>
         </div>
       </div>
+
+      {/* Safe Zone Recommendations Section */}
+      {(formData.city && formData.zipCode) && (
+        <div className="space-y-6">
+          <div className="border-b border-gray-100 pb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="w-5 h-5 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Recommended Safe Zones</h3>
+            </div>
+            <p className="text-sm text-gray-600">
+              Safe, monitored locations near you for secure transactions
+            </p>
+          </div>
+
+          {loadingSafeZones ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+              <span className="ml-3 text-sm text-gray-600">Finding nearby safe zones...</span>
+            </div>
+          ) : nearbySafeZones.length > 0 ? (
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div className="flex-1">
+                    <h4 className="font-medium text-blue-900 mb-1">Why use Safe Zones?</h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• Monitored locations with security cameras</li>
+                      <li>• Well-lit, public spaces with high foot traffic</li>
+                      <li>• Emergency services nearby for added safety</li>
+                      <li>• Build trust with potential buyers</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                {nearbySafeZones.map((safeZone) => (
+                  <div 
+                    key={safeZone.id}
+                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${
+                      formData.recommendedSafeZone === safeZone.id
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      recommendedSafeZone: prev.recommendedSafeZone === safeZone.id ? '' : safeZone.id
+                    }))}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-medium text-gray-900">{safeZone.name}</h4>
+                          {safeZone.isVerified && (
+                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                              <Shield className="w-3 h-3 mr-1" />
+                              Verified
+                            </Badge>
+                          )}
+                          <Badge variant="secondary" className="text-xs">
+                            {getTypeLabel(safeZone.zoneType)}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span className="truncate">{safeZone.address}</span>
+                          </div>
+                          {safeZone.averageRating > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Star className="w-4 h-4 text-yellow-500" />
+                              <span>{safeZone.averageRating.toFixed(1)} ({safeZone.totalReviews} reviews)</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name="recommendedSafeZone"
+                              value={safeZone.id}
+                              checked={formData.recommendedSafeZone === safeZone.id}
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                recommendedSafeZone: e.target.checked ? safeZone.id : ''
+                              }))}
+                              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {formData.recommendedSafeZone === safeZone.id 
+                                ? 'Selected as recommended safe zone' 
+                                : 'Select this safe zone'
+                              }
+                            </span>
+                          </div>
+                          
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            asChild
+                          >
+                            <a 
+                              href={`/safe-zones/${safeZone.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              View Details
+                              <ExternalLink className="w-3 h-3 ml-1" />
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  asChild
+                >
+                  <a href="/safe-zones" target="_blank" rel="noopener noreferrer">
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Browse All Safe Zones
+                    <ExternalLink className="w-3 h-3 ml-2" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 className="text-lg font-medium text-gray-900 mb-2">No Safe Zones Found Nearby</h4>
+              <p className="text-gray-600 mb-4">
+                We couldn't find any safe zones in your area. You can still browse all available locations.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                asChild
+              >
+                <a href="/safe-zones" target="_blank" rel="noopener noreferrer">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Browse All Safe Zones
+                  <ExternalLink className="w-3 h-3 ml-2" />
+                </a>
+              </Button>
+            </div>
+          )}
+
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 text-yellow-600 mt-0.5">💡</div>
+              <div className="text-sm text-yellow-800">
+                <strong>Pro Tip:</strong> Selecting a recommended safe zone helps build trust with potential buyers 
+                and makes your listing more appealing. Buyers prefer sellers who prioritize safety!
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Images Section */}
       <div className="space-y-6">

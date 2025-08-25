@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import Layout from '@/components/Layout'
 import ImageUpload from '@/components/ImageUpload'
 
 export default function CreateListing() {
@@ -263,9 +264,9 @@ export default function CreateListing() {
   }
 
 
-  // Main create listing form with Notion-inspired design
+  // Main create listing form with consistent design
   return (
-    <div className="min-h-screen bg-white">
+    <Layout showNavigation={true}>
       {/* Navigation breadcrumb */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 py-3">
@@ -280,13 +281,14 @@ export default function CreateListing() {
           </div>
         </div>
       </div>
-      {/* Clean Notion-Style Hero */}
-      <section className="bg-white py-16 border-b border-gray-200">
+      
+      {/* Clean Hero Section */}
+      <section className="bg-white py-12 border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
             Create listing
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-base md:text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
             Sell your motorcycle safely with verified buyers and secure transactions
           </p>
           
@@ -1203,6 +1205,6 @@ export default function CreateListing() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

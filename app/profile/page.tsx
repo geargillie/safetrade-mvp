@@ -78,51 +78,42 @@ export default function ProfilePage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Header Section */}
+      {/* Clean Hero with consistent typography */}
+      <section className="section">
+        <div className="container text-center">
+          <h1 className="text-heading-xl mb-4">
+            Profile & Settings
+          </h1>
+          <p className="text-body-lg mb-8 max-w-2xl mx-auto">
+            Manage your account and verification status
+          </p>
+        </div>
+      </section>
+
+      {/* Content Section */}
       <div className="container">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-heading-xl mb-4" style={{color: 'var(--neutral-900)'}}>
-              Profile & Settings
-            </h1>
-            <p className="text-body-lg" style={{color: 'var(--neutral-600)', maxWidth: '480px', margin: '0 auto'}}>
-              Manage your account and verification status
-            </p>
-          </div>
-
           {/* User Info */}
           <div className="card mb-6">
-            <h3 className="text-heading-md mb-6" style={{color: 'var(--neutral-900)'}}>
+            <h3 className="text-heading-md mb-6">
               Account Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-body-sm" style={{
-                  display: 'block',
-                  fontWeight: '500',
-                  color: 'var(--neutral-600)',
-                  marginBottom: '0.5rem'
-                }}>Name</label>
-                <p className="text-body" style={{
-                  color: 'var(--neutral-900)',
-                  fontWeight: '500',
-                  margin: '0'
-                }}>
+                <label className="text-body-sm block font-medium mb-2">
+                  Name
+                </label>
+                <p className="text-body font-medium">
                   {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
                 </p>
               </div>
               <div>
-                <label className="text-body-sm" style={{
-                  display: 'block',
-                  fontWeight: '500',
-                  color: 'var(--neutral-600)',
-                  marginBottom: '0.5rem'
-                }}>Email</label>
-                <p className="text-body" style={{
-                  color: 'var(--neutral-900)',
-                  fontWeight: '500',
-                  margin: '0'
-                }}>{user?.email}</p>
+                <label className="text-body-sm block font-medium mb-2">
+                  Email
+                </label>
+                <p className="text-body font-medium">
+                  {user?.email}
+                </p>
               </div>
             </div>
           </div>
@@ -130,7 +121,7 @@ export default function ProfilePage() {
           {/* Verification Status */}
           <div className="card">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-heading-md" style={{color: 'var(--neutral-900)', margin: '0'}}>
+              <h3 className="text-heading-md">
                 Identity Verification
               </h3>
               {isVerified && (
@@ -143,34 +134,19 @@ export default function ProfilePage() {
 
             <div className="alert alert-success">
               <div className="flex items-start gap-3">
-                <div style={{
-                  width: '2.5rem',
-                  height: '2.5rem',
-                  backgroundColor: 'var(--success)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-lg">✓</span>
                 </div>
                 <div>
-                  <h4 className="text-body-lg" style={{
-                    fontWeight: '600',
-                    color: 'var(--success-800)',
-                    margin: '0 0 0.5rem 0'
-                  }}>Identity Verified</h4>
-                  <p className="text-body-sm" style={{
-                    color: 'var(--success-700)',
-                    margin: '0'
-                  }}>
+                  <h4 className="text-body-lg font-semibold mb-2 text-green-800">
+                    Identity Verified
+                  </h4>
+                  <p className="text-body-sm text-green-700">
                     Your identity is automatically verified when you create an account. You can create listings and trade securely on SafeTrade.
                   </p>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
