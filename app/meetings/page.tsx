@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase';
 
 import Layout from '@/components/Layout';
 import MeetingDashboard from '@/components/MeetingDashboard';
+import { AuthDebugPanel } from '@/components/AuthStatus';
 
 export default function MeetingsPage() {
   const router = useRouter();
@@ -68,6 +69,9 @@ export default function MeetingsPage() {
         <div className="max-w-7xl mx-auto py-8">
           <MeetingDashboard userId={user.id} />
         </div>
+        
+        {/* Debug panel for auth issues - remove in production */}
+        {process.env.NODE_ENV === 'development' && <AuthDebugPanel />}
       </div>
     </Layout>
   );

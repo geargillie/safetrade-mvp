@@ -452,7 +452,8 @@ export default function MeetingDashboard({
     lastUpdated
   } = useMeetingDashboard(userId);
 
-  const safetyReminders = useSafetyReminders([...upcomingMeetings, ...pastMeetings]);
+  const allMeetings = useMemo(() => [...upcomingMeetings, ...pastMeetings], [upcomingMeetings, pastMeetings]);
+  const safetyReminders = useSafetyReminders(allMeetings);
 
   const [activeTab, setActiveTab] = useState<'upcoming' | 'history' | 'stats'>('upcoming');
 

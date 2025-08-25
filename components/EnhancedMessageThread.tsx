@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useEnhancedConversationMessages } from '@/hooks/useEnhancedMessaging';
 import type { EnhancedConversation } from '@/hooks/useEnhancedMessaging';
+import ScheduleMeetingButton from '@/components/ScheduleMeetingButton';
 import Link from 'next/link';
 
 interface EnhancedMessageThreadProps {
@@ -145,8 +146,18 @@ export default function EnhancedMessageThread({
               </div>
             </div>
 
-            {/* Enhanced Security Indicators - Vercel style */}
+            {/* Actions and Security Indicators */}
             <div className="flex items-center gap-2">
+              {/* Schedule Meeting Button */}
+              <ScheduleMeetingButton
+                listingId={conversation.listing_id}
+                sellerId={conversation.seller_id}
+                buyerId={conversation.buyer_id === currentUserId ? conversation.buyer_id : currentUserId}
+                variant="compact"
+                size="sm"
+                context="message"
+              />
+              
               {/* Security level badge */}
               <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium ${
                 hasSecurityFlags ? 'bg-red-50 border-red-200 text-red-700' :

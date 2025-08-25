@@ -51,12 +51,21 @@ export interface EnhancedConversation {
   listing_make: string;
   listing_model: string;
   listing_year: number;
+  listing_condition: string;
+  listing_mileage: number;
+  listing_city: string;
+  listing_zip_code: string;
+  listing_description: string;
+  listing_vin: string;
+  listing_images: string[];
   buyer_first_name: string;
   buyer_last_name: string;
   seller_first_name: string;
   seller_last_name: string;
   last_message: string;
   last_message_at: string;
+  last_message_timestamp: string;
+  unread_count: number;
   metrics: ConversationMetrics;
   is_verified: boolean;
 }
@@ -106,7 +115,7 @@ export const useEnhancedMessaging = (currentUserId: string) => {
             // Get listing details
             const { data: listing } = await supabase
               .from('listings')
-              .select('title, price, make, model, year')
+              .select('title, price, make, model, year, condition, mileage, city, zip_code, description, vin, images')
               .eq('id', conv.listing_id)
               .single();
 
@@ -172,12 +181,21 @@ export const useEnhancedMessaging = (currentUserId: string) => {
           listing_make: conv.listing_make || listing.make || 'Unknown',
           listing_model: conv.listing_model || listing.model || 'Unknown',
           listing_year: conv.listing_year || listing.year || 2020,
+          listing_condition: conv.listing_condition || listing.condition || 'good',
+          listing_mileage: conv.listing_mileage || listing.mileage || 0,
+          listing_city: conv.listing_city || listing.city || 'Unknown City',
+          listing_zip_code: conv.listing_zip_code || listing.zip_code || '',
+          listing_description: conv.listing_description || listing.description || '',
+          listing_vin: conv.listing_vin || listing.vin || '',
+          listing_images: conv.listing_images || listing.images || [],
           buyer_first_name: conv.buyer_first_name || buyer.first_name || 'Buyer',
           buyer_last_name: conv.buyer_last_name || buyer.last_name || '',
           seller_first_name: conv.seller_first_name || seller.first_name || 'Seller',
           seller_last_name: conv.seller_last_name || seller.last_name || '',
           last_message: conv.last_message || '',
           last_message_at: conv.last_message_at || conv.updated_at,
+          last_message_timestamp: conv.last_message_at || conv.updated_at,
+          unread_count: conv.unread_count || 0,
           security_level: conv.security_level || 'standard',
           fraud_alerts_count: conv.fraud_alerts_count || 0,
           encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,

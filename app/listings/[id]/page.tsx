@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import EnhancedMessageButton from '@/components/EnhancedMessageButton'
+import ScheduleMeetingButton from '@/components/ScheduleMeetingButton'
 import Layout from '@/components/Layout'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -597,6 +598,19 @@ export default function ListingDetailPage() {
                         >
                           View messages
                         </Link>
+                        
+                        {/* Schedule Meeting Button for testing - owners can see how it works */}
+                        <div className="mt-2 pt-2 border-t border-gray-200">
+                          <p className="text-xs text-gray-500 mb-2">Preview meeting scheduling:</p>
+                          <ScheduleMeetingButton
+                            listingId={listing.id}
+                            sellerId={listing.user_id}
+                            size="md"
+                            className="w-full"
+                            context="listing"
+                            variant="compact"
+                          />
+                        </div>
                       </div>
                     </div>
                   ) : listing.status === 'sold' ? (
@@ -640,15 +654,14 @@ export default function ListingDetailPage() {
                             size="lg"
                           />
                           
-                          <Link
-                            href={`/meetings/schedule?listingId=${listing.id}&sellerId=${listing.user_id}`}
-                            className="w-full inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                          >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.623 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-                            </svg>
-                            Schedule Safe Meeting
-                          </Link>
+                          <ScheduleMeetingButton
+                            listingId={listing.id}
+                            sellerId={listing.user_id}
+                            buyerId={user.id}
+                            size="lg"
+                            className="w-full"
+                            context="listing"
+                          />
                         </div>
                         
                         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
