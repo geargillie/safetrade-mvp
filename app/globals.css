@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@import "../styles/typography.css";
+@import "../styles/forms.css";
+
+/* Apply Inter font globally */
+* {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
 
 /* Minimalistic Auto Marketplace Theme */
 :root {

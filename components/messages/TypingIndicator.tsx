@@ -8,9 +8,8 @@
 import { useMemo } from 'react';
 
 interface TypingUser {
-  id: string;
-  first_name?: string;
-  last_name?: string;
+  user_id: string;
+  user_name: string;
 }
 
 interface TypingIndicatorProps {
@@ -26,10 +25,10 @@ export default function TypingIndicator({
   // Filter out current user and format names
   const typingUsers = useMemo(() => {
     return users
-      .filter(user => user.id !== currentUserId)
+      .filter(user => user.user_id !== currentUserId)
       .map(user => ({
         ...user,
-        name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Someone'
+        name: user.user_name || 'Someone'
       }));
   }, [users, currentUserId]);
 

@@ -89,7 +89,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {label && (
             <label 
               htmlFor={inputId}
-              className="block text-sm font-medium text-gray-700"
+              className="text-label"
             >
               {label}
             </label>
@@ -129,7 +129,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {/* Helper Text / Error Message */}
           {(helperText || errorMessage) && (
             <p className={cn(
-              "text-sm",
+              "text-caption",
               errorMessage ? "text-red-600" : "text-gray-500"
             )}>
               {errorMessage || helperText}
@@ -215,7 +215,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label 
             htmlFor={textareaId}
-            className="block text-sm font-medium text-gray-700"
+            className="text-label"
           >
             {label}
           </label>
@@ -243,7 +243,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {/* Helper Text / Error Message */}
         {(helperText || errorMessage) && (
           <p className={cn(
-            "text-sm",
+            "text-caption",
             errorMessage ? "text-red-600" : "text-gray-500"
           )}>
             {errorMessage || helperText}
@@ -295,7 +295,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label 
             htmlFor={selectId}
-            className="block text-sm font-medium text-gray-700"
+            className="text-label"
           >
             {label}
           </label>
@@ -344,7 +344,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {/* Helper Text / Error Message */}
         {(helperText || errorMessage) && (
           <p className={cn(
-            "text-sm",
+            "text-caption",
             errorMessage ? "text-red-600" : "text-gray-500"
           )}>
             {errorMessage || helperText}

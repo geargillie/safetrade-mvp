@@ -195,10 +195,10 @@ export default function ListingsPage() {
       {/* Hero with unified design system */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Browse motorcycles
+          <h1 className="text-headline">
+            Browse Motorcycles
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-body mb-8 max-w-2xl mx-auto">
             Find your perfect ride from verified sellers across the marketplace
           </p>
         </div>
@@ -208,20 +208,19 @@ export default function ListingsPage() {
       <div className="max-w-4xl mx-auto px-6 mb-12">
         <Card>
           <CardHeader>
-            <CardTitle size="lg">Search & Filter</CardTitle>
-            <CardDescription>Find motorcycles that match your criteria</CardDescription>
+            <h2 className="text-title">Search & Filter</h2>
+            <p className="text-body">Find motorcycles that match your criteria</p>
           </CardHeader>
           <CardContent>
             {/* Unified Search */}
             <div className="mb-6">
               <div className="relative">
-                <Input
+                <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   placeholder="Search motorcycles..."
-                  className="pl-11"
-                  size="lg"
+                  className="form-input field-search pl-11"
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
                   <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +235,7 @@ export default function ListingsPage() {
             <select
               value={filters.make}
               onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white"
+              className="form-select field-category"
             >
               <option value="">All Brands</option>
               <option value="Harley-Davidson">Harley-Davidson</option>
@@ -249,20 +248,20 @@ export default function ListingsPage() {
               <option value="KTM">KTM</option>
             </select>
 
-            <Input
+            <input
               type="number"
               value={filters.priceMax}
               onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
               placeholder="Max Price"
-              size="md"
+              className="form-input field-price"
             />
 
-            <Input
+            <input
               type="number"
               value={filters.year}
               onChange={(e) => setFilters({ ...filters, year: e.target.value })}
               placeholder="Year"
-              size="md"
+              className="form-input field-year"
             />
           </div>
 
@@ -298,10 +297,10 @@ export default function ListingsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-subtitle">
             No motorcycles found
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-body mb-6">
             {Object.values(filters).some(value => value !== '') 
               ? "Try adjusting your search criteria"
               : "Be the first to list a motorcycle"

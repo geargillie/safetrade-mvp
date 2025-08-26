@@ -160,57 +160,67 @@ function RegisterContent() {
         <div className="card max-w-2xl mx-auto">
           {step === 'register' && (
             <>
-              <PageHeader
-                title="Join SafeTrade"
-                subtitle="Create your verified account for secure motorcycle trading"
-                icon="🛡️"
-              />
+              <div className="text-center mb-8">
+                <h1 className="text-title">Join SafeTrade</h1>
+                <p className="text-body">Create your verified account for secure motorcycle trading</p>
+              </div>
               
               <form className="space-y-6" onSubmit={handleRegister}>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="form-grid-2">
+                  <div className="form-field">
+                    <label className="text-label">First Name *</label>
                     <input
                       type="text"
                       required
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="input"
+                      className="form-input field-name"
                       placeholder="First name"
                     />
+                  </div>
+                  <div className="form-field">
+                    <label className="text-label">Last Name *</label>
                     <input
                       type="text"
                       required
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="input"
+                      className="form-input field-name"
                       placeholder="Last name"
                     />
                   </div>
-                  
+                </div>
+                
+                <div className="form-field">
+                  <label className="text-label">Email Address *</label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input"
+                    className="form-input field-email"
                     placeholder="Email address"
                   />
-                  
+                </div>
+                
+                <div className="form-field">
+                  <label className="text-label">Password *</label>
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input"
+                    className="form-input"
                     placeholder="Password (min 6 characters)"
                     minLength={6}
                   />
+                  <p className="text-caption">Must be at least 6 characters long</p>
                 </div>
 
                 {/* Security features highlight */}
-                <div className="bg-muted rounded-lg p-4">
-                  <h3 className="font-semibold text-foreground mb-2">🛡️ SafeTrade Security Features</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="text-section-label">🛡️ SafeTrade Security Features</h3>
+                  <ul className="text-small space-y-1">
                     <li>• Triple-layer identity verification</li>
                     <li>• Real-time stolen vehicle detection</li>
                     <li>• AI-powered scam protection</li>

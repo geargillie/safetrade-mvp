@@ -111,9 +111,7 @@ export default function MessageInput({
             disabled={disabled || sending}
             rows={minRows}
             className={`
-              w-full px-4 py-3 text-[#171717] placeholder-[#a3a3a3] bg-white 
-              border border-[#e5e5e5] rounded-xl text-sm leading-5 resize-none
-              transition-all duration-200 focus:outline-none focus:border-[#0070f3] focus:ring-1 focus:ring-[#0070f3]
+              form-input field-message resize-none
               ${disabled || sending ? 'bg-[#f5f5f5] cursor-not-allowed' : ''}
             `}
             style={{ 
@@ -153,13 +151,13 @@ export default function MessageInput({
 
       {/* Hint Text */}
       <div className="flex items-center justify-between mt-2 px-1 max-w-4xl mx-auto">
-        <p className="text-xs text-[#a3a3a3]">
+        <p className="text-small">
           Press <kbd className="px-1 py-0.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded text-[10px] font-mono">Enter</kbd> to send, 
           <kbd className="px-1 py-0.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded text-[10px] font-mono ml-1">Shift+Enter</kbd> for new line
         </p>
         
         {/* Security Badge */}
-        <div className="flex items-center gap-1 text-[#10b981] text-xs">
+        <div className="flex items-center gap-1 text-[#10b981] text-small">
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>

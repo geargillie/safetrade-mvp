@@ -86,6 +86,15 @@ export default function MessagesPage() {
 
   // Navigation handlers
   const handleSelectConversation = (conversation: EnhancedConversation) => {
+    console.log('🔄 Selected conversation:', {
+      id: conversation.id,
+      listing_id: conversation.listing_id,
+      seller_id: conversation.seller_id,
+      buyer_id: conversation.buyer_id,
+      listing_title: conversation.listing_title,
+      has_images: conversation.listing_images?.length > 0
+    });
+    
     setSelectedConversation(conversation);
     
     // On mobile, hide conversation list when selecting chat

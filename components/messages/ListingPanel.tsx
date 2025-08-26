@@ -27,16 +27,37 @@ export default function ListingPanel({
 
   // Handle navigation
   const handleScheduleMeeting = () => {
-    if (conversation.listing_id) {
-      router.push(`/meetings/schedule?listingId=${conversation.listing_id}&sellerId=${conversation.seller_id}`);
+    if (!conversation.listing_id) {
+      console.error('No listing ID available for scheduling meeting');
+      alert('Unable to schedule meeting - listing information not available');
+      return;
     }
+    
+    if (!conversation.seller_id) {
+      console.error('No seller ID available for scheduling meeting');
+      alert('Unable to schedule meeting - seller information not available');
+      return;
+    }
+
+    console.log('🔄 Navigating to schedule meeting:', {
+      listingId: conversation.listing_id,
+      sellerId: conversation.seller_id
+    });
+    
+    router.push(`/meetings/schedule?listingId=${conversation.listing_id}&sellerId=${conversation.seller_id}`);
   };
 
   const handleViewListing = () => {
-    if (conversation.listing_id) {
-      // Open in new tab to preserve the messages page
-      window.open(`/listings/${conversation.listing_id}`, '_blank');
+    if (!conversation.listing_id) {
+      console.error('No listing ID available for viewing listing');
+      alert('Unable to view listing - listing information not available');
+      return;
     }
+
+    console.log('🔄 Opening listing in new tab:', conversation.listing_id);
+    
+    // Open in new tab to preserve the messages page
+    window.open(`/listings/${conversation.listing_id}`, '_blank');
   };
 
   // Format price

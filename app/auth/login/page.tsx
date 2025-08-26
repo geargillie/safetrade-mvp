@@ -47,7 +47,7 @@ export default function Login() {
                 <span className="text-sm font-bold" style={{color: 'var(--brand-primary)'}}>ST</span>
               </div>
             </div>
-            <h2 className="text-heading-lg mb-2">
+            <h2 className="text-title">
               Welcome back
             </h2>
             <p className="text-body">
@@ -55,9 +55,9 @@ export default function Login() {
             </p>
           </div>
           
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="form-field">
+              <label htmlFor="email" className="text-label">
                 Email address
               </label>
               <input
@@ -66,13 +66,13 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input"
+                className="form-input field-email"
                 placeholder="Enter your email"
               />
             </div>
             
-            <div>
-              <label htmlFor="password" className="block text-body-sm mb-2" style={{fontWeight: '500', color: 'var(--neutral-700)'}}>
+            <div className="form-field">
+              <label htmlFor="password" className="text-label">
                 Password
               </label>
               <input
@@ -81,20 +81,17 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input"
+                className="form-input"
                 placeholder="Enter your password"
               />
             </div>
 
             {message && (
-              <div className={`text-body-sm p-3 rounded-lg`} style={{
-                backgroundColor: message.includes('Error') 
-                  ? 'rgba(220, 38, 38, 0.1)' 
-                  : 'rgba(5, 150, 105, 0.1)',
-                color: message.includes('Error') 
-                  ? 'var(--error)' 
-                  : 'var(--success)'
-              }}>
+              <div className={`p-3 rounded-lg ${
+                message.includes('Error') 
+                  ? 'text-error bg-red-50 border border-red-200'
+                  : 'text-success bg-green-50 border border-green-200'
+              }`}>
                 {message}
               </div>
             )}
@@ -102,7 +99,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full"
+              className="btn-primary w-full"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

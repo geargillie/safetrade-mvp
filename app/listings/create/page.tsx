@@ -285,10 +285,10 @@ export default function CreateListing() {
       {/* Clean Hero Section */}
       <section className="bg-white py-12 border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4 leading-[1.1] tracking-tight">
-            Create listing
+          <h1 className="text-headline">
+            Create New Listing
           </h1>
-          <p className="text-base md:text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-body mb-8 max-w-2xl mx-auto">
             Sell your motorcycle safely with verified buyers and secure transactions
           </p>
           
@@ -377,15 +377,15 @@ export default function CreateListing() {
                 {/* Step 1: Basic Information */}
                 {currentStep === 1 && (
                   <div className="p-8 space-y-6">
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Basic Information</h2>
-                      <p className="text-gray-600">Tell us about your motorcycle</p>
+                    <div className="form-section-header">
+                      <h2 className="text-title">Basic Information</h2>
+                      <p className="text-body">Tell us about your motorcycle</p>
                     </div>
                     
                     <div className="space-y-6">
-                      {/* Clean Title Field */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
+                      {/* Title Field */}
+                      <div className="form-field">
+                        <label className="text-label">
                           Motorcycle Title *
                         </label>
                         <input
@@ -393,76 +393,77 @@ export default function CreateListing() {
                           name="title"
                           value={formData.title}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                            validationErrors.title ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                          className={`form-input field-title ${
+                            validationErrors.title ? 'error' : ''
                           }`}
                           placeholder="e.g., 2019 Honda CBR600RR Sport Bike"
                         />
                         {validationErrors.title && (
-                          <p className="text-sm text-red-600">{validationErrors.title}</p>
+                          <p className="text-error">{validationErrors.title}</p>
                         )}
-                        <p className="text-xs text-gray-500">Include year, make, model, and key selling points</p>
+                        <p className="text-caption">Include year, make, model, and key selling points</p>
                       </div>
 
-                      {/* Clean Description Field */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
+                      {/* Description Field */}
+                      <div className="form-field">
+                        <label className="text-label">
                           Description *
                         </label>
                         <textarea
                           name="description"
                           value={formData.description}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none ${
-                            validationErrors.description ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                          className={`form-textarea field-description ${
+                            validationErrors.description ? 'error' : ''
                           }`}
-                          rows={4}
                           placeholder="Describe the condition, maintenance history, and any important details..."
                         />
                         {validationErrors.description && (
-                          <p className="text-sm text-red-600">{validationErrors.description}</p>
+                          <p className="text-error">{validationErrors.description}</p>
                         )}
-                        <p className="text-xs text-gray-500">Be detailed and honest - buyers appreciate transparency</p>
+                        <p className="text-caption">Be detailed and honest - buyers appreciate transparency</p>
                       </div>
 
-                      {/* Price and Condition Row - Professional smaller width */}
-                      <div className="flex flex-wrap gap-6 items-start">
-                        {/* Price Field - Smaller width like professional sites */}
-                        <div className="space-y-2 w-full sm:w-48">
-                          <label className="text-sm font-medium text-gray-900">
+                      {/* Price and Condition Row */}
+                      <div className="form-inline">
+                        {/* Price Field */}
+                        <div className="form-field">
+                          <label className="text-label">
                             Price (USD) *
                           </label>
-                          <div className="relative">
-                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</div>
-                            <input
-                              type="number"
-                              name="price"
-                              value={formData.price}
-                              onChange={handleInputChange}
-                              className={`w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                                validationErrors.price ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                              }`}
-                              min="0"
-                              step="100"
-                              placeholder="15000"
-                            />
+                          <div className="price-container">
+                            <div className="relative">
+                              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</div>
+                              <input
+                                type="number"
+                                name="price"
+                                value={formData.price}
+                                onChange={handleInputChange}
+                                className={`form-input field-price pl-8 ${
+                                  validationErrors.price ? 'error' : ''
+                                }`}
+                                min="0"
+                                step="100"
+                                placeholder="15000"
+                              />
+                            </div>
                           </div>
                           {validationErrors.price && (
-                            <p className="text-sm text-red-600">{validationErrors.price}</p>
+                            <p className="text-error">{validationErrors.price}</p>
                           )}
                         </div>
 
-                        {/* Condition Field - Smaller dropdown width */}
-                        <div className="space-y-2 w-full sm:w-40">
-                          <label className="text-sm font-medium text-gray-900">
+                        {/* Condition Field */}
+                        <div className="form-field">
+                          <label className="text-label">
                             Condition *
                           </label>
                           <select
                             name="condition"
                             value={formData.condition}
                             onChange={handleInputChange}
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none bg-white ${
-                              validationErrors.condition ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                            className={`form-select field-condition ${
+                              validationErrors.condition ? 'error' : ''
                             }`}
                           >
                             <option value="">Select condition</option>
@@ -472,15 +473,15 @@ export default function CreateListing() {
                             <option value="poor">Poor</option>
                           </select>
                           {validationErrors.condition && (
-                            <p className="text-sm text-red-600">{validationErrors.condition}</p>
+                            <p className="text-error">{validationErrors.condition}</p>
                           )}
                         </div>
-                        
-                        {/* Helper text below both fields */}
-                        <div className="w-full text-xs text-gray-500 space-y-1">
-                          <p>• Research similar motorcycles for competitive pricing</p>
-                          <p>• Honest condition assessment builds buyer trust</p>
-                        </div>
+                      </div>
+                      
+                      {/* Helper text */}
+                      <div className="text-caption space-y-1">
+                        <p>• Research similar motorcycles for competitive pricing</p>
+                        <p>• Honest condition assessment builds buyer trust</p>
                       </div>
                     </div>
                     
@@ -494,7 +495,7 @@ export default function CreateListing() {
                             setCurrentStep(2)
                           }
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-150"
+                        className="btn-primary"
                       >
                         <span>Continue</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

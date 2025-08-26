@@ -146,14 +146,13 @@ const CardTitle = React.forwardRef<
   }
 >(({ className, level = 3, size = "md", ...props }, ref) => {
   const sizeClasses = {
-    sm: "text-lg font-semibold",
-    md: "text-xl font-semibold",
-    lg: "text-2xl font-bold",
-    xl: "text-3xl font-bold",
+    sm: "text-subtitle",
+    md: "text-title",
+    lg: "text-headline",
+    xl: "text-hero",
   };
 
   const baseClasses = cn(
-    "text-gray-900 leading-tight tracking-tight",
     sizeClasses[size],
     className
   );
@@ -186,16 +185,15 @@ const CardDescription = React.forwardRef<
   }
 >(({ className, size = "md", ...props }, ref) => {
   const sizeClasses = {
-    sm: "text-sm",
-    md: "text-base",
-    lg: "text-lg",
+    sm: "text-small",
+    md: "text-body",
+    lg: "text-body-large",
   };
 
   return (
     <p
       ref={ref}
       className={cn(
-        "text-gray-600 leading-relaxed",
         sizeClasses[size],
         className
       )}
