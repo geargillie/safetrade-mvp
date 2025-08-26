@@ -101,8 +101,18 @@ export function useMeetingDashboard(userId?: string): UseMeetingDashboardResult 
       
       abortControllerRef.current = new AbortController();
 
-      // Use improved authentication handling
-      const authHeaders = await getAuthHeaders();
+      // Use improved authentication handling with better error handling
+      let authHeaders: HeadersInit;
+      
+      try {
+        authHeaders = await getAuthHeaders();
+      } catch (authError: any) {
+        // Handle auth header generation failures
+        if (authError.message?.includes('No valid authentication token')) {
+          throw new Error('Please log in to view your meetings');
+        }
+        throw new Error(`Authentication error: ${authError.message}`);
+      }
 
       const response = await fetch('/api/safe-zones/meetings/user', {
         signal: abortControllerRef.current.signal,
@@ -111,7 +121,13 @@ export function useMeetingDashboard(userId?: string): UseMeetingDashboardResult 
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Authentication failed - please log in again');
+          throw new Error('Your session has expired. Please log in again to view your meetings.');
+        }
+        if (response.status === 403) {
+          throw new Error('You do not have permission to access meetings data.');
+        }
+        if (response.status >= 500) {
+          throw new Error('Server error occurred. Please try again later.');
         }
         throw new Error(`Failed to fetch meetings: ${response.statusText}`);
       }
@@ -217,12 +233,20 @@ export function useMeetingDashboard(userId?: string): UseMeetingDashboardResult 
         // Handle authentication errors specifically
         if (err.message?.includes('Authentication failed') || 
             err.message?.includes('Invalid Refresh Token') ||
-            err.message?.includes('refresh_token_not_found')) {
+            err.message?.includes('refresh_token_not_found') ||
+            err.message?.includes('Please log in to view') ||
+            err.message?.includes('session has expired')) {
           await handleAuthError(err, '/meetings');
           return;
         }
         
-        setError(err.message || 'Failed to fetch meetings');
+        // Set user-friendly error message
+        let errorMessage = err.message || 'Failed to fetch meetings';
+        if (errorMessage.includes('Failed to fetch meetings: Internal Server Error')) {
+          errorMessage = 'Unable to connect to the server. Please try again later.';
+        }
+        
+        setError(errorMessage);
       }
     } finally {
       setLoading(false);

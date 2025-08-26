@@ -1,0 +1,560 @@
+/**
+ * SafeTrade Professional Button & Badge System
+ * Linear/Vercel/Notion-inspired cohesive design system
+ * Minimalistic, clean, and highly functional
+ */
+
+/* Design System Variables */
+:root {
+  /* Core Brand Colors */
+  --btn-primary: #2563eb;
+  --btn-primary-hover: #1d4ed8;
+  --btn-secondary: #ffffff;
+  --btn-secondary-border: #e5e7eb;
+  --btn-destructive: #dc2626;
+  --btn-success: #059669;
+  
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --text-white: #ffffff;
+  
+  /* Neutral Colors */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  /* System Colors */
+  --green-600: #059669;
+  --green-700: #047857;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --yellow-600: #d97706;
+  --yellow-700: #b45309;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-primary: 0 4px 12px rgba(37, 99, 235, 0.25);
+  --shadow-destructive: 0 4px 12px rgba(220, 38, 38, 0.25);
+  --shadow-success: 0 4px 12px rgba(5, 150, 105, 0.25);
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* Base Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 200ms ease;
+  outline: none;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+  position: relative;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--btn-primary);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Button Sizes */
+.btn-sm { 
+  height: 32px; 
+  padding: 0 12px; 
+  font-size: 13px; 
+}
+
+.btn-md { 
+  height: 40px; 
+  padding: 0 16px; 
+  font-size: 14px; 
+}
+
+.btn-lg { 
+  height: 48px; 
+  padding: 0 24px; 
+  font-size: 16px; 
+}
+
+.btn-xl { 
+  height: 56px; 
+  padding: 0 32px; 
+  font-size: 18px; 
+}
+
+/* Button Variants */
+
+/* Primary Button */
+.btn-primary {
+  background: var(--btn-primary);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+}
+
+.btn-primary:hover {
+  background: var(--btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: var(--btn-secondary);
+  color: #374151;
+  border-color: var(--btn-secondary-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Ghost Button */
+.btn-ghost {
+  background: transparent;
+  color: #6b7280;
+}
+
+.btn-ghost:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-ghost:active {
+  transform: scale(0.98);
+}
+
+/* Destructive Button */
+.btn-destructive {
+  background: var(--btn-destructive);
+  color: #ffffff;
+}
+
+.btn-destructive:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.btn-destructive:active {
+  transform: scale(0.98);
+}
+
+/* Success Button */
+.btn-success {
+  background: var(--btn-success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.btn-success:active {
+  transform: scale(0.98);
+}
+
+/* Outline Variants */
+.btn-outline-primary {
+  background: transparent;
+  color: var(--btn-primary);
+  border-color: var(--btn-primary);
+}
+
+.btn-outline-primary:hover {
+  background: var(--btn-primary-focus);
+  border-color: var(--btn-primary-hover);
+  color: var(--btn-primary-hover);
+}
+
+.btn-outline-destructive {
+  background: transparent;
+  color: var(--btn-destructive);
+  border-color: var(--btn-destructive);
+}
+
+.btn-outline-destructive:hover {
+  background: rgba(220, 38, 38, 0.05);
+  border-color: var(--btn-destructive-hover);
+  color: var(--btn-destructive-hover);
+}
+
+.btn-outline-success {
+  background: transparent;
+  color: var(--btn-success);
+  border-color: var(--btn-success);
+}
+
+.btn-outline-success:hover {
+  background: rgba(5, 150, 105, 0.05);
+  border-color: var(--btn-success-hover);
+  color: var(--btn-success-hover);
+}
+
+/* Button Groups */
+.btn-group {
+  display: inline-flex;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.btn-group .btn {
+  border-radius: 0;
+  border-right-width: 0;
+  box-shadow: none;
+}
+
+.btn-group .btn:first-child {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.btn-group .btn:last-child {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-right-width: 1px;
+}
+
+.btn-group .btn:only-child {
+  border-radius: var(--border-radius);
+  border-right-width: 1px;
+}
+
+/* Loading State */
+.btn-loading {
+  opacity: 0.7;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.btn-loading::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* BADGE SYSTEM */
+
+/* Base Badge Styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  user-select: none;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+/* Badge Sizes */
+.badge-xs {
+  height: 18px;
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 600;
+  gap: 2px;
+}
+
+.badge-sm {
+  height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 3px;
+}
+
+.badge,
+.badge-md {
+  height: 24px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+}
+
+.badge-lg {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 4px;
+}
+
+/* Badge Variants - Cohesive with button system */
+.badge-default {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border-color: var(--gray-200);
+}
+
+.badge-primary {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--blue-600);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.badge-secondary {
+  background: var(--gray-50);
+  color: var(--gray-600);
+  border-color: var(--gray-200);
+}
+
+.badge-success {
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--green-600);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+.badge-warning {
+  background: rgba(217, 119, 6, 0.1);
+  color: var(--yellow-600);
+  border-color: rgba(217, 119, 6, 0.2);
+}
+
+.badge-destructive {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--red-600);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.badge-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--blue-600);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.badge-verified {
+  background: linear-gradient(135deg, var(--blue-600) 0%, var(--green-600) 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+}
+
+.badge-neutral {
+  background: var(--gray-100);
+  color: var(--gray-600);
+  border-color: var(--gray-200);
+}
+
+/* Solid Badge Variants */
+.badge-solid-primary {
+  background: var(--blue-600);
+  color: #ffffff;
+  border: none;
+}
+
+.badge-solid-success {
+  background: var(--green-600);
+  color: #ffffff;
+  border: none;
+}
+
+.badge-solid-destructive {
+  background: var(--red-600);
+  color: #ffffff;
+  border: none;
+}
+
+.badge-solid-warning {
+  background: var(--yellow-600);
+  color: #ffffff;
+  border: none;
+}
+
+/* Interactive Badges */
+.badge-interactive {
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.badge-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-interactive:active {
+  transform: scale(0.98);
+}
+
+/* Badge with Icon */
+.badge-icon {
+  padding-left: 6px;
+}
+
+.badge-icon.badge-xs { padding-left: 4px; }
+.badge-icon.badge-lg { padding-left: 8px; }
+
+/* Closable Badges */
+.badge-closable {
+  padding-right: 4px;
+}
+
+.badge-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.badge-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Status Indicators */
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.status-online { background: var(--green-600); }
+.status-offline { background: var(--gray-400); }
+.status-away { background: var(--yellow-600); }
+.status-busy { background: var(--red-600); }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn-lg {
+    height: 44px;
+    padding: 0 20px;
+    font-size: 15px;
+  }
+  
+  .btn-xl {
+    height: 52px;
+    padding: 0 28px;
+    font-size: 17px;
+  }
+  
+  /* Stack button groups vertically on mobile */
+  .btn-group-mobile-stack {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn-group-mobile-stack .btn {
+    border-radius: var(--border-radius);
+    border-right-width: 1px;
+    border-bottom-width: 0;
+    margin-bottom: 1px;
+  }
+  
+  .btn-group-mobile-stack .btn:last-child {
+    border-bottom-width: 1px;
+    margin-bottom: 0;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .btn {
+    border-width: 2px;
+  }
+  
+  .badge {
+    border-width: 1.5px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .badge-interactive {
+    transition: none;
+  }
+  
+  .btn:hover,
+  .badge-interactive:hover {
+    transform: none;
+  }
+  
+  .btn-loading::before {
+    animation: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --btn-secondary: #1f2937;
+    --btn-secondary-border: #374151;
+    --btn-secondary-hover: #374151;
+    --btn-secondary-border-hover: #4b5563;
+    --btn-ghost-hover: #374151;
+    --btn-ghost-active: #4b5563;
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
+  }
+  
+  .badge-default {
+    background: #374151;
+    color: #e5e7eb;
+    border-color: #4b5563;
+  }
+}

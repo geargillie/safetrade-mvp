@@ -3,33 +3,120 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// Professional badge variants using the new design system
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "badge", // Base class from our CSS design system
   {
     variants: {
       variant: {
-        default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+        default: "badge-default",
+        primary: "badge-primary",
+        secondary: "badge-secondary",
+        success: "badge-success", 
+        warning: "badge-warning",
+        destructive: "badge-destructive",
+        info: "badge-info",
+        verified: "badge-verified",
+        // Solid variants
+        "solid-primary": "badge-solid-primary",
+        "solid-success": "badge-solid-success",
+        "solid-destructive": "badge-solid-destructive",
+        "solid-warning": "badge-solid-warning",
+        // Legacy mapping
+        outline: "badge-secondary",
+      },
+      size: {
+        xs: "badge-xs",
+        sm: "badge-sm",
+        md: "badge-md", 
+        lg: "badge-lg",
+        // Legacy mapping
+        default: "badge-md",
       },
     },
     defaultVariants: {
       variant: "default",
+      size: "md",
     },
   }
 )
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  icon?: React.ReactNode
+  closable?: boolean
+  onClose?: () => void
+  interactive?: boolean
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ 
+  className, 
+  variant, 
+  size,
+  icon,
+  closable = false,
+  onClose,
+  interactive = false,
+  children,
+  onClick,
+  ...props 
+}: BadgeProps) {
+  const badgeClasses = cn(
+    badgeVariants({ variant, size }),
+    icon && "badge-icon",
+    closable && "badge-closable",
+    interactive && "badge-interactive",
+    className
+  )
+
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div 
+      className={badgeClasses} 
+      onClick={onClick}
+      {...props}
+    >
+      {icon}
+      {children}
+      {closable && onClose && (
+        <button
+          type="button"
+          className="badge-close"
+          onClick={(e) => {
+            e.stopPropagation()
+            onClose()
+          }}
+          aria-label="Remove badge"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path 
+              d="M9 3L3 9M3 3l6 6" 
+              stroke="currentColor" 
+              strokeWidth="1.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
+    </div>
   )
 }
-export { Badge, badgeVariants }
+
+// Status badge with dot indicator
+function StatusBadge({ 
+  status, 
+  children, 
+  ...props 
+}: BadgeProps & { 
+  status: 'online' | 'offline' | 'away' | 'busy' 
+}) {
+  return (
+    <Badge {...props}>
+      <div className={cn("status-indicator", `status-${status}`)} />
+      {children}
+    </Badge>
+  )
+}
+
+export { Badge, StatusBadge, badgeVariants }

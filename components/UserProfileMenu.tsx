@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 // import { supabase } from '@/lib/supabase';
 
 interface User {
@@ -120,17 +121,15 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
   if (!user) {
     return (
       <div className="flex items-center gap-3">
-        <Link
-          href="/auth/login"
-          className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          Sign in
+        <Link href="/auth/login">
+          <Button variant="ghost" size="sm">
+            Sign in
+          </Button>
         </Link>
-        <Link
-          href="/auth/register"
-          className="px-4 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-all duration-200 shadow-sm hover:shadow"
-        >
-          Sign up
+        <Link href="/auth/register">
+          <Button variant="primary" size="sm">
+            Sign up
+          </Button>
         </Link>
       </div>
     );

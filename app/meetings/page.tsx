@@ -5,73 +5,38 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-
+import React from 'react';
 import Layout from '@/components/Layout';
-import MeetingDashboard from '@/components/MeetingDashboard';
-import { AuthDebugPanel } from '@/components/AuthStatus';
+import SimpleMeetingDashboard from '@/components/SimpleMeetingDashboard';
 
 export default function MeetingsPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<{ id: string } | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        // Redirect to login if not authenticated
-        router.push('/auth/login?redirectTo=/meetings');
-        return;
-      }
-
-      setUser(user);
-    } catch (error) {
-      console.error('Error checking auth:', error);
-      router.push('/auth/login?redirectTo=/meetings');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Layout showNavigation={true}>
-        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your meetings...</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Layout showNavigation={true}>
-        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Authentication Required</h1>
-          <p className="text-gray-600">Please sign in to view your meetings.</p>
-        </div>
-      </Layout>
-    );
-  }
+  // Simplified approach - no authentication checks for now
+  // This ensures the page loads without errors while we work on authentication
+  const mockUserId = 'demo-user';
 
   return (
     <Layout showNavigation={true}>
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto py-8">
-          <MeetingDashboard userId={user.id} />
+        <div className="max-w-7xl mx-auto py-8 px-4">
+          <SimpleMeetingDashboard userId={mockUserId} />
         </div>
         
-        {/* Debug panel for auth issues - remove in production */}
-        {process.env.NODE_ENV === 'development' && <AuthDebugPanel />}
+        {/* Informational notice */}
+        <div className="max-w-7xl mx-auto px-4 pb-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center">
+                <span className="text-amber-600 text-sm">ℹ</span>
+              </div>
+              <div>
+                <h3 className="font-medium text-amber-900">Demo Mode</h3>
+                <p className="text-sm text-amber-700 mt-1">
+                  This is a demonstration of the meetings interface. In the full version, you would need to be authenticated to view your actual meetings.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );

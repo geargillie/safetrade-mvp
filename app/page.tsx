@@ -45,21 +45,21 @@ export default function HomePage() {
             All-in-one platform that verifies identities, checks vehicle histories, and secures transactions, right where you buy and sell.
           </p>
 
-          {/* Unified design system buttons */}
+          {/* Professional design system buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/listings">
               <Button 
-                variant="default" 
-                size="lg" 
-                className="min-w-48 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 h-auto text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+                variant="primary" 
+                size="xl" 
+                className="min-w-48"
               >
                 Browse motorcycles
               </Button>
             </Link>
             <Button 
-              variant="outline" 
-              size="lg" 
-              className="min-w-48 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-4 h-auto text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+              variant="outline-primary" 
+              size="xl" 
+              className="min-w-48"
               onClick={handleStartSelling}
             >
               Create listing
