@@ -113,10 +113,10 @@ function MeetingCard({
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">
+              <h3 className="card-title">
                 {meeting.listing?.title || 'Meeting'}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="meta-text">
                 {meeting.safeZone?.name}
               </p>
             </div>
@@ -133,9 +133,9 @@ function MeetingCard({
 
         {/* Meeting Details */}
         <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            <span>
+            <span className="meta-text">
               {new Date(meeting.scheduledDatetime).toLocaleString('en-US', {
                 weekday: 'short',
                 month: 'short',
@@ -147,14 +147,14 @@ function MeetingCard({
             </span>
           </div>
           
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            <span className="truncate">{meeting.safeZone?.address}</span>
+            <span className="meta-text truncate">{meeting.safeZone?.address}</span>
           </div>
 
           {meeting.listing && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span className="font-medium">
+            <div className="flex items-center gap-2">
+              <span className="body-text font-medium">
                 ${meeting.listing.price?.toLocaleString()} - {meeting.listing.make} {meeting.listing.model}
               </span>
             </div>
@@ -166,9 +166,9 @@ function MeetingCard({
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-900">Safety Features Available</span>
+              <span className="body-text font-medium text-blue-900">Safety Features Available</span>
             </div>
-            <p className="text-xs text-blue-700">
+            <p className="meta-text text-blue-700">
               Emergency contacts, safety codes, and real-time check-ins will be available during your meeting.
             </p>
           </div>
@@ -203,68 +203,51 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Meeting Dashboard</h1>
-          <p className="text-gray-600">
-            Manage your safe zone meetings and safety check-ins
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link href="/safe-zones">
-            <Button 
-              variant="primary"
-              leftIcon={<Plus className="w-4 h-4" />}
-            >
-              Schedule Meeting
-            </Button>
-          </Link>
-        </div>
+      {/* Action Button */}
+      <div className="flex items-center justify-end mb-6">
+        <Link href="/safe-zones">
+          <Button 
+            variant="primary"
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            Schedule Meeting
+          </Button>
+        </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-600">Upcoming</span>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{mockStats.upcomingMeetings}</div>
-          </CardContent>
-        </Card>
+      <div className="layout-4col mb-6">
+        <div className="card">
+          <div className="flex items-center gap-2 mb-2">
+            <Calendar className="w-4 h-4 text-blue-600" />
+            <span className="meta-text">Upcoming</span>
+          </div>
+          <div className="text-2xl font-bold text-primary">{mockStats.upcomingMeetings}</div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-gray-600">Completed</span>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{mockStats.completedMeetings}</div>
-          </CardContent>
-        </Card>
+        <div className="card">
+          <div className="flex items-center gap-2 mb-2">
+            <CheckCircle className="w-4 h-4 text-green-600" />
+            <span className="meta-text">Completed</span>
+          </div>
+          <div className="text-2xl font-bold text-primary">{mockStats.completedMeetings}</div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="w-4 h-4 text-yellow-600" />
-              <span className="text-sm font-medium text-gray-600">Success Rate</span>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{mockStats.successRate}%</div>
-          </CardContent>
-        </Card>
+        <div className="card">
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className="w-4 h-4 text-yellow-600" />
+            <span className="meta-text">Success Rate</span>
+          </div>
+          <div className="text-2xl font-bold text-primary">{mockStats.successRate}%</div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="w-4 h-4 text-red-600" />
-              <span className="text-sm font-medium text-gray-600">Safety Issues</span>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{mockStats.safetyConcerns}</div>
-          </CardContent>
-        </Card>
+        <div className="card">
+          <div className="flex items-center gap-2 mb-2">
+            <Shield className="w-4 h-4 text-red-600" />
+            <span className="meta-text">Safety Issues</span>
+          </div>
+          <div className="text-2xl font-bold text-primary">{mockStats.safetyConcerns}</div>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
@@ -287,7 +270,7 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
             >
               {tab.label}
               {tab.count !== undefined && (
-                <Badge variant="primary" size="xs" className="ml-2">
+                <Badge variant="primary" size="sm" className="ml-2">
                   {tab.count}
                 </Badge>
               )}
@@ -303,8 +286,8 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
             {mockUpcomingMeetings.length === 0 ? (
               <div className="text-center py-12">
                 <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming meetings</h3>
-                <p className="text-gray-600">Schedule your first safe zone meeting to get started.</p>
+                <h3 className="card-title mb-2">No upcoming meetings</h3>
+                <p className="body-text">Schedule your first safe zone meeting to get started.</p>
                 <Link href="/safe-zones">
                   <Button variant="primary" className="mt-4">Find Safe Zones</Button>
                 </Link>
@@ -327,8 +310,8 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
             {mockPastMeetings.length === 0 ? (
               <div className="text-center py-12">
                 <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No meeting history</h3>
-                <p className="text-gray-600">Your completed meetings will appear here.</p>
+                <h3 className="card-title mb-2">No meeting history</h3>
+                <p className="body-text">Your completed meetings will appear here.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -353,16 +336,16 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Total Meetings:</span>
-                    <span className="font-medium">{mockStats.totalMeetings}</span>
+                    <span className="body-text">Total Meetings:</span>
+                    <span className="body-text font-medium">{mockStats.totalMeetings}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Success Rate:</span>
-                    <span className="font-medium text-green-600">{mockStats.successRate}%</span>
+                    <span className="body-text">Success Rate:</span>
+                    <span className="body-text font-medium text-green-600">{mockStats.successRate}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Average Duration:</span>
-                    <span className="font-medium">{mockStats.averageDuration} minutes</span>
+                    <span className="body-text">Average Duration:</span>
+                    <span className="body-text font-medium">{mockStats.averageDuration} minutes</span>
                   </div>
                 </div>
               </CardContent>
@@ -375,14 +358,14 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Safety Incidents:</span>
-                    <span className="font-medium text-red-600">{mockStats.safetyConcerns}</span>
+                    <span className="body-text">Safety Incidents:</span>
+                    <span className="body-text font-medium text-red-600">{mockStats.safetyConcerns}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Cancelled Meetings:</span>
-                    <span className="font-medium">{mockStats.cancelledMeetings}</span>
+                    <span className="body-text">Cancelled Meetings:</span>
+                    <span className="body-text font-medium">{mockStats.cancelledMeetings}</span>
                   </div>
-                  <div className="text-sm text-gray-500 mt-4">
+                  <div className="meta-text mt-4">
                     Your safety is our priority. All meetings are monitored and logged.
                   </div>
                 </div>
@@ -399,8 +382,8 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
             <Shield className="w-4 h-4 text-blue-600" />
           </div>
           <div>
-            <h3 className="font-medium text-blue-900 mb-1">Safe Trading Features</h3>
-            <p className="text-sm text-blue-700">
+            <h3 className="card-title text-blue-900 mb-1">Safe Trading Features</h3>
+            <p className="body-text text-blue-700">
               All meetings include safety features like verified safe zones, emergency contacts, 
               real-time check-ins, and 24/7 monitoring for your protection.
             </p>

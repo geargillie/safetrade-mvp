@@ -3,9 +3,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Professional badge variants using the new design system
+// Cohesive badge system matching Linear/Vercel/Notion aesthetics
 const badgeVariants = cva(
-  "badge", // Base class from our CSS design system
+  "badge", // Base class from our redesigned CSS system
   {
     variants: {
       variant: {
@@ -16,6 +16,7 @@ const badgeVariants = cva(
         warning: "badge-warning",
         destructive: "badge-destructive",
         info: "badge-info",
+        neutral: "badge-neutral",
         verified: "badge-verified",
         // Solid variants
         "solid-primary": "badge-solid-primary",

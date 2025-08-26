@@ -4,9 +4,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Professional button variants using the new design system
+// Linear/Vercel/Notion-inspired button system
 const buttonVariants = cva(
-  "btn", // Base class from our CSS design system
+  "btn", // Base class from our redesigned CSS system
   {
     variants: {
       variant: {
@@ -15,22 +15,16 @@ const buttonVariants = cva(
         ghost: "btn-ghost",
         destructive: "btn-destructive",
         success: "btn-success",
-        warning: "btn-warning",
-        "outline-primary": "btn-outline-primary",
-        "outline-destructive": "btn-outline-destructive",
-        "outline-success": "btn-outline-success",
         // Legacy mappings for compatibility
         default: "btn-primary",
         outline: "btn-secondary",
         link: "btn-ghost",
       },
       size: {
-        xs: "btn-xs",
         sm: "btn-sm", 
         md: "btn-md",
         lg: "btn-lg",
         xl: "btn-xl",
-        icon: "btn-icon",
         // Legacy mappings for compatibility  
         default: "btn-md",
       },

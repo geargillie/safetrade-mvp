@@ -72,13 +72,13 @@ export default function DesignSystemShowcase() {
             </div>
           </div>
 
-          {/* Outline Variants */}
+          {/* Additional Variants */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Outline Variants</h3>
+            <h3 className="text-lg font-semibold mb-4">Additional Variants</h3>
             <div className="flex flex-wrap gap-4 items-center">
-              <Button variant="outline-primary">Primary Outline</Button>
-              <Button variant="outline-destructive">Destructive Outline</Button>
-              <Button variant="outline-success">Success Outline</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="success">Success</Button>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export default function DesignSystemShowcase() {
               <Button variant="success" leftIcon={<Check className="w-4 h-4" />}>
                 Success Action
               </Button>
-              <Button variant="warning" leftIcon={<AlertTriangle className="w-4 h-4" />}>
+              <Button variant="destructive" leftIcon={<AlertTriangle className="w-4 h-4" />}>
                 Warning Action
               </Button>
               <Button variant="destructive" leftIcon={<Trash2 className="w-4 h-4" />}>
@@ -116,16 +116,16 @@ export default function DesignSystemShowcase() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Icon Buttons</h3>
             <div className="flex flex-wrap gap-4 items-center">
-              <Button variant="primary" size="icon">
+              <Button variant="primary" size="sm" className="w-8 h-8 p-0">
                 <Plus className="w-4 h-4" />
               </Button>
-              <Button variant="secondary" size="icon">
+              <Button variant="secondary" size="sm" className="w-8 h-8 p-0">
                 <Heart className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
                 <Download className="w-4 h-4" />
               </Button>
-              <Button variant="destructive" size="icon">
+              <Button variant="destructive" size="sm" className="w-8 h-8 p-0">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
@@ -137,7 +137,7 @@ export default function DesignSystemShowcase() {
             <div className="flex flex-wrap gap-4 items-center">
               <Button variant="primary" loading>Loading Primary</Button>
               <Button variant="secondary" loading>Loading Secondary</Button>
-              <Button variant="outline-primary" loading>Loading Outline</Button>
+              <Button variant="ghost" loading>Loading Ghost</Button>
             </div>
           </div>
 
@@ -167,7 +167,7 @@ export default function DesignSystemShowcase() {
               <Badge variant="primary">Primary</Badge>
               <Badge variant="secondary">Secondary</Badge>
               <Badge variant="success">Success</Badge>
-              <Badge variant="warning">Warning</Badge>
+              <Badge variant="destructive">Warning</Badge>
               <Badge variant="destructive">Error</Badge>
               <Badge variant="info">Info</Badge>
             </div>
@@ -202,7 +202,7 @@ export default function DesignSystemShowcase() {
               <Badge variant="verified" icon={<Shield className="w-3 h-3" />}>
                 Identity Verified
               </Badge>
-              <Badge variant="warning" icon={<AlertTriangle className="w-3 h-3" />}>
+              <Badge variant="destructive" icon={<AlertTriangle className="w-3 h-3" />}>
                 Pending Review
               </Badge>
               <Badge variant="success" icon={<Check className="w-3 h-3" />}>
@@ -295,7 +295,7 @@ export default function DesignSystemShowcase() {
               <Button variant="secondary" leftIcon={<Info className="w-4 h-4" />}>
                 Get Details
               </Button>
-              <Button variant="outline-primary">
+              <Button variant="ghost">
                 Message Seller
               </Button>
               <Button variant="success" rightIcon={<ArrowRight className="w-4 h-4" />}>
@@ -307,7 +307,7 @@ export default function DesignSystemShowcase() {
               <Badge variant="verified" icon={<Shield className="w-3 h-3" />}>Verified Seller</Badge>
               <Badge variant="success">Available</Badge>
               <Badge variant="info">Recently Updated</Badge>
-              <Badge variant="warning">Price Reduced</Badge>
+              <Badge variant="info">Price Reduced</Badge>
             </div>
           </div>
 
@@ -328,7 +328,7 @@ export default function DesignSystemShowcase() {
               <Button variant="success" leftIcon={<Check className="w-4 h-4" />}>
                 I'm Safe
               </Button>
-              <Button variant="warning" leftIcon={<AlertTriangle className="w-4 h-4" />}>
+              <Button variant="destructive" leftIcon={<AlertTriangle className="w-4 h-4" />}>
                 Need Help
               </Button>
               <Button variant="destructive" leftIcon={<AlertTriangle className="w-4 h-4" />}>

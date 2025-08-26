@@ -477,8 +477,131 @@
 .status-away { background: var(--yellow-600); }
 .status-busy { background: var(--red-600); }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
+/* Loading State */
+.btn-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  color: inherit;
+}
+
+.btn-primary.btn-loading::after {
+  border-top-color: #ffffff;
+}
+
+.btn-secondary.btn-loading::after,
+.btn-ghost.btn-loading::after {
+  border-top-color: var(--gray-600);
+}
+
+/* Button Groups */
+.btn-group {
+  display: inline-flex;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.btn-group .btn {
+  border-radius: 0;
+  border-right-width: 0;
+}
+
+.btn-group .btn:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.btn-group .btn:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-right-width: 1px;
+}
+
+.btn-group .btn:only-child {
+  border-radius: var(--radius-md);
+  border-right-width: 1px;
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .badge-interactive {
+    transition: none;
+  }
+  
+  .btn:hover,
+  .btn-primary:hover,
+  .btn-destructive:hover,
+  .btn-success:hover,
+  .badge-interactive:hover {
+    transform: none;
+  }
+  
+  .btn-loading::after {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .btn {
+    border-width: 2px;
+  }
+  
+  .badge {
+    border-width: 2px;
+  }
+  
+  .btn:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --btn-secondary: #1f2937;
+    --btn-secondary-border: #374151;
+    --gray-50: #1f2937;
+    --gray-100: #374151;
+    --gray-200: #4b5563;
+    --gray-300: #6b7280;
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
+  }
+  
+  .btn-secondary:hover {
+    background: #374151;
+    border-color: #4b5563;
+  }
+  
+  .btn-ghost:hover {
+    background: #374151;
+  }
+  
+  .badge-default,
+  .badge-secondary,
+  .badge-neutral {
+    background: var(--gray-800);
+    color: var(--gray-200);
+    border-color: var(--gray-600);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
   .btn-lg {
     height: 44px;
     padding: 0 20px;
@@ -491,70 +614,9 @@
     font-size: 17px;
   }
   
-  /* Stack button groups vertically on mobile */
-  .btn-group-mobile-stack {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .btn-group-mobile-stack .btn {
-    border-radius: var(--border-radius);
-    border-right-width: 1px;
-    border-bottom-width: 0;
-    margin-bottom: 1px;
-  }
-  
-  .btn-group-mobile-stack .btn:last-child {
-    border-bottom-width: 1px;
-    margin-bottom: 0;
-  }
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  .btn {
-    border-width: 2px;
-  }
-  
-  .badge {
-    border-width: 1.5px;
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  .btn,
-  .badge-interactive {
-    transition: none;
-  }
-  
-  .btn:hover,
-  .badge-interactive:hover {
-    transform: none;
-  }
-  
-  .btn-loading::before {
-    animation: none;
-  }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --btn-secondary: #1f2937;
-    --btn-secondary-border: #374151;
-    --btn-secondary-hover: #374151;
-    --btn-secondary-border-hover: #4b5563;
-    --btn-ghost-hover: #374151;
-    --btn-ghost-active: #4b5563;
-    --text-primary: #f9fafb;
-    --text-secondary: #e5e7eb;
-    --text-tertiary: #9ca3af;
-  }
-  
-  .badge-default {
-    background: #374151;
-    color: #e5e7eb;
-    border-color: #4b5563;
+  .badge-lg {
+    height: 26px;
+    padding: 0 10px;
+    font-size: 12px;
   }
 }

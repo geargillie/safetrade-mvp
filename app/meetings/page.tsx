@@ -15,29 +15,39 @@ export default function MeetingsPage() {
   const mockUserId = 'demo-user';
 
   return (
-    <Layout showNavigation={true}>
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto py-8 px-4">
-          <SimpleMeetingDashboard userId={mockUserId} />
+    <div className="page-wrapper">
+      <Layout showNavigation={true}>
+        {/* Page Header */}
+        <div className="page-header">
+          <div className="container">
+            <h1 className="page-title">Your Meetings</h1>
+            <p className="page-description">
+              Manage your scheduled meetings and safety information
+            </p>
+          </div>
         </div>
-        
-        {/* Informational notice */}
-        <div className="max-w-7xl mx-auto px-4 pb-8">
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center">
-                <span className="text-amber-600 text-sm">ℹ</span>
-              </div>
-              <div>
-                <h3 className="font-medium text-amber-900">Demo Mode</h3>
-                <p className="text-sm text-amber-700 mt-1">
-                  This is a demonstration of the meetings interface. In the full version, you would need to be authenticated to view your actual meetings.
-                </p>
+
+        <div className="page-content">
+          <div className="container">
+            <SimpleMeetingDashboard userId={mockUserId} />
+            
+            {/* Demo Notice */}
+            <div className="content-section">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-amber-600 text-lg">ℹ</span>
+                </div>
+                <div>
+                  <h3 className="card-title text-amber-900">Demo Mode</h3>
+                  <p className="body-text text-amber-700">
+                    This is a demonstration of the meetings interface. In the full version, you would need to be authenticated to view your actual meetings.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 }

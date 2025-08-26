@@ -191,149 +191,147 @@ export default function ListingsPage() {
 
 
   return (
-    <Layout showNavigation={true}>
-      {/* Hero with unified design system */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-headline">
-            Browse Motorcycles
-          </h1>
-          <p className="text-body mb-8 max-w-2xl mx-auto">
-            Find your perfect ride from verified sellers across the marketplace
-          </p>
+    <div className="page-wrapper browse-page">
+      <Layout showNavigation={true}>
+        {/* Page Header */}
+        <div className="page-header">
+          <div className="container">
+            <h1 className="page-title">Browse Motorcycles</h1>
+            <p className="page-description">
+              Find your perfect ride from verified sellers across the marketplace
+            </p>
+          </div>
         </div>
-      </section>
 
-      {/* Unified Search and Filters */}
-      <div className="max-w-4xl mx-auto px-6 mb-12">
-        <Card>
-          <CardHeader>
-            <h2 className="text-title">Search & Filter</h2>
-            <p className="text-body">Find motorcycles that match your criteria</p>
-          </CardHeader>
-          <CardContent>
-            {/* Unified Search */}
-            <div className="mb-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={filters.search}
-                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  placeholder="Search motorcycles..."
-                  className="form-input field-search pl-11"
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+        <div className="page-content">
+          <div className="container">
+            {/* Search & Filters Section */}
+            <div className="search-header">
+              <h2 className="section-title">Search & Filter</h2>
+              <p className="body-text mb-6">Find motorcycles that match your criteria</p>
+              
+              {/* Unified Search */}
+              <div className="mb-6">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={filters.search}
+                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                    placeholder="Search motorcycles..."
+                    className="input input-lg pl-11"
+                  />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
                 </div>
+              </div>
+
+              {/* Filters Grid */}
+              <div className="layout-3col mb-6">
+                <select
+                  value={filters.make}
+                  onChange={(e) => setFilters({ ...filters, make: e.target.value })}
+                  className="input"
+                >
+                  <option value="">All Brands</option>
+                  <option value="Harley-Davidson">Harley-Davidson</option>
+                  <option value="Honda">Honda</option>
+                  <option value="Yamaha">Yamaha</option>
+                  <option value="Suzuki">Suzuki</option>
+                  <option value="Kawasaki">Kawasaki</option>
+                  <option value="Ducati">Ducati</option>
+                  <option value="BMW">BMW</option>
+                  <option value="KTM">KTM</option>
+                </select>
+
+                <input
+                  type="number"
+                  value={filters.priceMax}
+                  onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
+                  placeholder="Max Price"
+                  className="input"
+                />
+
+                <input
+                  type="number"
+                  value={filters.year}
+                  onChange={(e) => setFilters({ ...filters, year: e.target.value })}
+                  placeholder="Year"
+                  className="input"
+                />
+              </div>
+
+              {/* Results Summary */}
+              <div className="flex items-center justify-between text-sm text-tertiary">
+                <span className="body-text">{listings.length} motorcycles found</span>
+                {Object.values(filters).some(value => value !== '') && (
+                  <Button
+                    onClick={clearFilters}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    Clear filters
+                  </Button>
+                )}
               </div>
             </div>
 
-          {/* Simple Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <select
-              value={filters.make}
-              onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-              className="form-select field-category"
-            >
-              <option value="">All Brands</option>
-              <option value="Harley-Davidson">Harley-Davidson</option>
-              <option value="Honda">Honda</option>
-              <option value="Yamaha">Yamaha</option>
-              <option value="Suzuki">Suzuki</option>
-              <option value="Kawasaki">Kawasaki</option>
-              <option value="Ducati">Ducati</option>
-              <option value="BMW">BMW</option>
-              <option value="KTM">KTM</option>
-            </select>
+            {/* Loading State */}
+            {loading && (
+              <div className="content-section text-center">
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="body-text">Loading motorcycles...</p>
+              </div>
+            )}
 
-            <input
-              type="number"
-              value={filters.priceMax}
-              onChange={(e) => setFilters({ ...filters, priceMax: e.target.value })}
-              placeholder="Max Price"
-              className="form-input field-price"
-            />
+            {/* Empty State */}
+            {!loading && listings.length === 0 && (
+              <div className="content-section text-center">
+                <div className="mb-6">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <h3 className="card-title">
+                  No motorcycles found
+                </h3>
+                <p className="body-text mb-6">
+                  {Object.values(filters).some(value => value !== '') 
+                    ? "Try adjusting your search criteria"
+                    : "Be the first to list a motorcycle"
+                  }
+                </p>
+                {Object.values(filters).some(value => value !== '') && (
+                  <Button
+                    onClick={clearFilters}
+                    variant="ghost"
+                  >
+                    View all motorcycles
+                  </Button>
+                )}
+              </div>
+            )}
 
-            <input
-              type="number"
-              value={filters.year}
-              onChange={(e) => setFilters({ ...filters, year: e.target.value })}
-              placeholder="Year"
-              className="form-input field-year"
-            />
-          </div>
-
-          {/* Results Summary */}
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>{listings.length} motorcycles found</span>
-            {Object.values(filters).some(value => value !== '') && (
-              <Button
-                onClick={clearFilters}
-                variant="ghost"
-                size="sm"
-              >
-                Clear filters
-              </Button>
+            {/* Listings Grid */}
+            {!loading && listings.length > 0 && (
+              <div className="listings-grid">
+                {listings.map((listing) => (
+                  <ListingCard 
+                    key={listing.id} 
+                    listing={listing}
+                    showVerificationBadge={true}
+                    currentUserId={user?.id}
+                    onDelete={handleDeleteListing}
+                    onEdit={handleEditListing}
+                  />
+                ))}
+              </div>
             )}
           </div>
-          </CardContent>
-        </Card>
-      </div>
-      {/* Notion-Style Loading State */}
-      {loading && (
-        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading motorcycles...</p>
         </div>
-      )}
-
-      {/* Notion-Style Empty State */}
-      {!loading && listings.length === 0 && (
-        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <div className="mb-6">
-            <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <h3 className="text-subtitle">
-            No motorcycles found
-          </h3>
-          <p className="text-body mb-6">
-            {Object.values(filters).some(value => value !== '') 
-              ? "Try adjusting your search criteria"
-              : "Be the first to list a motorcycle"
-            }
-          </p>
-          {Object.values(filters).some(value => value !== '') && (
-            <button
-              onClick={clearFilters}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              View all motorcycles
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Clean Listings Grid - Notion Style */}
-      {!loading && listings.length > 0 && (
-        <div className="max-w-4xl mx-auto px-6 pb-16">
-          <div className="grid gap-6 w-full" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-            {listings.map((listing) => (
-              <ListingCard 
-                key={listing.id} 
-                listing={listing}
-                showVerificationBadge={true}
-                currentUserId={user?.id}
-                onDelete={handleDeleteListing}
-                onEdit={handleEditListing}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </Layout>
+      </Layout>
+    </div>
   );
 }

@@ -215,9 +215,9 @@ const ModalHeader = React.forwardRef<HTMLDivElement, ModalHeaderProps>(
       {showCloseButton && onClose && (
         <Button
           variant="ghost"
-          size="icon"
+          size="sm"
           onClick={onClose}
-          className="ml-4 -mt-2 -mr-2 text-gray-400 hover:text-gray-600"
+          className="ml-4 -mt-2 -mr-2 text-gray-400 hover:text-gray-600 w-8 h-8 p-0"
           aria-label="Close modal"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
