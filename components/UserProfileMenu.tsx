@@ -111,16 +111,18 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
 
   if (loading) {
     return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-gray-200 animate-pulse" />
-        <div className="hidden md:block w-20 h-4 bg-gray-200 rounded animate-pulse" />
+      <div className="flex items-center gap-2">
+        <div className="header-user-avatar animate-pulse bg-gray-200">
+          <span className="opacity-0">U</span>
+        </div>
+        <div className="hidden md:block w-16 h-4 bg-gray-200 rounded animate-pulse" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="header-auth-buttons">
         <Link href="/auth/login">
           <Button variant="ghost" size="sm">
             Sign in
@@ -136,46 +138,32 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
   }
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      {/* User Profile Button - Notion Style */}
+    <div className="header-user-menu" ref={dropdownRef}>
+      {/* User Profile Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-all duration-200 group"
+        className={`header-user-button ${isOpen ? 'open' : ''}`}
       >
-        {/* Avatar */}
-        <div className="relative">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-sm">
-            <span className="text-sm font-semibold text-white">
-              {getInitials(user.user_metadata?.first_name)}
-            </span>
-          </div>
-          {/* Verification Indicator */}
-          {isVerified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-          )}
+        {/* Avatar with verification indicator */}
+        <div className="header-user-avatar">
+          <span>{getInitials(user.user_metadata?.first_name)}</span>
+          {isVerified && <div className="verification-dot" />}
         </div>
 
-        {/* User Info - Desktop */}
-        <div className="hidden md:flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-900">
-            {getUserDisplayName()}
-          </span>
-          <svg
-            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-              isOpen ? 'rotate-180' : ''
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m19 9-7 7-7-7" />
-          </svg>
+        {/* User Info - Desktop Only */}
+        <div className="header-user-info hidden md:block">
+          {getUserDisplayName()}
         </div>
+        
+        {/* Dropdown Icon - Desktop Only */}
+        <svg className="header-dropdown-icon hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m19 9-7 7-7-7" />
+        </svg>
       </button>
 
-      {/* Dropdown Menu - Notion Style */}
+      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-full mt-2 ml-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
           {/* User Info Header */}
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex items-center gap-3">

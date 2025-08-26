@@ -316,7 +316,7 @@ export default function SafeZoneMeetingAgreement({
 
   if (step === 'price') {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-lg mx-auto">
+      <div className="card max-w-lg mx-auto">
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
             💰
@@ -438,7 +438,7 @@ export default function SafeZoneMeetingAgreement({
 
   if (step === 'location') {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-2xl mx-auto">
+      <div className="card max-w-2xl mx-auto">
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             📍

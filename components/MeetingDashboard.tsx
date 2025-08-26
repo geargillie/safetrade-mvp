@@ -580,7 +580,7 @@ export default function MeetingDashboard({
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="card">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="w-4 h-4 text-blue-600" />
               <span className="text-sm font-medium text-gray-600">Upcoming</span>
@@ -588,7 +588,7 @@ export default function MeetingDashboard({
             <div className="text-2xl font-bold text-gray-900">{stats.upcomingMeetings}</div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="card">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium text-gray-600">Completed</span>
@@ -596,7 +596,7 @@ export default function MeetingDashboard({
             <div className="text-2xl font-bold text-gray-900">{stats.completedMeetings}</div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="card">
             <div className="flex items-center gap-2 mb-2">
               <Star className="w-4 h-4 text-yellow-600" />
               <span className="text-sm font-medium text-gray-600">Success Rate</span>
@@ -604,7 +604,7 @@ export default function MeetingDashboard({
             <div className="text-2xl font-bold text-gray-900">{stats.successRate.toFixed(0)}%</div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="card">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-red-600" />
               <span className="text-sm font-medium text-gray-600">Safety Issues</span>
@@ -701,7 +701,7 @@ export default function MeetingDashboard({
 
         {activeTab === 'stats' && stats && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="card">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Meeting Overview</h3>
               <div className="space-y-4">
                 <div className="flex justify-between">
@@ -719,7 +719,7 @@ export default function MeetingDashboard({
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="card">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Safety Record</h3>
               <div className="space-y-4">
                 <div className="flex justify-between">

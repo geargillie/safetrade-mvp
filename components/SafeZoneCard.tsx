@@ -69,8 +69,8 @@ export default function SafeZoneCard({
     return (
       <div 
         className={`
-          p-3 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-gray-300 hover:shadow-sm
-          ${selected ? 'border-blue-500 bg-blue-50' : 'bg-white'}
+          card cursor-pointer
+          ${selected ? 'border-blue-500 bg-blue-50' : ''}
           ${className}
         `}
         onClick={handleCardClick}
@@ -131,10 +131,10 @@ export default function SafeZoneCard({
     return (
       <div 
         className={`
-          relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg
+          card relative cursor-pointer
           ${selected 
             ? 'border-blue-500 bg-blue-50 shadow-md' 
-            : 'border-gray-200 bg-white hover:border-gray-300'
+            : 'hover:border-gray-300'
           }
           ${className}
         `}
@@ -208,7 +208,7 @@ export default function SafeZoneCard({
 
   // Detailed variant (default)
   return (
-    <div className={`bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 ${className}`}>
+    <div className={`card ${className}`}>
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between mb-3">

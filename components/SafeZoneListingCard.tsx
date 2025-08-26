@@ -230,7 +230,7 @@ export default function SafeZoneListingCard({
   if (loading) {
     return (
       <div className={cn(
-        "animate-pulse bg-white border border-gray-200 rounded-xl p-6",
+        "card animate-pulse",
         className
       )}>
         <div className="flex items-start gap-4">

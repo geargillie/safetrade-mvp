@@ -8,34 +8,34 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  // Base styles - professional, clean design
-  "bg-white rounded-xl border border-gray-200/60 shadow-sm transition-all duration-200 overflow-hidden",
+  // Base styles - consistent with Homepage specifications
+  "card",
   {
     variants: {
       // Card visual variants
       variant: {
-        default: "border-gray-200/60 shadow-sm",
-        elevated: "shadow-lg border-gray-300/80",
-        outlined: "border-2 border-gray-200 shadow-none",
+        default: "",
+        elevated: "shadow-lg",
+        outlined: "border-2",
         ghost: "border-transparent shadow-none bg-transparent",
       },
       
-      // Interactive states with enhanced micro-interactions
+      // Interactive states with consistent hover behavior
       interactive: {
         none: "",
-        hover: "cursor-pointer hover:shadow-md hover:border-gray-300 hover:-translate-y-1 transition-all duration-200",
-        subtle: "cursor-pointer hover:shadow-sm hover:border-gray-250 hover:scale-[1.01] transition-all duration-150",
-        press: "cursor-pointer hover:shadow-lg hover:border-gray-300 hover:-translate-y-1 active:scale-[0.98] active:shadow-sm transition-all duration-200",
-        lift: "cursor-pointer hover:-translate-y-2 hover:shadow-xl hover:border-gray-300 transition-all duration-300",
-        glow: "cursor-pointer hover:shadow-lg hover:shadow-blue-500/20 hover:border-blue-300 transition-all duration-200",
+        hover: "cursor-pointer",
+        subtle: "cursor-pointer",
+        press: "cursor-pointer",
+        lift: "cursor-pointer",
+        glow: "cursor-pointer",
       },
       
-      // Card sizes/padding
+      // Card sizes/padding (using Homepage specifications)
       size: {
-        sm: "p-4",
-        md: "p-6", 
-        lg: "p-8",
-        xl: "p-10",
+        sm: "",
+        md: "", 
+        lg: "",
+        xl: "",
         none: "p-0",
       },
       
@@ -87,7 +87,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
     <div
       ref={ref}
       className={cn(
-        "px-6 py-4",
+        "", // Use default card padding from Homepage specs
         withBorder && "border-b border-gray-200",
         className
       )}
@@ -102,7 +102,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("px-6 py-4", className)} {...props} />
+  <div ref={ref} className={cn("", className)} {...props} /> // Use default card padding
 ));
 CardContent.displayName = "CardContent";
 
@@ -125,8 +125,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
       <div
         ref={ref}
         className={cn(
-          "px-6 py-4 flex items-center gap-4",
-          withBorder && "border-t border-gray-200",
+          "card-footer", // Use Homepage card-footer specifications
           alignmentClasses[align],
           className
         )}
@@ -213,19 +212,11 @@ export interface CardImageProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const CardImage = React.forwardRef<HTMLDivElement, CardImageProps>(
   ({ className, src, alt, aspectRatio = "video", objectFit = "cover", ...props }, ref) => {
-    const aspectRatioClasses = {
-      square: "aspect-square",
-      video: "aspect-video",
-      portrait: "aspect-[3/4]",
-      wide: "aspect-[21/9]",
-    };
-
     return (
       <div
         ref={ref}
         className={cn(
           "relative overflow-hidden bg-gray-100",
-          aspectRatioClasses[aspectRatio],
           className
         )}
         {...props}
@@ -234,12 +225,7 @@ const CardImage = React.forwardRef<HTMLDivElement, CardImageProps>(
         <img
           src={src}
           alt={alt}
-          className={cn(
-            "w-full h-full transition-transform duration-300 group-hover:scale-105",
-            objectFit === "cover" && "object-cover",
-            objectFit === "contain" && "object-contain",
-            objectFit === "fill" && "object-fill"
-          )}
+          className="card-image" // Use Homepage card-image specifications
         />
       </div>
     );

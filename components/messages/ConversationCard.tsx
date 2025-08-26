@@ -101,10 +101,10 @@ export default function ConversationCard({
     <button
       onClick={onClick}
       className={`
-        group w-full text-left p-4 rounded-lg border transition-all duration-200 hover:shadow-sm overflow-hidden
+        conversation-card group w-full text-left overflow-hidden
         ${isSelected 
           ? 'bg-[#f8faff] border-l-4 border-l-[#0070f3] border-r border-t border-b border-[#e5e5e5]' 
-          : 'bg-white border-[#e5e5e5] hover:border-[#d4d4d4] hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+          : ''
         }
       `}
     >

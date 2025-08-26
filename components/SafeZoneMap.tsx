@@ -459,7 +459,7 @@ export default function SafeZoneMap({
   }
 
   return (
-    <div className="relative bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="card relative overflow-hidden">
       {/* Map Controls */}
       <div className="absolute top-3 left-3 right-3 z-10 space-y-3">
         {/* Search Bar */}

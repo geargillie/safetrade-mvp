@@ -279,7 +279,7 @@ export default function SafeZoneMapSimple({
   }
 
   return (
-    <div className="relative bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="card relative overflow-hidden">
       {/* Loading Overlay */}
       {(loading || !mapLoaded) && (
         <div 
