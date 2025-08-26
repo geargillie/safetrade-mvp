@@ -29,11 +29,13 @@ export default function MeetingsPage() {
 
         <div className="page-content">
           <div className="container">
-            <SimpleMeetingDashboard userId={mockUserId} />
+            <div className="content-block">
+              <SimpleMeetingDashboard userId={mockUserId} />
+            </div>
             
             {/* Demo Notice */}
             <div className="content-section">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center" style={{gap: 'var(--space-lg)'}}>
                 <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-amber-600 text-lg">ℹ</span>
                 </div>

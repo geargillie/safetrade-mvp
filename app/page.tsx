@@ -48,7 +48,7 @@ export default function HomePage() {
               </p>
 
               {/* CTA Buttons with design system */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row justify-center items-center element-group" style={{gap: 'var(--space-lg)'}}>
                 <Link href="/listings">
                   <Button 
                     variant="primary" 

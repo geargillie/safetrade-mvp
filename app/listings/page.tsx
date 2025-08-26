@@ -206,12 +206,12 @@ export default function ListingsPage() {
         <div className="page-content">
           <div className="container">
             {/* Search & Filters Section */}
-            <div className="search-header">
+            <div className="search-header content-block">
               <h2 className="section-title">Search & Filter</h2>
-              <p className="body-text mb-6">Find motorcycles that match your criteria</p>
+              <p className="body-text element-group">Find motorcycles that match your criteria</p>
               
               {/* Unified Search */}
-              <div className="mb-6">
+              <div className="element-group">
                 <div className="relative">
                   <input
                     type="text"
@@ -229,7 +229,7 @@ export default function ListingsPage() {
               </div>
 
               {/* Filters Grid */}
-              <div className="layout-3col mb-6">
+              <div className="layout-3col element-group">
                 <select
                   value={filters.make}
                   onChange={(e) => setFilters({ ...filters, make: e.target.value })}
@@ -280,21 +280,21 @@ export default function ListingsPage() {
 
             {/* Loading State */}
             {loading && (
-              <div className="content-section text-center">
-                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="content-section text-center page-section">
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto small-gap"></div>
                 <p className="body-text">Loading motorcycles...</p>
               </div>
             )}
 
             {/* Empty State */}
             {!loading && listings.length === 0 && (
-              <div className="content-section text-center">
-                <div className="mb-6">
+              <div className="content-section text-center page-section">
+                <div className="element-group">
                   <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="card-title">
+                <h3 className="card-title small-gap">
                   No motorcycles found
                 </h3>
                 <p className="body-text mb-6">

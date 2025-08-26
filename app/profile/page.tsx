@@ -77,79 +77,77 @@ export default function ProfilePage() {
   }
 
   return (
-    <Layout showNavigation={true}>
-      {/* Clean Hero with consistent typography */}
-      <section className="section">
-        <div className="container text-center">
-          <h1 className="text-heading-xl mb-4">
-            Profile & Settings
-          </h1>
-          <p className="text-body-lg mb-8 max-w-2xl mx-auto">
-            Manage your account and verification status
-          </p>
-        </div>
-      </section>
-
-      {/* Content Section */}
-      <div className="container">
-        <div className="max-w-4xl mx-auto">
-          {/* User Info */}
-          <div className="card mb-6">
-            <h3 className="text-heading-md mb-6">
-              Account Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-body-sm block font-medium mb-2">
-                  Name
-                </label>
-                <p className="text-body font-medium">
-                  {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
-                </p>
-              </div>
-              <div>
-                <label className="text-body-sm block font-medium mb-2">
-                  Email
-                </label>
-                <p className="text-body font-medium">
-                  {user?.email}
-                </p>
-              </div>
-            </div>
+    <div className="page-wrapper">
+      <Layout showNavigation={true}>
+        {/* Page Header */}
+        <div className="page-header">
+          <div className="container">
+            <h1 className="page-title">Profile & Settings</h1>
+            <p className="page-description">Manage your account and verification status</p>
           </div>
+        </div>
 
-          {/* Verification Status */}
-          <div className="card">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-heading-md">
-                Identity Verification
-              </h3>
-              {isVerified && (
-                <div className="badge badge-success">
-                  <span className="status-dot status-available"></span>
-                  Verified
+        <div className="page-content">
+          <div className="container">
+            <div className="form-page">
+              {/* User Info */}
+              <div className="form-section content-block">
+                <div className="section-header element-group">
+                  <h3 className="section-title">Account Information</h3>
                 </div>
-              )}
-            </div>
+                
+                <div className="layout-2col">
+                  <div>
+                    <label className="meta-text block font-medium small-gap">
+                      Name
+                    </label>
+                    <p className="body-text font-medium">
+                      {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="meta-text block font-medium small-gap">
+                      Email
+                    </label>
+                    <p className="body-text font-medium">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div className="alert alert-success">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-lg">✓</span>
+              {/* Verification Status */}
+              <div className="form-section">
+                <div className="section-header">
+                  <div className="flex items-center justify-between">
+                    <h3 className="section-title">Identity Verification</h3>
+                    {isVerified && (
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm font-medium">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        Verified
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-body-lg font-semibold mb-2 text-green-800">
-                    Identity Verified
-                  </h4>
-                  <p className="text-body-sm text-green-700">
-                    Your identity is automatically verified when you create an account. You can create listings and trade securely on SafeTrade.
-                  </p>
+
+                <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-lg">✓</span>
+                  </div>
+                  <div>
+                    <h4 className="card-title mb-2 text-green-800">
+                      Identity Verified
+                    </h4>
+                    <p className="body-text text-green-700">
+                      Your identity is automatically verified when you create an account. You can create listings and trade securely on SafeTrade.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 }

@@ -283,17 +283,17 @@ export default function CreateListing() {
       </div>
       
       {/* Clean Hero Section */}
-      <section className="bg-white py-12 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <section className="bg-white border-b border-gray-200 page-section">
+        <div className="max-w-4xl mx-auto px-6 text-center" style={{paddingTop: 'var(--space-4xl)', paddingBottom: 'var(--space-4xl)'}}>
           <h1 className="text-headline">
             Create New Listing
           </h1>
-          <p className="text-body mb-8 max-w-2xl mx-auto">
+          <p className="text-body max-w-2xl mx-auto element-group">
             Sell your motorcycle safely with verified buyers and secure transactions
           </p>
           
           {/* Simple Progress */}
-          <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="flex items-center justify-center element-group" style={{gap: 'var(--space-sm)'}}>
             <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-blue-600 rounded-full transition-all duration-500"
@@ -306,17 +306,17 @@ export default function CreateListing() {
       </section>
 
       {/* Clean Main Content */}
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="max-w-4xl mx-auto px-6 page-section">
+        <div className="grid grid-cols-1 lg:grid-cols-12" style={{gap: 'var(--space-2xl)'}}>
           
           {/* Clean Sidebar - Step Navigation */}
           <div className="lg:col-span-3">
-            <div className="sticky top-6 space-y-6 w-full">
+            <div className="sticky w-full" style={{top: 'var(--space-xl)'}}>
               
               {/* Simple Steps Navigation */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="text-sm font-semibold text-gray-900 mb-4">Steps</h3>
-                <div className="space-y-3">
+              <div className="bg-white rounded-lg border border-gray-200" style={{padding: 'var(--space-xl)'}}>
+                <h3 className="text-sm font-semibold text-gray-900 small-gap">Steps</h3>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-md)'}}>
                   {steps.map((step) => {
                     const isActive = currentStep === step.id
                     const isCompleted = completedSteps.includes(step.id)
@@ -326,7 +326,8 @@ export default function CreateListing() {
                       <div
                         key={step.id}
                         onClick={() => isAccessible && setCurrentStep(step.id)}
-                        className={`flex items-center gap-3 p-3 rounded-md transition-colors cursor-pointer ${
+                        style={{gap: 'var(--space-md)', padding: 'var(--space-md)'}}
+                        className={`flex items-center rounded-md transition-colors cursor-pointer ${
                           isActive 
                             ? 'bg-blue-50 border border-blue-200' 
                             : isCompleted
@@ -376,13 +377,13 @@ export default function CreateListing() {
                 
                 {/* Step 1: Basic Information */}
                 {currentStep === 1 && (
-                  <div className="p-8 space-y-6">
-                    <div className="form-section-header">
+                  <div style={{padding: 'var(--space-2xl)'}}>
+                    <div className="form-section-header element-group">
                       <h2 className="text-title">Basic Information</h2>
                       <p className="text-body">Tell us about your motorcycle</p>
                     </div>
                     
-                    <div className="space-y-6">
+                    <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)'}}>
                       {/* Title Field */}
                       <div className="form-field">
                         <label className="text-label">
@@ -425,28 +426,26 @@ export default function CreateListing() {
                       </div>
 
                       {/* Price and Condition Row */}
-                      <div className="form-inline">
+                      <div className="form-grid-2">
                         {/* Price Field */}
                         <div className="form-field">
                           <label className="text-label">
                             Price (USD) *
                           </label>
-                          <div className="price-container">
-                            <div className="relative">
-                              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</div>
-                              <input
-                                type="number"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleInputChange}
-                                className={`form-input field-price pl-8 ${
-                                  validationErrors.price ? 'error' : ''
-                                }`}
-                                min="0"
-                                step="100"
-                                placeholder="15000"
-                              />
-                            </div>
+                          <div className="relative">
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</div>
+                            <input
+                              type="number"
+                              name="price"
+                              value={formData.price}
+                              onChange={handleInputChange}
+                              className={`form-input field-price pl-8 ${
+                                validationErrors.price ? 'error' : ''
+                              }`}
+                              min="0"
+                              step="100"
+                              placeholder="15000"
+                            />
                           </div>
                           {validationErrors.price && (
                             <p className="text-error">{validationErrors.price}</p>
@@ -495,7 +494,7 @@ export default function CreateListing() {
                             setCurrentStep(2)
                           }
                         }}
-                        className="btn-primary"
+                        className="btn btn-primary btn-lg"
                       >
                         <span>Continue</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -808,7 +807,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-md border border-gray-300 hover:border-gray-400 transition-colors duration-150"
+                        className="btn btn-secondary btn-md"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -823,7 +822,7 @@ export default function CreateListing() {
                             setCurrentStep(3)
                           }
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-150"
+                        className="btn btn-primary btn-lg"
                       >
                         <span>Continue</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1001,7 +1000,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-md border border-gray-300 hover:border-gray-400 transition-colors duration-150"
+                        className="btn btn-secondary btn-md"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1016,7 +1015,7 @@ export default function CreateListing() {
                             setCurrentStep(4)
                           }
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-150"
+                        className="btn btn-primary btn-lg"
                       >
                         <span>Review & Publish</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1171,7 +1170,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(3)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-md border border-gray-300 hover:border-gray-400 transition-colors duration-150"
+                        className="btn btn-secondary btn-md"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1182,13 +1181,10 @@ export default function CreateListing() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-md disabled:cursor-not-allowed transition-colors duration-150"
+                        className={`btn btn-success btn-xl ${loading ? 'btn-loading' : ''}`}
                       >
                         {loading ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>Publishing...</span>
-                          </>
+                          <span>Publishing...</span>
                         ) : (
                           <>
                             <span>Publish Listing</span>

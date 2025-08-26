@@ -122,30 +122,30 @@ export default function SafeZonesPage() {
   return (
     <Layout showNavigation={true}>
       {/* Hero Section */}
-      <section className="py-12 bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
+      <section className="bg-gradient-to-br from-blue-50 via-white to-green-50" style={{padding: 'var(--space-3xl) 0'}}>
+        <div className="max-w-4xl mx-auto text-center" style={{padding: '0 var(--space-xl)'}}>
+          <div className="flex items-center justify-center small-gap" style={{gap: 'var(--space-md)', marginBottom: 'var(--space-lg)'}}>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <Shield className="w-6 h-6 text-blue-600" />
             </div>
             <h1 className="text-headline">Safe Zones</h1>
           </div>
-          <p className="text-body mb-8 max-w-2xl mx-auto">
+          <p className="text-body max-w-2xl mx-auto content-block">
             Find verified safe meeting locations near you. All safe zones are monitored, 
             well-lit, and provide a secure environment for your transactions.
           </p>
           
           {/* Quick Stats */}
-          <div className="flex items-center justify-center gap-8 text-small">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center text-small" style={{gap: 'var(--space-2xl)'}}>
+            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
               <MapPin className="w-4 h-4 text-green-600" />
               <span>{safeZones.length} locations</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
               <Shield className="w-4 h-4 text-blue-600" />
               <span>{safeZones.filter(sz => sz.is_verified).length} verified</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
               <Users className="w-4 h-4 text-purple-600" />
               <span>24/7 monitored</span>
             </div>
@@ -154,7 +154,7 @@ export default function SafeZonesPage() {
       </section>
 
       {/* View Toggle and Filters */}
-      <div className="max-w-6xl mx-auto px-6 -mt-8 mb-8">
+      <div className="max-w-6xl mx-auto" style={{padding: '0 var(--space-xl)', marginTop: 'calc(-1 * var(--space-2xl))', marginBottom: 'var(--space-2xl)'}}>
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
           {/* View Mode Toggle */}
           <div className="border-b border-gray-200 p-4">

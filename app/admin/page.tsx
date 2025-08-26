@@ -191,130 +191,131 @@ export default function AdminDashboard() {
   }
 
   return (
-    <Layout showNavigation={true}>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-6 py-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600 mt-1">Manage SafeTrade platform and safety features</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Badge 
-                  className={`${
-                    stats.systemHealth === 'healthy' ? 'bg-green-100 text-green-800 border-green-200' :
-                    stats.systemHealth === 'warning' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                    'bg-red-100 text-red-800 border-red-200'
-                  }`}
-                >
-                  <Activity className="w-3 h-3 mr-1" />
-                  System {stats.systemHealth}
-                </Badge>
-              </div>
+    <div className="page-wrapper dashboard-page">
+      <Layout showNavigation={true}>
+        {/* Page Header */}
+        <div className="page-header">
+          <div className="container">
+            <h1 className="page-title">Admin Dashboard</h1>
+            <p className="page-description">Manage SafeTrade platform and safety features</p>
+            
+            <div className="flex items-center gap-3 mt-4">
+              <Badge 
+                className={`${
+                  stats.systemHealth === 'healthy' ? 'bg-green-100 text-green-800 border-green-200' :
+                  stats.systemHealth === 'warning' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                  'bg-red-100 text-red-800 border-red-200'
+                }`}
+              >
+                <Activity className="w-3 h-3 mr-1" />
+                System {stats.systemHealth}
+              </Badge>
             </div>
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Users */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+        <div className="page-content">
+          <div className="container">
+            {/* Dashboard Header */}
+            <div className="dashboard-header content-block">
+              {/* Stats Grid */}
+              <div className="stats-grid">
+                {/* Users */}
+                <div className="stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Users className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <TrendingUp className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div className="stat-value">{stats.totalUsers}</div>
+                  <div className="stat-label">Total Users</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {stats.verifiedUsers} verified ({Math.round((stats.verifiedUsers / stats.totalUsers) * 100) || 0}%)
+                  </div>
                 </div>
-                <TrendingUp className="w-5 h-5 text-green-500" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.totalUsers}</div>
-              <div className="text-sm text-gray-600">Total Users</div>
-              <div className="text-xs text-green-600 mt-1">
-                {stats.verifiedUsers} verified ({Math.round((stats.verifiedUsers / stats.totalUsers) * 100) || 0}%)
+
+                {/* Safe Zones */}
+                <div className="stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Shield className="w-6 h-6 text-green-600" />
+                    </div>
+                    <TrendingUp className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div className="stat-value">{stats.totalSafeZones}</div>
+                  <div className="stat-label">Safe Zones</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {stats.verifiedSafeZones} verified ({Math.round((stats.verifiedSafeZones / stats.totalSafeZones) * 100) || 0}%)
+                  </div>
+                </div>
+
+                {/* Meetings */}
+                <div className="stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <Clock className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div className="stat-value">{stats.totalMeetings}</div>
+                  <div className="stat-label">Total Meetings</div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    {stats.activeMeetings} currently active
+                  </div>
+                </div>
+
+                {/* Safety */}
+                <div className="stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                    </div>
+                    {stats.safetyIncidents === 0 ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-red-500" />
+                    )}
+                  </div>
+                  <div className="stat-value">{stats.safetyIncidents}</div>
+                  <div className="stat-label">Safety Incidents</div>
+                  <div className="text-xs text-gray-600 mt-1">Last 30 days</div>
+                </div>
               </div>
             </div>
 
-            {/* Safe Zones */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-green-600" />
-                </div>
-                <TrendingUp className="w-5 h-5 text-green-500" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.totalSafeZones}</div>
-              <div className="text-sm text-gray-600">Safe Zones</div>
-              <div className="text-xs text-green-600 mt-1">
-                {stats.verifiedSafeZones} verified ({Math.round((stats.verifiedSafeZones / stats.totalSafeZones) * 100) || 0}%)
-              </div>
+            {/* Navigation Tabs */}
+            <div className="border-b border-gray-200 element-group">
+              <nav className="-mb-px flex space-x-8">
+                {[
+                  { id: 'overview', label: 'Overview', icon: BarChart3 },
+                  { id: 'users', label: 'Users', icon: Users },
+                  { id: 'safezones', label: 'Safe Zones', icon: Shield },
+                  { id: 'meetings', label: 'Meetings', icon: MapPin },
+                  { id: 'system', label: 'System', icon: Settings }
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </nav>
             </div>
 
-            {/* Meetings */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-purple-600" />
-                </div>
-                <Clock className="w-5 h-5 text-blue-500" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.totalMeetings}</div>
-              <div className="text-sm text-gray-600">Total Meetings</div>
-              <div className="text-xs text-blue-600 mt-1">
-                {stats.activeMeetings} currently active
-              </div>
-            </div>
-
-            {/* Safety */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6 text-red-600" />
-                </div>
-                {stats.safetyIncidents === 0 ? (
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                ) : (
-                  <AlertTriangle className="w-5 h-5 text-red-500" />
-                )}
-              </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.safetyIncidents}</div>
-              <div className="text-sm text-gray-600">Safety Incidents</div>
-              <div className="text-xs text-gray-600 mt-1">Last 30 days</div>
-            </div>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="border-b border-gray-200 mb-8">
-            <nav className="-mb-px flex space-x-8">
-              {[
-                { id: 'overview', label: 'Overview', icon: BarChart3 },
-                { id: 'users', label: 'Users', icon: Users },
-                { id: 'safezones', label: 'Safe Zones', icon: Shield },
-                { id: 'meetings', label: 'Meetings', icon: MapPin },
-                { id: 'system', label: 'System', icon: Settings }
-              ].map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === tab.id
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* Tab Content */}
-          {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Tab Content */}
+            {activeTab === 'overview' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2" style={{gap: 'var(--space-2xl)'}}>
               {/* Recent Activity */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
@@ -381,7 +382,7 @@ export default function AdminDashboard() {
 
           {activeTab === 'safezones' && (
             <div>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between element-group">
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -494,7 +495,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'users' && (
-            <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+            <div className="bg-white rounded-lg border border-gray-200 text-center" style={{padding: 'var(--space-2xl)'}}>
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">User Management</h3>
               <p className="text-gray-600 mb-4">Manage user accounts, verification status, and permissions.</p>
@@ -508,7 +509,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'meetings' && (
-            <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+            <div className="bg-white rounded-lg border border-gray-200 text-center" style={{padding: 'var(--space-2xl)'}}>
               <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Meeting Management</h3>
               <p className="text-gray-600 mb-4">Monitor ongoing meetings, safety check-ins, and incidents.</p>
@@ -520,7 +521,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'system' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2" style={{gap: 'var(--space-2xl)'}}>
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
                 <div className="space-y-4">
@@ -571,8 +572,9 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 }

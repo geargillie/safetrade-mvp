@@ -124,178 +124,183 @@ function RegisterContent() {
   // ];
 
   return (
-    <Layout showNavigation={false} maxWidth="2xl" className="py-12">
-      <div className="space-y-8">
-        
-        {/* Progress indicator */}
-        <div className="flex items-center justify-center mb-8">
-          {['register', 'complete'].map((stepName, index) => {
-            const stepLabels = ['Sign Up', 'Complete'];
-            const currentIndex = ['register', 'complete'].indexOf(step);
-            const isActive = index === currentIndex;
-            const isCompleted = index < currentIndex;
-            
-            return (
-              <div key={stepName} className="flex items-center">
-                <div className={`flex items-center ${isActive ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'}`}>
-                  <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
-                    isActive 
-                      ? 'border-primary bg-muted' 
-                      : isCompleted
-                      ? 'border-success bg-success/10'
-                      : 'border-border bg-muted'
-                  }`}>
-                    {isCompleted ? '✓' : index + 1}
+    <div className="page-wrapper">
+      <Layout showNavigation={false}>
+        <div className="page-content">
+          <div className="container">
+            <div className="form-page">
+              {/* Progress indicator */}
+              <div className="flex items-center justify-center content-block">
+                {['register', 'complete'].map((stepName, index) => {
+                  const stepLabels = ['Sign Up', 'Complete'];
+                  const currentIndex = ['register', 'complete'].indexOf(step);
+                  const isActive = index === currentIndex;
+                  const isCompleted = index < currentIndex;
+                  
+                  return (
+                    <div key={stepName} className="flex items-center">
+                      <div className={`flex items-center ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                          isActive 
+                            ? 'border-blue-600 bg-blue-50' 
+                            : isCompleted
+                            ? 'border-green-600 bg-green-50'
+                            : 'border-gray-300 bg-gray-50'
+                        }`}>
+                          {isCompleted ? '✓' : index + 1}
+                        </div>
+                        <span className="ml-2 text-sm font-medium hidden sm:block">{stepLabels[index]}</span>
+                      </div>
+                      {index < stepLabels.length - 1 && (
+                        <div className="w-8 h-0.5 bg-gray-300 mx-2"></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="form-section">
+                {step === 'register' && (
+                  <>
+                    <div className="section-header text-center content-block">
+                      <h1 className="page-title">Join SafeTrade</h1>
+                      <p className="page-description">Create your verified account for secure motorcycle trading</p>
+                    </div>
+                    
+                    <form onSubmit={handleRegister} style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)'}}>
+                      <div className="layout-2col">
+                        <div className="form-group">
+                          <label className="meta-text font-medium block mb-2">First Name *</label>
+                          <input
+                            type="text"
+                            required
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className="input"
+                            placeholder="First name"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="meta-text font-medium block mb-2">Last Name *</label>
+                          <input
+                            type="text"
+                            required
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="input"
+                            placeholder="Last name"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="form-group">
+                        <label className="meta-text font-medium block mb-2">Email Address *</label>
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="input"
+                          placeholder="Email address"
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label className="meta-text font-medium block mb-2">Password *</label>
+                        <input
+                          type="password"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="input"
+                          placeholder="Password (min 6 characters)"
+                          minLength={6}
+                        />
+                        <p className="meta-text mt-1">Must be at least 6 characters long</p>
+                      </div>
+
+                      {/* Security features highlight */}
+                      <div className="bg-gray-50 rounded-lg" style={{padding: 'var(--space-lg)'}}>
+                        <h3 className="card-title small-gap">🛡️ SafeTrade Security Features</h3>
+                        <ul className="meta-text" style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)'}}>
+                          <li>• Triple-layer identity verification</li>
+                          <li>• Real-time stolen vehicle detection</li>
+                          <li>• AI-powered scam protection</li>
+                          <li>• Secure meeting location protocols</li>
+                        </ul>
+                      </div>
+
+                      <div className="form-actions">
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="btn btn-primary w-full"
+                        >
+                          {loading ? 'Creating Account...' : 'Create Account'}
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
+
+                {step === 'complete' && (
+                  <div className="section-header text-center">
+                    <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto small-gap">
+                      <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <h1 className="page-title">Welcome to SafeTrade!</h1>
+                    <p className="page-description">Your account is set up and ready to use.</p>
+                    
+                    {/* Show verification status */}
+                    <div className="bg-gray-50 rounded-lg text-left max-w-md mx-auto element-group" style={{padding: 'var(--space-lg)', marginTop: 'var(--space-xl)'}}>
+                      <h3 className="card-title small-gap">Account Status:</h3>
+                      <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)'}}>
+                        <div className="flex items-center">
+                          <span className="text-green-600 mr-2">✅</span>
+                          <span className="body-text">Account created</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-green-600 mr-2">✅</span>
+                          <span className="body-text">Identity automatically verified</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="form-actions" style={{marginTop: 'var(--space-2xl)'}}>
+                      <Link 
+                        href="/listings"
+                        className="btn btn-primary"
+                      >
+                        Start Browsing Listings
+                      </Link>
+                    </div>
                   </div>
-                  <span className="ml-2 text-sm font-medium hidden sm:block">{stepLabels[index]}</span>
-                </div>
-                {index < stepLabels.length - 1 && (
-                  <div className="w-8 h-0.5 bg-border mx-2"></div>
+                )}
+
+                {message && (
+                  <div className={`rounded-lg text-center ${message.includes('Error') || message.includes('error') ? 'text-red-700 bg-red-50 border border-red-200' : 'text-green-700 bg-green-50 border border-green-200'}`} style={{padding: 'var(--space-md)', marginTop: 'var(--space-lg)'}}>
+                    <div className="body-text">{message}</div>
+                  </div>
+                )}
+
+                {step === 'register' && (
+                  <div className="text-center border-t border-gray-100" style={{marginTop: 'var(--space-xl)', paddingTop: 'var(--space-xl)'}}>
+                    <p className="meta-text">
+                      Already have an account?{' '}
+                      <Link href="/auth/login" className="text-brand hover:underline font-medium">
+                        Sign in
+                      </Link>
+                    </p>
+                  </div>
                 )}
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
-
-        <div className="card max-w-2xl mx-auto">
-          {step === 'register' && (
-            <>
-              <div className="text-center mb-8">
-                <h1 className="text-title">Join SafeTrade</h1>
-                <p className="text-body">Create your verified account for secure motorcycle trading</p>
-              </div>
-              
-              <form className="space-y-6" onSubmit={handleRegister}>
-                <div className="form-grid-2">
-                  <div className="form-field">
-                    <label className="text-label">First Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="form-input field-name"
-                      placeholder="First name"
-                    />
-                  </div>
-                  <div className="form-field">
-                    <label className="text-label">Last Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="form-input field-name"
-                      placeholder="Last name"
-                    />
-                  </div>
-                </div>
-                
-                <div className="form-field">
-                  <label className="text-label">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-input field-email"
-                    placeholder="Email address"
-                  />
-                </div>
-                
-                <div className="form-field">
-                  <label className="text-label">Password *</label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="form-input"
-                    placeholder="Password (min 6 characters)"
-                    minLength={6}
-                  />
-                  <p className="text-caption">Must be at least 6 characters long</p>
-                </div>
-
-                {/* Security features highlight */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-section-label">🛡️ SafeTrade Security Features</h3>
-                  <ul className="text-small space-y-1">
-                    <li>• Triple-layer identity verification</li>
-                    <li>• Real-time stolen vehicle detection</li>
-                    <li>• AI-powered scam protection</li>
-                    <li>• Secure meeting location protocols</li>
-                  </ul>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full"
-                >
-                  {loading ? 'Creating Account...' : 'Create Account'}
-                </button>
-              </form>
-            </>
-          )}
-
-
-          {step === 'complete' && (
-            <div className="text-center space-y-4">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-                <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Welcome to SafeTrade!</h2>
-              <p className="text-gray-600">Your account is set up and ready to use.</p>
-              
-              {/* Show verification status */}
-              <div className="bg-gray-50 rounded-lg p-4 text-left max-w-md mx-auto">
-                <h3 className="font-medium text-gray-900 mb-2">Account Status:</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center">
-                    <span className="text-green-600 mr-2">✅</span>
-                    <span>Account created</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-green-600 mr-2">✅</span>
-                    <span>Identity automatically verified</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <Link 
-                  href="/listings"
-                  className="btn-primary inline-block"
-                >
-                  Start Browsing Listings
-                </Link>
-                
-              </div>
-            </div>
-          )}
-
-          {message && (
-            <div className={`text-sm ${message.includes('Error') || message.includes('error') ? 'text-red-600' : 'text-green-600'} text-center bg-gray-50 p-3 rounded-md mt-4`}>
-              {message}
-            </div>
-          )}
-
-          {step === 'register' && (
-            <div className="text-center mt-6">
-              <span className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
-                  Sign in
-                </Link>
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   )
 }
 

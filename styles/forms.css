@@ -233,6 +233,21 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px 16px;
+  align-items: start;
+}
+
+/* Specific alignment for price and condition fields */
+.form-grid-2 .form-field {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.form-grid-2 .form-field .text-label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
 }
 
 /* Three-Column Layout */

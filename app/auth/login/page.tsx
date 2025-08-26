@@ -38,90 +38,94 @@ export default function Login() {
   }
 
   return (
-    <Layout showNavigation={false}>
-      <div className="w-full max-w-md mx-auto animate-fade-in">
-        <div className="card">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{backgroundColor: 'var(--brand-primary)'}}>
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{backgroundColor: 'white'}}>
-                <span className="text-sm font-bold" style={{color: 'var(--brand-primary)'}}>ST</span>
-              </div>
-            </div>
-            <h2 className="text-title">
-              Welcome back
-            </h2>
-            <p className="text-body">
-              Sign in to your verified SafeTrade account
-            </p>
-          </div>
-          
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="form-field">
-              <label htmlFor="email" className="text-label">
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-input field-email"
-                placeholder="Enter your email"
-              />
-            </div>
-            
-            <div className="form-field">
-              <label htmlFor="password" className="text-label">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            {message && (
-              <div className={`p-3 rounded-lg ${
-                message.includes('Error') 
-                  ? 'text-error bg-red-50 border border-red-200'
-                  : 'text-success bg-green-50 border border-green-200'
-              }`}>
-                {message}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full animate-spin" style={{borderWidth: '2px', borderColor: 'rgba(255, 255, 255, 0.3)', borderTopColor: 'white'}}></div>
-                  Signing in...
+    <div className="page-wrapper">
+      <Layout showNavigation={false}>
+        <div className="page-content">
+          <div className="container">
+            <div className="form-page">
+              <div className="form-section">
+                <div className="section-header text-center content-block">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto small-gap" style={{backgroundColor: 'var(--brand-primary)'}}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{backgroundColor: 'white'}}>
+                      <span className="text-sm font-bold" style={{color: 'var(--brand-primary)'}}>ST</span>
+                    </div>
+                  </div>
+                  <h1 className="page-title">Welcome back</h1>
+                  <p className="page-description">Sign in to your verified SafeTrade account</p>
                 </div>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
+                
+                <form onSubmit={handleLogin} style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)'}}>
+                  <div className="form-group">
+                    <label htmlFor="email" className="meta-text font-medium block mb-2">
+                      Email address
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="input"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="password" className="meta-text font-medium block mb-2">
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="input"
+                      placeholder="Enter your password"
+                    />
+                  </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-body-sm" style={{color: 'var(--neutral-600)'}}>
-              Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="hover:underline" style={{color: 'var(--brand-primary)', fontWeight: '500'}}>
-                Create one here
-              </Link>
-            </p>
+                  {message && (
+                    <div style={{padding: 'var(--space-md)'}} className={`rounded-lg ${
+                      message.includes('Error') 
+                        ? 'text-red-700 bg-red-50 border border-red-200'
+                        : 'text-green-700 bg-green-50 border border-green-200'
+                    }`}>
+                      {message}
+                    </div>
+                  )}
+
+                  <div className="form-actions">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="btn btn-primary w-full"
+                    >
+                      {loading ? (
+                        <div className="flex items-center gap-2 justify-center">
+                          <div className="w-4 h-4 rounded-full animate-spin" style={{borderWidth: '2px', borderColor: 'rgba(255, 255, 255, 0.3)', borderTopColor: 'white'}}></div>
+                          Signing in...
+                        </div>
+                      ) : (
+                        'Sign In'
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="mt-6 text-center border-t border-gray-100 pt-6">
+                  <p className="meta-text">
+                    Don&apos;t have an account?{' '}
+                    <Link href="/auth/register" className="text-brand hover:underline font-medium">
+                      Create one here
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   )
 }

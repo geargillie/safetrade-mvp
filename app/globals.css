@@ -108,6 +108,55 @@ body {
 .text-4xl { font-size: 40px; line-height: 1.2; letter-spacing: -0.03em; font-weight: 700; }
 .text-5xl { font-size: 48px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; }
 
+/* Create listing specific typography */
+.text-headline { 
+  font-size: 36px; 
+  line-height: 1.2; 
+  letter-spacing: -0.025em; 
+  font-weight: 700; 
+  color: var(--text-primary);
+}
+
+.text-title { 
+  font-size: 24px; 
+  line-height: 1.33; 
+  letter-spacing: -0.02em; 
+  font-weight: 600; 
+  color: var(--text-primary);
+}
+
+.text-body { 
+  font-size: 16px; 
+  line-height: 1.5; 
+  font-weight: 400; 
+  color: var(--text-secondary);
+}
+
+.text-label { 
+  font-size: 14px; 
+  line-height: 1.43; 
+  font-weight: 500; 
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.text-caption { 
+  font-size: 13px; 
+  line-height: 1.5; 
+  font-weight: 400; 
+  color: var(--text-quaternary);
+  margin-top: 4px;
+}
+
+.text-error { 
+  font-size: 12px; 
+  line-height: 1.4; 
+  font-weight: 500; 
+  color: var(--error);
+  margin-top: 4px;
+}
+
 /* Font Weights (Notion Style) */
 .font-light { font-weight: 300; }
 .font-normal { font-weight: 400; }
@@ -182,11 +231,6 @@ body {
   padding: 0 24px;
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 0 16px;
-  }
-}
 
 /* Page Structure (Notion Inspired) */
 .page-wrapper {
@@ -214,12 +258,6 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
-  .content-section {
-    padding: 24px;
-    border-radius: 6px;
-  }
-}
 
 /* Grid Systems (Vercel Style) */
 /* Two Column Layout */
@@ -270,6 +308,25 @@ body {
   }
 }
 
+/* Consistent Spacing System */
+
+/* Page-level spacing */
+.page-section { 
+  margin-bottom: var(--space-5xl); 
+}
+
+.content-block { 
+  margin-bottom: var(--space-2xl); 
+}
+
+.element-group { 
+  margin-bottom: var(--space-xl); 
+}
+
+.small-gap { 
+  margin-bottom: var(--space-lg); 
+}
+
 /* Section Spacing */
 .section {
   padding: var(--space-5xl) 0;
@@ -282,6 +339,30 @@ body {
 .section-lg {
   padding: var(--space-6xl) 0;
 }
+
+/* Additional spacing utilities */
+.spacing-xs { margin-bottom: var(--space-xs); }
+.spacing-sm { margin-bottom: var(--space-sm); }
+.spacing-md { margin-bottom: var(--space-md); }
+.spacing-lg { margin-bottom: var(--space-lg); }
+.spacing-xl { margin-bottom: var(--space-xl); }
+.spacing-2xl { margin-bottom: var(--space-2xl); }
+.spacing-3xl { margin-bottom: var(--space-3xl); }
+.spacing-4xl { margin-bottom: var(--space-4xl); }
+.spacing-5xl { margin-bottom: var(--space-5xl); }
+.spacing-6xl { margin-bottom: var(--space-6xl); }
+
+/* Top spacing utilities */
+.spacing-top-xs { margin-top: var(--space-xs); }
+.spacing-top-sm { margin-top: var(--space-sm); }
+.spacing-top-md { margin-top: var(--space-md); }
+.spacing-top-lg { margin-top: var(--space-lg); }
+.spacing-top-xl { margin-top: var(--space-xl); }
+.spacing-top-2xl { margin-top: var(--space-2xl); }
+.spacing-top-3xl { margin-top: var(--space-3xl); }
+.spacing-top-4xl { margin-top: var(--space-4xl); }
+.spacing-top-5xl { margin-top: var(--space-5xl); }
+.spacing-top-6xl { margin-top: var(--space-6xl); }
 
 /* Legacy button classes removed - using new comprehensive button system from buttons-badges.css */
 
@@ -312,33 +393,33 @@ body {
   font-size: 16px;
 }
 
-/* Form Components (Notion-Style Sections) */
+/* Forms (Notion-Style Sections) */
 .form-page {
   max-width: 800px;
   margin: 0 auto;
 }
 
 .form-section {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-2xl);
-  margin-bottom: var(--space-xl);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 32px;
+  margin-bottom: 24px;
 }
 
 .section-header {
-  margin-bottom: var(--space-xl);
-  padding-bottom: var(--space-lg);
-  border-bottom: 1px solid var(--bg-tertiary);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-md);
-  margin-top: var(--space-2xl);
-  padding-top: var(--space-xl);
-  border-top: 1px solid var(--bg-tertiary);
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f5f5f5;
 }
 
 /* Component Styling (Match Homepage) */
@@ -928,18 +1009,7 @@ body {
   .page-title { font-size: 32px; }
   .section-title { font-size: 20px; }
   .card-title { font-size: 18px; }
-  .container { padding: 0 var(--space-lg); }
-  
-  .text-4xl { font-size: 32px; }
-  .text-3xl { font-size: 28px; }
-  .text-2xl { font-size: 20px; }
-  
-  .content-section { padding: var(--space-lg); }
-  .form-actions { flex-direction: column; }
-  .form-actions .btn { width: 100%; }
-  
-  .dashboard-page .stats-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
-  .messages-page .chat-layout { grid-template-columns: 1fr; }
+  .container { padding: 0 16px; }
 }
 
 @media (max-width: 768px) {
@@ -950,9 +1020,15 @@ body {
     grid-template-columns: 1fr;
   }
   
-  .listing-detail .listing-content { grid-template-columns: 1fr; gap: var(--space-xl); }
+  .content-section { padding: 20px; }
+  .form-actions { flex-direction: column; }
+  .form-actions .btn { width: 100%; }
+  
+  /* Additional mobile enhancements */
   .dashboard-page .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .browse-page .listings-grid { grid-template-columns: 1fr; gap: 16px; }
+  .listing-detail .listing-content { grid-template-columns: 1fr; gap: var(--space-xl); }
+  .messages-page .chat-layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
@@ -1050,23 +1126,41 @@ html, body {
   backface-visibility: hidden;
 }
 
-/* Mobile-specific fixes */
+/* Mobile-specific optimizations */
 @media (max-width: 640px) {
+  /* Ensure buttons are touch-friendly */
+  .btn {
+    min-height: 44px; /* Apple's recommended touch target size */
+    touch-action: manipulation; /* Prevent double-tap zoom */
+  }
+  
   /* Fix button spacing on mobile */
   .mobile-button-fix {
     width: 100%;
     margin-bottom: 0.75rem;
   }
   
-  /* Fix text size on small screens */
+  /* Optimize text sizing for readability */
   .mobile-text-fix {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
   }
   
-  /* Fix padding on mobile */
+  /* Ensure adequate padding on small screens */
   .mobile-padding-fix {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+  
+  /* Enhance form interactions on mobile */
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px; /* Prevent iOS zoom on focus */
+  }
+  
+  /* Optimize hero section for mobile */
+  .hero-section {
+    min-height: calc(100vh - 120px);
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
   }
 }
 

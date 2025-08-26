@@ -119,7 +119,7 @@ export default function MessagesPage() {
     return (
       <Layout showNavigation={true}>
         <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-          <div className="flex flex-col items-center space-y-4">
+          <div className="flex flex-col items-center" style={{gap: 'var(--space-lg)'}}>
             <div className="w-8 h-8 border-2 border-[#e5e5e5] border-t-[#0070f3] rounded-full animate-spin"></div>
             <div className="text-[#737373] text-sm">Loading messages...</div>
           </div>
@@ -134,7 +134,7 @@ export default function MessagesPage() {
       <Layout showNavigation={true}>
         <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-[#171717] text-xl font-medium mb-2">Authentication Required</h1>
+            <h1 className="text-[#171717] text-xl font-medium small-gap">Authentication Required</h1>
             <p className="text-[#737373] text-sm">Please sign in to access your messages</p>
           </div>
         </div>
