@@ -315,15 +315,16 @@ export default function SafeZoneListingCard({
             {/* Status Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-1">
               {safeZone.isVerified && (
-                <Badge variant="verified" size="xs" leftIcon={<Verified className="w-3 h-3" />}>
+                <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                  <Verified className="w-3 h-3 mr-1" />
                   Verified
                 </Badge>
               )}
               <Badge 
-                variant={operatingStatus.isOpen ? "success" : "secondary"}
-                size="xs"
-                leftIcon={<Clock className="w-3 h-3" />}
+                variant={operatingStatus.isOpen ? "default" : "secondary"}
+                className={operatingStatus.isOpen ? "bg-green-100 text-green-800 text-xs" : "text-xs"}
               >
+                <Clock className="w-3 h-3 mr-1" />
                 {operatingStatus.isOpen ? "Open" : "Closed"}
               </Badge>
             </div>
@@ -356,7 +357,8 @@ export default function SafeZoneListingCard({
                     {safeZone.name}
                   </h3>
                   {compact && safeZone.isVerified && (
-                    <Badge variant="verified" size="xs" leftIcon={<Verified className="w-3 h-3" />}>
+                    <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                      <Verified className="w-3 h-3 mr-1" />
                       Verified
                     </Badge>
                   )}
@@ -472,7 +474,7 @@ export default function SafeZoneListingCard({
                   </div>
                 ))}
                 {safeZone.features.length > (compact ? 3 : 6) && (
-                  <Badge variant="secondary" size="xs">
+                  <Badge variant="secondary" className="text-xs">
                     +{safeZone.features.length - (compact ? 3 : 6)} more
                   </Badge>
                 )}
@@ -534,15 +536,15 @@ export default function SafeZoneListingCard({
                 }
               }}
               aria-label="Get directions to this safe zone"
-              leftIcon={<Navigation className="w-4 h-4" />}
             >
+              <Navigation className="w-4 h-4 mr-2" />
               Directions
             </Button>
 
             {/* Schedule Meeting */}
             {onScheduleMeeting && (
               <Button
-                variant="primary"
+                variant="default"
                 size="sm"
                 className="flex-1"
                 onClick={(e) => {
@@ -550,8 +552,8 @@ export default function SafeZoneListingCard({
                   onScheduleMeeting(safeZone);
                 }}
                 aria-label="Schedule a meeting at this safe zone"
-                leftIcon={<Calendar className="w-4 h-4" />}
               >
+                <Calendar className="w-4 h-4 mr-2" />
                 {compact ? "Schedule" : "Schedule Meeting"}
               </Button>
             )}
@@ -567,8 +569,8 @@ export default function SafeZoneListingCard({
                   onViewReviews(safeZone);
                 }}
                 aria-label="View reviews for this safe zone"
-                leftIcon={<MessageSquare className="w-4 h-4" />}
               >
+                <MessageSquare className="w-4 h-4 mr-2" />
                 Reviews
               </Button>
             )}

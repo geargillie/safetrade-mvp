@@ -135,72 +135,7 @@ body {
   padding: 4rem 0;
 }
 
-/* Button System */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  white-space: nowrap;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background-color: var(--brand-primary);
-  color: white;
-  border-color: var(--brand-primary);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--brand-primary-dark);
-  border-color: var(--brand-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
-  background-color: white;
-  color: var(--neutral-700);
-  border-color: var(--neutral-300);
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background-color: var(--neutral-50);
-  border-color: var(--neutral-400);
-}
-
-.btn-ghost {
-  background-color: transparent;
-  color: var(--neutral-600);
-  border-color: transparent;
-}
-
-.btn-ghost:hover:not(:disabled) {
-  background-color: var(--neutral-100);
-  color: var(--neutral-700);
-}
-
-.btn-lg {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-}
-
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.75rem;
-}
+/* Legacy button classes removed - using new comprehensive button system from buttons-badges.css */
 
 /* Input System */
 .input {
@@ -256,42 +191,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Badge System */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  border-radius: 9999px;
-  white-space: nowrap;
-}
-
-.badge-success {
-  background-color: rgb(5, 150, 105, 0.1);
-  color: var(--success);
-}
-
-.badge-warning {
-  background-color: rgb(217, 119, 6, 0.1);
-  color: var(--warning);
-}
-
-.badge-error {
-  background-color: rgb(220, 38, 38, 0.1);
-  color: var(--error);
-}
-
-.badge-info {
-  background-color: rgb(8, 145, 178, 0.1);
-  color: var(--info);
-}
-
-.badge-neutral {
-  background-color: var(--neutral-100);
-  color: var(--neutral-600);
-}
+/* Legacy badge classes removed - using new comprehensive badge system from buttons-badges.css */
 
 /* Status Indicators */
 .status-dot {

@@ -122,21 +122,21 @@ export default function SafeZonesPage() {
   return (
     <Layout showNavigation={true}>
       {/* Hero Section */}
-      <section className="section bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <div className="container text-center">
+      <section className="py-12 bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <Shield className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-heading-xl">Safe Zones</h1>
+            <h1 className="text-headline">Safe Zones</h1>
           </div>
-          <p className="text-body-lg mb-8 max-w-2xl mx-auto text-gray-600">
+          <p className="text-body mb-8 max-w-2xl mx-auto">
             Find verified safe meeting locations near you. All safe zones are monitored, 
             well-lit, and provide a secure environment for your transactions.
           </p>
           
           {/* Quick Stats */}
-          <div className="flex items-center justify-center gap-8 text-sm text-gray-600">
+          <div className="flex items-center justify-center gap-8 text-small">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-green-600" />
               <span>{safeZones.length} locations</span>
@@ -181,7 +181,7 @@ export default function SafeZonesPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-small">
                   {safeZones.length} safe zones found
                 </span>
                 {Object.values(filters).some(value => 
@@ -196,17 +196,16 @@ export default function SafeZonesPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className="p-4">
+          <div className="p-6">
             {/* Search */}
-            <div className="mb-4">
+            <div className="mb-6">
               <div className="relative">
-                <Input
+                <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   placeholder="Search by name, address, or features..."
-                  className="pl-11"
-                  size="lg"
+                  className="form-input field-search pl-11"
                 />
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
@@ -218,7 +217,7 @@ export default function SafeZonesPage() {
               <select
                 value={filters.type}
                 onChange={(e) => setFilters({ ...filters, type: e.target.value as SafeZoneType | '' })}
-                className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white"
+                className="form-select field-category"
               >
                 <option value="">All Types</option>
                 {getTypeOptions().map(option => (
@@ -230,7 +229,7 @@ export default function SafeZonesPage() {
 
               {/* Distance Filter */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="text-label">
                   Distance: {filters.distanceKm}km
                 </label>
                 <input
@@ -239,7 +238,7 @@ export default function SafeZonesPage() {
                   max="50"
                   value={filters.distanceKm}
                   onChange={(e) => setFilters({ ...filters, distanceKm: parseInt(e.target.value) })}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                 />
               </div>
 
@@ -247,7 +246,7 @@ export default function SafeZonesPage() {
               <select
                 value={filters.minRating}
                 onChange={(e) => setFilters({ ...filters, minRating: parseFloat(e.target.value) })}
-                className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white"
+                className="form-select field-category"
               >
                 <option value={0}>Any Rating</option>
                 <option value={4.5}>4.5+ Stars</option>
@@ -263,7 +262,7 @@ export default function SafeZonesPage() {
                   ...filters, 
                   verified: e.target.value === '' ? null : e.target.value === 'true'
                 })}
-                className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white"
+                className="form-select field-category"
               >
                 <option value="">All Locations</option>
                 <option value="true">Verified Only</option>
@@ -278,7 +277,7 @@ export default function SafeZonesPage() {
       {loading && (
         <div className="max-w-6xl mx-auto px-6 py-16 text-center">
           <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading safe zones...</p>
+          <p className="text-body">Loading safe zones...</p>
         </div>
       )}
 
@@ -286,8 +285,8 @@ export default function SafeZonesPage() {
       {error && (
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <div className="text-red-600 mb-2">⚠️ Error</div>
-            <p className="text-red-800 mb-4">{error}</p>
+            <div className="text-subtitle text-red-600 mb-2">⚠️ Error</div>
+            <p className="text-body text-red-800 mb-4">{error}</p>
             <Button onClick={fetchSafeZones} variant="outline" size="sm">
               Try Again
             </Button>
@@ -304,10 +303,10 @@ export default function SafeZonesPage() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <MapPin className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-subtitle mb-2">
                 No safe zones found
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-body mb-6">
                 Try adjusting your search criteria or expanding your distance range.
               </p>
               <Button onClick={clearFilters} variant="outline">
@@ -334,11 +333,18 @@ export default function SafeZonesPage() {
               {/* Quick List Below Map */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {safeZones.slice(0, 6).map((safeZone) => (
-                  <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                    <h3 className="font-semibold">{safeZone.name}</h3>
-                    <p className="text-sm text-gray-600">{safeZone.address}</p>
-                    <p className="text-xs text-gray-500">Type: {safeZone.zone_type}</p>
-                    <p className="text-xs text-gray-500">Verified: {safeZone.is_verified ? '✅' : '❌'}</p>
+                  <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                    <h3 className="text-section-label">{safeZone.name}</h3>
+                    <p className="text-body text-gray-600 mb-2">{safeZone.address}</p>
+                    <div className="space-y-1">
+                      <p className="text-small text-gray-500">Type: {safeZone.zone_type}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-small text-gray-500">Verified:</span>
+                        <span className={`text-small font-medium ${safeZone.is_verified ? 'text-green-600' : 'text-gray-400'}`}>
+                          {safeZone.is_verified ? '✅ Verified' : '⏳ Pending'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -358,12 +364,37 @@ export default function SafeZonesPage() {
             /* List View */
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {safeZones.map((safeZone) => (
-                <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                  <h3 className="font-semibold">{safeZone.name}</h3>
-                  <p className="text-sm text-gray-600">{safeZone.address}</p>
-                  <p className="text-xs text-gray-500">Type: {safeZone.zone_type}</p>
-                  <p className="text-xs text-gray-500">Verified: {safeZone.is_verified ? '✅' : '❌'}</p>
-                  <p className="text-xs text-gray-500">Rating: {safeZone.average_rating || '—'}</p>
+                <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-section-label">{safeZone.name}</h3>
+                    {safeZone.is_verified && (
+                      <div className="flex items-center gap-1 text-green-600">
+                        <Shield className="w-4 h-4" />
+                        <span className="text-small font-medium">Verified</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <p className="text-body text-gray-600 mb-3">{safeZone.address}</p>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      <span className="text-small text-gray-500">Type: {safeZone.zone_type}</span>
+                    </div>
+                    
+                    {safeZone.average_rating && (
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 text-yellow-500" />
+                        <span className="text-small text-gray-500">Rating: {safeZone.average_rating}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                      <span className="text-small text-gray-500">24/7 Available</span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

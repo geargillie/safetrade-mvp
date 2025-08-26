@@ -31,7 +31,7 @@ import {
   Activity
 } from 'lucide-react';
 
-import { Badge, StatusBadge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SafeZoneMeeting, MeetingStatus } from '@/types/safe-zones';
@@ -164,13 +164,12 @@ function EmergencyButton({
               Cancel
             </Button>
             <Button
-              variant="danger"
+              variant="destructive"
               onClick={handleEmergencySubmit}
               disabled={!description.trim() || submitting}
               className="flex-1"
-              loading={submitting}
-              leftIcon={!submitting ? <AlertTriangle className="w-4 h-4" /> : undefined}
             >
+              {!submitting && <AlertTriangle className="w-4 h-4 mr-2" />}
               Send Alert
             </Button>
           </div>
@@ -181,12 +180,12 @@ function EmergencyButton({
 
   return (
     <Button
-      variant="danger"
+      variant="destructive"
       size="sm"
       onClick={() => setShowConfirm(true)}
       disabled={disabled}
-      leftIcon={<AlertTriangle className="w-4 h-4" />}
     >
+      <AlertTriangle className="w-4 h-4 mr-2" />
       Emergency
     </Button>
   );
@@ -223,8 +222,8 @@ function SafetyCheckIn({
         onClick={() => handleCheckIn('safe')}
         disabled={disabled || submitting}
         className="text-green-700 border-green-200 hover:bg-green-50"
-        leftIcon={<CheckCircle className="w-4 h-4" />}
       >
+        <CheckCircle className="w-4 h-4 mr-2" />
         I'm Safe
       </Button>
       <Button
@@ -233,8 +232,8 @@ function SafetyCheckIn({
         onClick={() => handleCheckIn('unsafe')}
         disabled={disabled || submitting}
         className="text-orange-700 border-orange-200 hover:bg-orange-50"
-        leftIcon={<AlertCircle className="w-4 h-4" />}
       >
+        <AlertCircle className="w-4 h-4 mr-2" />
         Need Help
       </Button>
     </div>
@@ -403,8 +402,8 @@ function MeetingCard({
                   // Open reschedule modal (placeholder)
                   console.log('Reschedule meeting:', meeting.id);
                 }}
-                leftIcon={<Calendar className="w-4 h-4" />}
               >
+                <Calendar className="w-4 h-4 mr-2" />
                 Reschedule
               </Button>
               
@@ -498,10 +497,10 @@ export default function MeetingDashboard({
         <div className="flex items-center gap-3">
           {/* Emergency Contact */}
           <Button
-            variant="danger"
+            variant="destructive"
             onClick={handleEmergencyCall}
-            leftIcon={<PhoneCall className="w-4 h-4" />}
           >
+            <PhoneCall className="w-4 h-4 mr-2" />
             Emergency: 911
           </Button>
 
@@ -511,8 +510,9 @@ export default function MeetingDashboard({
             onClick={refreshMeetings}
             disabled={refreshing || !isOnline}
             size="sm"
-            leftIcon={<RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />}
-          />
+          >
+            <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
+          </Button>
         </div>
       </div>
 

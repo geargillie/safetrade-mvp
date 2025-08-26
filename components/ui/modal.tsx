@@ -215,7 +215,7 @@ const ModalHeader = React.forwardRef<HTMLDivElement, ModalHeaderProps>(
       {showCloseButton && onClose && (
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
           onClick={onClose}
           className="ml-4 -mt-2 -mr-2 text-gray-400 hover:text-gray-600"
           aria-label="Close modal"
@@ -330,12 +330,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           {cancelText}
         </Button>
         <Button
-          variant={variant === "danger" ? "danger" : "primary"}
+          variant={variant === "danger" ? "destructive" : "default"}
           onClick={handleConfirm}
-          loading={loading}
-          loadingText="Please wait..."
+          disabled={loading}
         >
-          {confirmText}
+          {loading ? "Please wait..." : confirmText}
         </Button>
       </ModalFooter>
     </Modal>

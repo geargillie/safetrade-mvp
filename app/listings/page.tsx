@@ -271,7 +271,7 @@ export default function ListingsPage() {
             {Object.values(filters).some(value => value !== '') && (
               <Button
                 onClick={clearFilters}
-                variant="ghost-primary"
+                variant="ghost"
                 size="sm"
               >
                 Clear filters

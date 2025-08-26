@@ -309,7 +309,7 @@ export default function SafetyCheckInModal({
                   </div>
 
                   <Button
-                    variant="primary"
+                    variant="default"
                     onClick={() => setCurrentStep('details')}
                     className="w-full"
                   >
@@ -367,13 +367,12 @@ export default function SafetyCheckInModal({
                   Back
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="default"
                   onClick={handleSubmit}
                   disabled={submitting}
                   className="flex-1"
-                  loading={submitting}
-                  leftIcon={!submitting ? <CheckCircle className="w-4 h-4" /> : undefined}
                 >
+                  {!submitting && <CheckCircle className="w-4 h-4 mr-2" />}
                   Submit Check-In
                 </Button>
               </div>
@@ -444,13 +443,12 @@ export default function SafetyCheckInModal({
                   Back
                 </Button>
                 <Button
-                  variant="danger"
+                  variant="destructive"
                   onClick={handleSubmit}
                   disabled={!emergencyDescription.trim() || submitting}
                   className="flex-1"
-                  loading={submitting}
-                  leftIcon={!submitting ? <AlertTriangle className="w-4 h-4" /> : undefined}
                 >
+                  {!submitting && <AlertTriangle className="w-4 h-4 mr-2" />}
                   Send Emergency Alert
                 </Button>
               </div>
@@ -458,11 +456,11 @@ export default function SafetyCheckInModal({
               {/* Direct Emergency Call */}
               <div className="border-t border-gray-200 pt-4">
                 <Button
-                  variant="danger"
+                  variant="destructive"
                   onClick={() => window.location.href = 'tel:911'}
                   className="w-full"
-                  leftIcon={<Phone className="w-4 h-4" />}
                 >
+                  <Phone className="w-4 h-4 mr-2" />
                   Call 911 Now
                 </Button>
               </div>

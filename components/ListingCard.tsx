@@ -6,8 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { Card, CardImage, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge, StatusBadge } from '@/components/ui/badge';
-import { Button, IconButton } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ConfirmationModal } from '@/components/ui/modal';
 
 interface Listing {
@@ -150,23 +150,12 @@ export default function ListingCard({
             {/* Status Badges */}
             <div className="absolute top-3 left-3 flex flex-wrap gap-2 max-w-[calc(100%-6rem)]">
               {listing.vin_verified && (
-                <Badge 
-                  variant="solid-primary" 
-                  size="sm"
-                  leftIcon={
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  }
-                >
+                <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
                   VIN Verified
                 </Badge>
               )}
               {sellerVerified && (
-                <Badge 
-                  variant="verified" 
-                  size="sm"
-                >
+                <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
                   Verified Seller
                 </Badge>
               )}
@@ -175,30 +164,28 @@ export default function ListingCard({
             {/* Owner Actions */}
             {isOwner && (
               <div className="absolute top-3 right-3 flex gap-2">
-                <IconButton
-                  icon={
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  }
-                  variant="secondary"
-                  size="icon-sm"
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={handleEdit}
                   aria-label="Edit listing"
-                  className="bg-white/90 hover:bg-white border border-gray-200 shadow-sm"
-                />
-                <IconButton
-                  icon={
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  }
-                  variant="ghost-danger"
-                  size="icon-sm"
+                  className="bg-white/90 hover:bg-white border border-gray-200 shadow-sm w-8 h-8"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="icon"
                   onClick={handleDeleteClick}
                   aria-label="Delete listing"
-                  className="bg-white/90 hover:bg-red-50 border border-red-200 shadow-sm"
-                />
+                  className="bg-white/90 hover:bg-red-50 border border-red-200 shadow-sm w-8 h-8"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </Button>
               </div>
             )}
           </div>
@@ -239,18 +226,8 @@ export default function ListingCard({
               <div className="text-2xl font-bold text-gray-900">
                 ${listing.price?.toLocaleString()}
               </div>
-              <Badge 
-                variant="outline-primary" 
-                size="md"
-                interactive
-                className="group-hover:bg-blue-50"
-                rightIcon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                }
-              >
-                View Details
+              <Badge variant="default" className="bg-blue-100 text-blue-800 group-hover:bg-blue-50">
+                View Details →
               </Badge>
             </div>
           </CardContent>

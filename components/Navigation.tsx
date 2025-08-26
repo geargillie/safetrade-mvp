@@ -99,8 +99,8 @@ export default function Navigation() {
             {user && (
               <div className="hidden sm:block">
                 <Badge 
-                  variant={isVerified ? "verified" : "warning"} 
-                  size="sm"
+                  variant={isVerified ? "default" : "secondary"} 
+                  className={isVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}
                 >
                   {isVerified ? "Verified" : "Pending"}
                 </Badge>

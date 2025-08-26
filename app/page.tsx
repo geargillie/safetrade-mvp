@@ -48,14 +48,18 @@ export default function HomePage() {
           {/* Unified design system buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/listings">
-              <Button variant="primary" size="lg" className="min-w-48">
+              <Button 
+                variant="default" 
+                size="lg" 
+                className="min-w-48 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 h-auto text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+              >
                 Browse motorcycles
               </Button>
             </Link>
             <Button 
-              variant="secondary" 
+              variant="outline" 
               size="lg" 
-              className="min-w-48"
+              className="min-w-48 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-4 h-auto text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
               onClick={handleStartSelling}
             >
               Create listing
