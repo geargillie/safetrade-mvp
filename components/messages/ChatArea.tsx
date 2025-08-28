@@ -105,9 +105,9 @@ export default function ChatArea({
   const otherUser = getOtherUser();
 
   return (
-    <div className="flex flex-col h-full bg-white overflow-hidden">
+    <div className="chat-area-container">
       {/* Chat Header */}
-      <div className="flex-shrink-0">
+      <div className="chat-header">
         <ChatHeader
           conversation={conversation}
           otherUser={otherUser}
@@ -121,7 +121,7 @@ export default function ChatArea({
       {/* Messages Area */}
       <div 
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto bg-[#fafafa] px-6 py-6"
+        className="message-thread"
         style={{ scrollBehavior: 'smooth' }}
       >
         {loading && messages.length === 0 ? (
@@ -181,40 +181,43 @@ export default function ChatArea({
           </div>
         ) : (
           // Messages list
-          <div className="space-y-4 max-w-4xl mx-auto">
+          <>
             {messages.map((message, index) => {
               const isOwn = message.sender_id === currentUserId;
               const showAvatar = index === 0 || messages[index - 1]?.sender_id !== message.sender_id;
               const isLastFromSender = index === messages.length - 1 || messages[index + 1]?.sender_id !== message.sender_id;
               
               return (
-                <MessageBubble
-                  key={`${message.id}-${index}`}
-                  message={message}
-                  isOwn={isOwn}
-                  showAvatar={showAvatar}
-                  isLastFromSender={isLastFromSender}
-                  senderName={isOwn ? 'You' : otherUser.name.split(' ')[0]}
-                />
+                <div key={`${message.id}-${index}`} className={`message-group ${isOwn ? 'sent' : 'received'}`}>
+                  <MessageBubble
+                    message={message}
+                    isOwn={isOwn}
+                    showAvatar={showAvatar}
+                    isLastFromSender={isLastFromSender}
+                    senderName={isOwn ? 'You' : otherUser.name.split(' ')[0]}
+                  />
+                </div>
               );
             })}
             
             {/* Typing Indicator */}
             {typingUsers.length > 0 && (
-              <TypingIndicator 
-                users={typingUsers}
-                currentUserId={currentUserId}
-              />
+              <div className="typing-indicator">
+                <TypingIndicator 
+                  users={typingUsers}
+                  currentUserId={currentUserId}
+                />
+              </div>
             )}
             
             {/* Scroll anchor */}
             <div ref={messagesEndRef} />
-          </div>
+          </>
         )}
       </div>
 
       {/* Message Input */}
-      <div className="flex-shrink-0">
+      <div className="message-input-container">
         <MessageInput
           value={newMessage}
           onChange={handleInputChange}

@@ -50,15 +50,49 @@ export default function MessagesPage() {
   // Authentication check
   const checkUser = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/auth/login?redirectTo=/messages');
-        return;
+      console.log('🔍 Checking user authentication...');
+      
+      // Development mode: Use mock user if auth fails
+      const isDevelopment = process.env.NODE_ENV === 'development';
+      
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error && !isDevelopment) {
+          console.error('Auth error:', error);
+          router.push('/auth/login?redirectTo=/messages');
+          return;
+        }
+        
+        if (user) {
+          console.log('✅ User authenticated:', user.id);
+          setUser(user);
+          return;
+        }
+      } catch (authError) {
+        console.warn('Auth service unavailable:', authError);
       }
-      setUser(user);
+      
+      if (isDevelopment) {
+        // Use mock user for development testing
+        console.log('🔧 Using mock user for development');
+        const mockUser = {
+          id: '948a0f8c-2448-46ab-b65a-940482fc7d48', // Gear Gillie's ID
+          user_metadata: {
+            first_name: 'Test',
+            last_name: 'User'
+          }
+        };
+        setUser(mockUser);
+      } else {
+        console.log('❌ No user found, redirecting to login');
+        router.push('/auth/login?redirectTo=/messages');
+      }
     } catch (error) {
       console.error('Auth error:', error);
-      router.push('/auth/login?redirectTo=/messages');
+      if (process.env.NODE_ENV !== 'development') {
+        router.push('/auth/login?redirectTo=/messages');
+      }
     } finally {
       setLoading(false);
     }
@@ -144,83 +178,86 @@ export default function MessagesPage() {
 
   return (
     <Layout showNavigation={true}>
-      <div className="h-[calc(100vh-64px)] bg-[#fafafa] flex overflow-hidden">
-        
-        {/* Left Sidebar - Conversations */}
-        <div className={`
-          ${isMobile 
-            ? (showConversationList ? 'flex' : 'hidden') 
-            : 'flex'
-          } 
-          ${isMobile ? 'w-full' : 'w-80 min-w-[320px]'} 
-          flex-col bg-white border-r border-[#e5e5e5] flex-shrink-0 overflow-hidden
-        `}>
-          <ConversationList
-            conversations={conversations}
-            selectedConversationId={selectedConversation?.id}
-            onSelectConversation={handleSelectConversation}
-            loading={conversationsLoading}
-            error={conversationsError}
-            currentUserId={user.id}
-            totalUnreadCount={totalUnreadCount}
-            securityAlerts={securityAlerts}
-            connectionStatus={connectionStatus}
-          />
-        </div>
-
-        {/* Main Chat Area */}
-        <div className={`
-          ${isMobile 
-            ? (showConversationList ? 'hidden' : 'flex') 
-            : 'flex'
-          } 
-          flex-1 flex-col min-w-0 overflow-hidden
-        `}>
-          {selectedConversation ? (
-            <ChatArea
-              conversation={selectedConversation}
-              currentUserId={user.id}
-              onBack={isMobile ? handleBackToList : undefined}
-              onToggleListingPanel={toggleListingPanel}
-              showListingPanel={showListingPanel}
-              isMobile={isMobile}
-            />
-          ) : (
-            <div className="flex-1 flex items-center justify-center bg-white">
-              <div className="text-center max-w-md px-6">
-                <div className="w-16 h-16 bg-[#f5f5f5] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <svg 
-                    className="w-8 h-8 text-[#a3a3a3]" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={1.5} 
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-[#171717] text-lg font-medium mb-2">Select a conversation</h3>
-                <p className="text-[#737373] text-sm leading-relaxed">
-                  Choose a conversation from the sidebar to start chatting with buyers and sellers
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Panel - Listing Details */}
-        {selectedConversation && showListingPanel && !isMobile && (
-          <div className="w-80 min-w-[320px] bg-white border-l border-[#e5e5e5] flex-shrink-0 overflow-hidden">
-            <ListingPanel
-              conversation={selectedConversation}
-              onClose={() => setShowListingPanel(false)}
-            />
+      <div className="messages-page">
+        <div className="messages-container">
+          {/* Page Header - Match Create Listing */}
+          <div className="messages-header">
+            <h1 className="page-title">Messages</h1>
+            <p className="page-description">
+              Communicate securely with buyers and sellers for safe transactions
+            </p>
           </div>
-        )}
+
+          {/* Chat Layout Container - Match Create Listing Form Container */}
+          <div className="chat-layout-container">
+            
+            {/* Left Sidebar - Conversations */}
+            <div className={`conversations-panel ${isMobile && showConversationList ? 'show' : ''}`}>
+              <ConversationList
+                conversations={conversations}
+                selectedConversationId={selectedConversation?.id}
+                onSelectConversation={handleSelectConversation}
+                loading={conversationsLoading}
+                error={conversationsError}
+                currentUserId={user.id}
+                totalUnreadCount={totalUnreadCount}
+                securityAlerts={securityAlerts}
+                connectionStatus={connectionStatus}
+              />
+            </div>
+
+            {/* Main Chat Area */}
+            <div className="chat-main">
+              {selectedConversation ? (
+                <ChatArea
+                  conversation={selectedConversation}
+                  currentUserId={user.id}
+                  onBack={isMobile ? handleBackToList : undefined}
+                  onToggleListingPanel={toggleListingPanel}
+                  showListingPanel={showListingPanel}
+                  isMobile={isMobile}
+                />
+              ) : (
+                <div className="empty-chat">
+                  <div className="empty-icon">
+                    <svg 
+                      className="w-8 h-8" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={1.5} 
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="empty-title">Select a conversation</h3>
+                  <p className="empty-description">
+                    Choose a conversation from the sidebar to start chatting with buyers and sellers
+                  </p>
+                  <div className="conversation-starters">
+                    <button className="starter-btn">💬 "Is this still available?"</button>
+                    <button className="starter-btn">❓ "Can you tell me more details?"</button>
+                    <button className="starter-btn">📍 "Where can we meet?"</button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right Panel - Listing Details */}
+            {selectedConversation && showListingPanel && !isMobile && (
+              <div className="chat-sidebar">
+                <ListingPanel
+                  conversation={selectedConversation}
+                  onClose={() => setShowListingPanel(false)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </Layout>
   );

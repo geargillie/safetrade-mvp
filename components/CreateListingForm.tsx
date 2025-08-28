@@ -102,285 +102,267 @@ export default function CreateListingForm({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8">
-      {/* Basic Information Section */}
-      <div className="space-y-6">
-        <div className="border-b border-gray-100 pb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Basic Information</h3>
-          <p className="text-sm text-gray-600">Tell us about your motorcycle</p>
-        </div>
+    <div className="form-page">
+      <form onSubmit={onSubmit} className="space-y-8">
+        {/* Basic Information Section */}
+        <div className="form-section">
+          <div className="section-header">
+            <h3 className="section-title">Basic Information</h3>
+            <p className="body-text">Tell us about your motorcycle</p>
+          </div>
 
-        {/* Title */}
-        <div className="space-y-2">
-          <label htmlFor="title" className="text-sm font-medium text-gray-900">
-            Listing Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-              validationErrors.title ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-            }`}
-            placeholder="2020 Honda CB650R - Great Condition"
-          />
-          {validationErrors.title && (
-            <p className="text-sm text-red-600">{validationErrors.title}</p>
-          )}
-          <p className="text-xs text-gray-500">
-            Create an eye-catching title that includes year, make, and model
-          </p>
-        </div>
-
-        {/* Description */}
-        <div className="space-y-2">
-          <label htmlFor="description" className="text-sm font-medium text-gray-900">
-            Description *
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={4}
-            value={formData.description}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-              validationErrors.description ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-            }`}
-            placeholder="Describe your motorcycle's condition, history, modifications, and any other relevant details..."
-          />
-          {validationErrors.description && (
-            <p className="text-sm text-red-600">{validationErrors.description}</p>
-          )}
-          <p className="text-xs text-gray-500">
-            Include details about maintenance, modifications, and reason for selling
-          </p>
-        </div>
-      </div>
-
-      {/* Motorcycle Details Section */}
-      <div className="space-y-6">
-        <div className="border-b border-gray-100 pb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Motorcycle Details</h3>
-          <p className="text-sm text-gray-600">Provide specific details about your bike</p>
-        </div>
-
-        {/* Price and Condition Row */}
-        <div className="flex flex-wrap gap-6 items-start">
-          {/* Price Field */}
-          <div className="space-y-2 w-full sm:w-48">
-            <label className="text-sm font-medium text-gray-900">
-              Price (USD) *
-            </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</div>
+          <div className="space-y-6">
+            {/* Title */}
+            <div className="form-field">
+              <label htmlFor="title" className="form-label">
+                Listing Title <span className="text-error">*</span>
+              </label>
               <input
-                type="number"
-                name="price"
-                value={formData.price}
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                  validationErrors.price ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                }`}
-                min="0"
-                step="100"
-                placeholder="15000"
+                className={`input ${validationErrors.title ? 'border-error' : ''}`}
+                placeholder="2020 Honda CB650R - Great Condition"
               />
+              {validationErrors.title && (
+                <p className="form-error">{validationErrors.title}</p>
+              )}
+              <p className="form-help">
+                Create an eye-catching title that includes year, make, and model
+              </p>
+            </div>
+
+            {/* Description */}
+            <div className="form-field">
+              <label htmlFor="description" className="form-label">
+                Description <span className="text-error">*</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={formData.description}
+                onChange={handleInputChange}
+                className={`input ${validationErrors.description ? 'border-error' : ''}`}
+                placeholder="Describe your motorcycle's condition, history, modifications, and any other relevant details..."
+                style={{ minHeight: '120px', resize: 'vertical', fontFamily: 'inherit', lineHeight: '1.5' }}
+              />
+              {validationErrors.description && (
+                <p className="form-error">{validationErrors.description}</p>
+              )}
+              <p className="form-help">
+                Include details about maintenance, modifications, and reason for selling
+              </p>
             </div>
           </div>
-
-          {/* Condition Field */}
-          <div className="space-y-2 w-full sm:w-40">
-            <label className="text-sm font-medium text-gray-900">
-              Condition *
-            </label>
-            <select
-              name="condition"
-              value={formData.condition}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none bg-white ${
-                validationErrors.condition ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-            >
-              <option value="">Select condition</option>
-              <option value="excellent">Excellent</option>
-              <option value="good">Good</option>
-              <option value="fair">Fair</option>
-              <option value="poor">Poor</option>
-            </select>
-          </div>
         </div>
 
-        {/* Validation Errors for Price and Condition */}
-        <div className="flex flex-wrap gap-6">
-          <div className="w-full sm:w-48">
-            {validationErrors.price && (
-              <p className="text-sm text-red-600">{validationErrors.price}</p>
-            )}
-          </div>
-          <div className="w-full sm:w-40">
-            {validationErrors.condition && (
-              <p className="text-sm text-red-600">{validationErrors.condition}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Make, Model, Year Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">Make *</label>
-            <select
-              name="make"
-              value={formData.make}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none bg-white ${
-                validationErrors.make ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-            >
-              <option value="">Select make</option>
-              <option value="Honda">Honda</option>
-              <option value="Yamaha">Yamaha</option>
-              <option value="Kawasaki">Kawasaki</option>
-              <option value="Suzuki">Suzuki</option>
-              <option value="Ducati">Ducati</option>
-              <option value="BMW">BMW</option>
-              <option value="Triumph">Triumph</option>
-              <option value="Harley-Davidson">Harley-Davidson</option>
-              <option value="KTM">KTM</option>
-              <option value="Other">Other</option>
-            </select>
-            {validationErrors.make && (
-              <p className="text-sm text-red-600">{validationErrors.make}</p>
-            )}
+        {/* Motorcycle Details Section */}
+        <div className="form-section">
+          <div className="section-header">
+            <h3 className="section-title">Motorcycle Details</h3>
+            <p className="body-text">Provide specific details about your bike</p>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">Model *</label>
-            <input
-              type="text"
-              name="model"
-              value={formData.model}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                validationErrors.model ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="CB650R"
-            />
-            {validationErrors.model && (
-              <p className="text-sm text-red-600">{validationErrors.model}</p>
-            )}
-          </div>
+          <div className="space-y-6">
+            {/* Price and Condition Row */}
+            <div className="form-grid">
+              {/* Price Field */}
+              <div className="form-field">
+                <label className="form-label">
+                  Price (USD) <span className="text-error">*</span>
+                </label>
+                <div className="price-input-container">
+                  <span className="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className={`input price-input ${validationErrors.price ? 'border-error' : ''}`}
+                    min="0"
+                    step="100"
+                    placeholder="15000"
+                  />
+                </div>
+                {validationErrors.price && (
+                  <p className="form-error">{validationErrors.price}</p>
+                )}
+              </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">Year *</label>
-            <input
-              type="number"
-              name="year"
-              value={formData.year}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                validationErrors.year ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-              min="1900"
-              max={new Date().getFullYear() + 1}
-              placeholder="2020"
-            />
-            {validationErrors.year && (
-              <p className="text-sm text-red-600">{validationErrors.year}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Mileage and VIN Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">Mileage</label>
-            <input
-              type="number"
-              name="mileage"
-              value={formData.mileage}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              min="0"
-              placeholder="25000"
-            />
-            <p className="text-xs text-gray-500">Miles on the odometer</p>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">VIN</label>
-            <input
-              type="text"
-              name="vin"
-              value={formData.vin}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              placeholder="17-digit VIN number"
-              maxLength={17}
-            />
-            <p className="text-xs text-gray-500">17-digit vehicle identification number</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Location Section */}
-      <div className="space-y-6">
-        <div className="border-b border-gray-100 pb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Location</h3>
-          <p className="text-sm text-gray-600">Where is your motorcycle located?</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">City *</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                validationErrors.city ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="Los Angeles"
-            />
-            {validationErrors.city && (
-              <p className="text-sm text-red-600">{validationErrors.city}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-900">Zip Code *</label>
-            <input
-              type="text"
-              name="zipCode"
-              value={formData.zipCode}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md transition-colors focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                validationErrors.zipCode ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="90210"
-              maxLength={5}
-            />
-            {validationErrors.zipCode && (
-              <p className="text-sm text-red-600">{validationErrors.zipCode}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Safe Zone Recommendations Section */}
-      {(formData.city && formData.zipCode) && (
-        <div className="space-y-6">
-          <div className="border-b border-gray-100 pb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="w-5 h-5 text-blue-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Recommended Safe Zones</h3>
+              {/* Condition Field */}
+              <div className="form-field">
+                <label className="form-label">
+                  Condition <span className="text-error">*</span>
+                </label>
+                <select
+                  name="condition"
+                  value={formData.condition}
+                  onChange={handleInputChange}
+                  className={`input ${validationErrors.condition ? 'border-error' : ''}`}
+                  style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNiA2TDExIDEiIHN0cm9rZT0iIzczNzM3MyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                >
+                  <option value="">Select condition</option>
+                  <option value="excellent">Excellent</option>
+                  <option value="good">Good</option>
+                  <option value="fair">Fair</option>
+                  <option value="poor">Poor</option>
+                </select>
+                {validationErrors.condition && (
+                  <p className="form-error">{validationErrors.condition}</p>
+                )}
+              </div>
             </div>
-            <p className="text-sm text-gray-600">
-              Safe, monitored locations near you for secure transactions
-            </p>
+
+            {/* Make, Model, Year Grid */}
+            <div className="form-grid grid-cols-3">
+              <div className="form-field">
+                <label className="form-label">Make <span className="text-error">*</span></label>
+                <select
+                  name="make"
+                  value={formData.make}
+                  onChange={handleInputChange}
+                  className={`input ${validationErrors.make ? 'border-error' : ''}`}
+                  style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNiA2TDExIDEiIHN0cm9rZT0iIzczNzM3MyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                >
+                  <option value="">Select make</option>
+                  <option value="Honda">Honda</option>
+                  <option value="Yamaha">Yamaha</option>
+                  <option value="Kawasaki">Kawasaki</option>
+                  <option value="Suzuki">Suzuki</option>
+                  <option value="Ducati">Ducati</option>
+                  <option value="BMW">BMW</option>
+                  <option value="Triumph">Triumph</option>
+                  <option value="Harley-Davidson">Harley-Davidson</option>
+                  <option value="KTM">KTM</option>
+                  <option value="Other">Other</option>
+                </select>
+                {validationErrors.make && (
+                  <p className="form-error">{validationErrors.make}</p>
+                )}
+              </div>
+
+              <div className="form-field">
+                <label className="form-label">Model <span className="text-error">*</span></label>
+                <input
+                  type="text"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleInputChange}
+                  className={`input ${validationErrors.model ? 'border-error' : ''}`}
+                  placeholder="CB650R"
+                />
+                {validationErrors.model && (
+                  <p className="form-error">{validationErrors.model}</p>
+                )}
+              </div>
+
+              <div className="form-field">
+                <label className="form-label">Year <span className="text-error">*</span></label>
+                <input
+                  type="number"
+                  name="year"
+                  value={formData.year}
+                  onChange={handleInputChange}
+                  className={`input ${validationErrors.year ? 'border-error' : ''}`}
+                  min="1900"
+                  max={new Date().getFullYear() + 1}
+                  placeholder="2020"
+                />
+                {validationErrors.year && (
+                  <p className="form-error">{validationErrors.year}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Mileage and VIN Grid */}
+            <div className="form-grid">
+              <div className="form-field">
+                <label className="form-label">Mileage</label>
+                <input
+                  type="number"
+                  name="mileage"
+                  value={formData.mileage}
+                  onChange={handleInputChange}
+                  className="input"
+                  min="0"
+                  placeholder="25000"
+                />
+                <p className="form-help">Miles on the odometer</p>
+              </div>
+
+              <div className="form-field">
+                <label className="form-label">VIN</label>
+                <input
+                  type="text"
+                  name="vin"
+                  value={formData.vin}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="17-digit VIN number"
+                  maxLength={17}
+                />
+                <p className="form-help">17-digit vehicle identification number</p>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Location Section */}
+        <div className="form-section">
+          <div className="section-header">
+            <h3 className="section-title">Location</h3>
+            <p className="body-text">Where is your motorcycle located?</p>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-field">
+              <label className="form-label">City <span className="text-error">*</span></label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className={`input ${validationErrors.city ? 'border-error' : ''}`}
+                placeholder="Los Angeles"
+              />
+              {validationErrors.city && (
+                <p className="form-error">{validationErrors.city}</p>
+              )}
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">Zip Code <span className="text-error">*</span></label>
+              <input
+                type="text"
+                name="zipCode"
+                value={formData.zipCode}
+                onChange={handleInputChange}
+                className={`input ${validationErrors.zipCode ? 'border-error' : ''}`}
+                placeholder="90210"
+                maxLength={5}
+              />
+              {validationErrors.zipCode && (
+                <p className="form-error">{validationErrors.zipCode}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Safe Zone Recommendations Section */}
+        {(formData.city && formData.zipCode) && (
+          <div className="form-section">
+            <div className="section-header">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="w-5 h-5 text-brand-primary" />
+                <h3 className="section-title">Recommended Safe Zones</h3>
+              </div>
+              <p className="body-text">
+                Safe, monitored locations near you for secure transactions
+              </p>
+            </div>
 
           {loadingSafeZones ? (
             <div className="flex items-center justify-center py-8">
@@ -539,46 +521,45 @@ export default function CreateListingForm({
         </div>
       )}
 
-      {/* Images Section */}
-      <div className="space-y-6">
-        <div className="border-b border-gray-100 pb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Photos</h3>
-          <p className="text-sm text-gray-600">Add high-quality photos of your motorcycle</p>
+        {/* Images Section */}
+        <div className="form-section">
+          <div className="section-header">
+            <h3 className="section-title">Photos</h3>
+            <p className="body-text">Add high-quality photos of your motorcycle</p>
+          </div>
+
+          <div className="image-upload-section">
+            <ImageUpload 
+              onImagesUploaded={setImages}
+              existingImages={images}
+              maxImages={8}
+            />
+            
+            <p className="form-help">
+              Add at least 3-5 photos showing different angles. High-quality photos get more interest!
+            </p>
+          </div>
         </div>
 
-        <ImageUpload 
-          onImagesUploaded={setImages}
-          existingImages={images}
-          maxImages={8}
-        />
-        
-        <p className="text-xs text-gray-500">
-          Add at least 3-5 photos showing different angles. High-quality photos get more interest!
-        </p>
-      </div>
-
-      {/* Submit Button */}
-      <div className="flex justify-between items-center pt-6 border-t border-gray-100">
-        <button
-          type="button"
-          onClick={() => window.history.back()}
-          className="px-6 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          Cancel
-        </button>
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className={`px-8 py-3 rounded-lg text-white font-semibold transition-all duration-200 ${
-            loading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:scale-[1.02]'
-          }`}
-        >
-          {loading ? 'Creating Listing...' : 'Create Listing'}
-        </button>
-      </div>
-    </form>
+        {/* Submit Actions */}
+        <div className="form-actions">
+          <button
+            type="button"
+            onClick={() => window.history.back()}
+            className="btn-back"
+          >
+            Cancel
+          </button>
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className={`btn-publish ${loading ? 'opacity-50 cursor-not-allowed transform-none shadow-none' : ''}`}
+          >
+            {loading ? 'Creating Listing...' : 'Create Listing'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

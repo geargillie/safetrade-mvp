@@ -58,62 +58,39 @@ export default function ChatHeader({
   };
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-[#e5e5e5]">
-      
-      {/* Left Section - User Info */}
-      <div className="flex items-center gap-3 min-w-0 flex-1">
-        
-        {/* Back Button (Mobile Only) */}
-        {isMobile && onBack && (
-          <button
-            onClick={onBack}
-            className="p-1.5 -ml-1.5 text-[#737373] hover:text-[#171717] transition-colors"
-          >
-            <ArrowLeftIcon className="w-5 h-5" />
-          </button>
-        )}
+    <div className="chat-header">
+      {/* Back Button (Mobile Only) */}
+      {isMobile && onBack && (
+        <button onClick={onBack} className="mobile-back-btn chat-action-btn">
+          <ArrowLeftIcon className="w-4 h-4" />
+        </button>
+      )}
 
-        {/* User Avatar */}
-        <div className="w-8 h-8 bg-[#171717] text-white text-xs font-medium rounded-full flex items-center justify-center flex-shrink-0">
+      {/* User Info */}
+      <div className="chat-user-info">
+        <div className="chat-avatar">
           {getUserAvatar(otherUser.name)}
         </div>
 
-        {/* User Details */}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="text-[#171717] text-sm font-medium truncate">
-              {otherUser.name.trim() || 'Unknown User'}
-            </h2>
-            <span className="text-[#a3a3a3] text-xs font-medium">
-              {otherUser.role}
-            </span>
+        <div className="chat-user-details">
+          <h2 className="chat-user-name">
+            {otherUser.name.trim() || 'Unknown User'}
+          </h2>
+          <div className="chat-user-status">
+            <div className="status-dot"></div>
+            <span>{otherUser.role}</span>
             {getVerificationBadge()}
-          </div>
-          
-          {/* Listing Info */}
-          <div className="text-xs text-[#737373] truncate">
-            {conversation.listing_year} {conversation.listing_make} {conversation.listing_model}
-            {conversation.listing_price && (
-              <span className="text-[#0070f3] font-medium ml-2">
-                ${conversation.listing_price.toLocaleString()}
-              </span>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Right Section - Actions */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        
+      {/* Actions */}
+      <div className="chat-actions">
         {/* Listing Panel Toggle */}
         {!isMobile && onToggleListingPanel && (
           <button
             onClick={onToggleListingPanel}
-            className={`p-2 rounded-md border transition-colors ${
-              showListingPanel 
-                ? 'bg-[#f8faff] border-[#0070f3] border-opacity-20 text-[#0070f3]' 
-                : 'bg-white border-[#e5e5e5] text-[#737373] hover:text-[#171717] hover:border-[#d4d4d4]'
-            }`}
+            className="chat-action-btn"
             title={showListingPanel ? 'Hide listing details' : 'Show listing details'}
           >
             <InformationCircleIcon className="w-4 h-4" />

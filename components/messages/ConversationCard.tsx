@@ -98,95 +98,58 @@ export default function ConversationCard({
   const hasAlerts = conversation.metrics?.fraud_alerts > 0;
 
   return (
-    <button
+    <div
       onClick={onClick}
-      className={`
-        conversation-card group w-full text-left overflow-hidden
-        ${isSelected 
-          ? 'bg-[#f8faff] border-l-4 border-l-[#0070f3] border-r border-t border-b border-[#e5e5e5]' 
-          : ''
-        }
-      `}
+      className={`conversation-card ${isSelected ? 'active' : ''}`}
     >
-      <div className="flex items-start gap-3">
-        
-        {/* Listing Thumbnail */}
-        <div className="relative flex-shrink-0">
-          <div className="w-12 h-12 bg-[#f5f5f5] rounded-lg overflow-hidden border border-[#e5e5e5]">
-            {conversation.listing_images && conversation.listing_images.length > 0 ? (
-              <Image
-                src={conversation.listing_images[0]}
-                alt={conversation.listing_title || 'Listing'}
-                width={48}
-                height={48}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-[#a3a3a3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-              </div>
+      {/* User Avatar */}
+      <div className="conversation-avatar">
+        {conversation.listing_images && conversation.listing_images.length > 0 ? (
+          <Image
+            src={conversation.listing_images[0]}
+            alt={conversation.listing_title || 'Listing'}
+            width={48}
+            height={48}
+            className="conversation-avatar"
+          />
+        ) : (
+          <div className="avatar-placeholder">
+            {getUserAvatar(otherUser.name)}
+          </div>
+        )}
+      </div>
+
+      {/* Conversation Content */}
+      <div className="conversation-content">
+        <div className="conversation-header">
+          <h3 className="conversation-name">
+            {otherUser.name.trim() || 'Unknown User'}
+          </h3>
+          <span className="conversation-time">
+            {formatTime(conversation.last_message_timestamp)}
+          </span>
+        </div>
+
+        <div className="conversation-preview">
+          {truncateMessage(conversation.last_message)}
+        </div>
+
+        <div className="conversation-meta">
+          <div className="listing-preview">
+            {conversation.listing_year} {conversation.listing_make} {conversation.listing_model}
+            {conversation.listing_price && (
+              <span> • ${conversation.listing_price.toLocaleString()}</span>
             )}
           </div>
           
-          {/* User Avatar Overlay */}
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#171717] text-white text-[10px] font-medium rounded-full flex items-center justify-center border-2 border-white">
-            {getUserAvatar(otherUser.name)}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-1">
-            
-            {/* User Info */}
-            <div className="flex items-center gap-2 min-w-0">
-              <h3 className="text-[#171717] text-sm font-medium truncate">
-                {otherUser.name.trim() || 'Unknown User'}
-              </h3>
-              <span className="text-[#a3a3a3] text-xs font-medium flex-shrink-0">
-                {otherUser.role}
-              </span>
-              {getVerificationBadge()}
+          {/* Unread Badge */}
+          {hasUnread && (
+            <div className="unread-badge">
+              {conversation.unread_count}
             </div>
-
-            {/* Timestamp */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {hasAlerts && (
-                <svg className="w-3 h-3 text-[#ef4444]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" />
-                </svg>
-              )}
-              <span className="text-[#a3a3a3] text-xs">
-                {formatTime(conversation.last_message_timestamp)}
-              </span>
-            </div>
-          </div>
-
-          {/* Listing Info */}
-          <div className="text-xs text-[#737373] mb-2 truncate">
-            {conversation.listing_year} {conversation.listing_make} {conversation.listing_model}
-            {conversation.listing_price && (
-              <span className="text-[#0070f3] font-medium ml-2">
-                ${conversation.listing_price.toLocaleString()}
-              </span>
-            )}
-          </div>
-
-          {/* Last Message */}
-          <div className="flex items-center justify-between">
-            <p className={`text-xs leading-relaxed ${hasUnread ? 'text-[#171717] font-medium' : 'text-[#737373]'}`}>
-              {truncateMessage(conversation.last_message)}
-            </p>
-            
-            {/* Unread Badge */}
-            {hasUnread && (
-              <div className="w-2 h-2 bg-[#0070f3] rounded-full flex-shrink-0 ml-2" />
-            )}
-          </div>
+          )}
         </div>
       </div>
-    </button>
+    </div>
   );
 }

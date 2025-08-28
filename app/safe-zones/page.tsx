@@ -121,286 +121,289 @@ export default function SafeZonesPage() {
 
   return (
     <Layout showNavigation={true}>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-green-50" style={{padding: 'var(--space-3xl) 0'}}>
-        <div className="max-w-4xl mx-auto text-center" style={{padding: '0 var(--space-xl)'}}>
-          <div className="flex items-center justify-center small-gap" style={{gap: 'var(--space-md)', marginBottom: 'var(--space-lg)'}}>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Shield className="w-6 h-6 text-blue-600" />
-            </div>
-            <h1 className="text-headline">Safe Zones</h1>
-          </div>
-          <p className="text-body max-w-2xl mx-auto content-block">
-            Find verified safe meeting locations near you. All safe zones are monitored, 
-            well-lit, and provide a secure environment for your transactions.
-          </p>
-          
-          {/* Quick Stats */}
-          <div className="flex items-center justify-center text-small" style={{gap: 'var(--space-2xl)'}}>
-            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
-              <MapPin className="w-4 h-4 text-green-600" />
-              <span>{safeZones.length} locations</span>
-            </div>
-            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
-              <Shield className="w-4 h-4 text-blue-600" />
-              <span>{safeZones.filter(sz => sz.is_verified).length} verified</span>
-            </div>
-            <div className="flex items-center" style={{gap: 'var(--space-sm)'}}>
-              <Users className="w-4 h-4 text-purple-600" />
-              <span>24/7 monitored</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* View Toggle and Filters */}
-      <div className="max-w-6xl mx-auto" style={{padding: '0 var(--space-xl)', marginTop: 'calc(-1 * var(--space-2xl))', marginBottom: 'var(--space-2xl)'}}>
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-          {/* View Mode Toggle */}
-          <div className="border-b border-gray-200 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex bg-gray-100 rounded-lg p-1">
-                  <Button
-                    onClick={() => setViewMode('map')}
-                    variant={viewMode === 'map' ? 'secondary' : 'ghost'}
-                    size="sm"
-                    className={viewMode === 'map' ? 'bg-white text-gray-900 shadow-sm' : ''}
-                  >
-                    Map View
-                  </Button>
-                  <Button
-                    onClick={() => setViewMode('list')}
-                    variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                    size="sm"
-                    className={viewMode === 'list' ? 'bg-white text-gray-900 shadow-sm' : ''}
-                  >
-                    List View
-                  </Button>
-                </div>
+      <div className="safe-zones-page">
+        <div className="safe-zones-container">
+          {/* Page Header - Notion-Inspired Clean Typography */}
+          <div className="safe-zones-header">
+            <h1 className="safe-zones-page-title">
+              Safe Zones
+            </h1>
+            <p className="safe-zones-page-subtitle">
+              Find verified safe meeting locations near you. All safe zones are monitored, 
+              well-lit, and provide a secure environment for your transactions.
+            </p>
+            
+            {/* Quick Stats */}
+            <div className="safe-zones-page-stats">
+              <div className="safe-zones-stat-item">
+                <div className="safe-zones-stat-number">{safeZones.length}</div>
+                <div className="safe-zones-stat-label">Locations</div>
               </div>
-
-              <div className="flex items-center gap-3">
-                <span className="text-small">
-                  {safeZones.length} safe zones found
-                </span>
-                {Object.values(filters).some(value => 
-                  value !== '' && value !== null && value !== 0 && value !== 25
-                ) && (
-                  <Button variant="outline" size="sm" onClick={clearFilters}>
-                    Clear filters
-                  </Button>
-                )}
+              <div className="safe-zones-stat-item">
+                <div className="safe-zones-stat-number">{safeZones.filter(sz => sz.is_verified).length}</div>
+                <div className="safe-zones-stat-label">Verified</div>
+              </div>
+              <div className="safe-zones-stat-item">
+                <div className="safe-zones-stat-number">24/7</div>
+                <div className="safe-zones-stat-label">Monitored</div>
               </div>
             </div>
           </div>
 
-          {/* Search and Filters */}
-          <div className="p-6">
-            {/* Search */}
-            <div className="mb-6">
-              <div className="relative">
+          {/* Search & Filter Section - Vercel-Style Clean Interface */}
+          <div className="safe-zones-search-section">
+            <div className="safe-zones-search-header">
+              <h2 className="safe-zones-search-title">Find Safe Zones</h2>
+              <p className="safe-zones-search-description">
+                Search and filter safe zones by location, type, and features
+              </p>
+            </div>
+            
+            {/* Main Search */}
+            <div className="safe-zones-search-form">
+              <div className="safe-zones-search-input-group">
+                <label className="safe-zones-search-label">Search Location</label>
                 <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   placeholder="Search by name, address, or features..."
-                  className="form-input field-search pl-11"
+                  className="safe-zones-search-input"
                 />
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <MapPin className="safe-zones-search-icon" />
               </div>
+              <button className="safe-zones-search-btn" onClick={fetchSafeZones}>
+                Search
+              </button>
             </div>
-
-            {/* Filter Controls */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Type Filter */}
-              <select
-                value={filters.type}
-                onChange={(e) => setFilters({ ...filters, type: e.target.value as SafeZoneType | '' })}
-                className="form-select field-category"
-              >
-                <option value="">All Types</option>
-                {getTypeOptions().map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-
-              {/* Distance Filter */}
-              <div>
-                <label className="text-label">
-                  Distance: {filters.distanceKm}km
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="50"
-                  value={filters.distanceKm}
-                  onChange={(e) => setFilters({ ...filters, distanceKm: parseInt(e.target.value) })}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-
-              {/* Rating Filter */}
-              <select
-                value={filters.minRating}
-                onChange={(e) => setFilters({ ...filters, minRating: parseFloat(e.target.value) })}
-                className="form-select field-category"
-              >
-                <option value={0}>Any Rating</option>
-                <option value={4.5}>4.5+ Stars</option>
-                <option value={4.0}>4.0+ Stars</option>
-                <option value={3.5}>3.5+ Stars</option>
-                <option value={3.0}>3.0+ Stars</option>
-              </select>
-
-              {/* Verified Filter */}
-              <select
-                value={filters.verified === null ? '' : filters.verified.toString()}
-                onChange={(e) => setFilters({ 
-                  ...filters, 
-                  verified: e.target.value === '' ? null : e.target.value === 'true'
-                })}
-                className="form-select field-category"
-              >
-                <option value="">All Locations</option>
-                <option value="true">Verified Only</option>
-                <option value="false">Unverified</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="max-w-6xl mx-auto px-6 py-16 text-center">
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-body">Loading safe zones...</p>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <div className="text-subtitle text-red-600 mb-2">⚠️ Error</div>
-            <p className="text-body text-red-800 mb-4">{error}</p>
-            <Button onClick={fetchSafeZones} variant="outline" size="sm">
-              Try Again
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Content */}
-      {!loading && !error && (
-        <div className="max-w-6xl mx-auto px-6 pb-16">
-          {safeZones.length === 0 ? (
-            /* Empty State */
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MapPin className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-subtitle mb-2">
-                No safe zones found
-              </h3>
-              <p className="text-body mb-6">
-                Try adjusting your search criteria or expanding your distance range.
-              </p>
-              <Button onClick={clearFilters} variant="outline">
-                Clear all filters
-              </Button>
-            </div>
-          ) : viewMode === 'map' ? (
-            /* Map View */
-            <div className="space-y-6">
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <SafeZoneMap
-                  safeZones={safeZones}
-                  loading={loading}
-                  error={null}
-                  showUserLocation={!!userLocation}
-                  onSafeZoneSelect={(safeZone) => {
-                    // Scroll to safe zone in list or show details
-                    console.log('Selected safe zone:', safeZone.name);
-                  }}
-                  height="24rem"
-                />
-              </div>
-
-              {/* Quick List Below Map */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {safeZones.slice(0, 6).map((safeZone) => (
-                  <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-                    <h3 className="text-section-label">{safeZone.name}</h3>
-                    <p className="text-body text-gray-600 mb-2">{safeZone.address}</p>
-                    <div className="space-y-1">
-                      <p className="text-small text-gray-500">Type: {safeZone.zone_type}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-small text-gray-500">Verified:</span>
-                        <span className={`text-small font-medium ${safeZone.is_verified ? 'text-green-600' : 'text-gray-400'}`}>
-                          {safeZone.is_verified ? '✅ Verified' : '⏳ Pending'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {safeZones.length > 6 && (
-                <div className="text-center">
-                  <Button 
-                    onClick={() => setViewMode('list')} 
-                    variant="outline"
+            
+            {/* Filter Section - Notion-Style Organization */}
+            <div className="safe-zones-filters-section">
+              <span className="safe-zones-filter-label">Filters:</span>
+              <div className="safe-zones-filter-group">
+                {getTypeOptions().slice(0, 4).map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => setFilters({ ...filters, type: filters.type === option.value ? '' : option.value })}
+                    className={`safe-zones-filter-btn ${filters.type === option.value ? 'active' : ''}`}
                   >
-                    View all {safeZones.length} safe zones
-                  </Button>
-                </div>
+                    {option.label}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setFilters({ ...filters, verified: filters.verified === true ? null : true })}
+                  className={`safe-zones-filter-btn ${filters.verified === true ? 'active' : ''}`}
+                >
+                  Verified Only
+                </button>
+              </div>
+              {Object.values(filters).some(value => 
+                value !== '' && value !== null && value !== 0 && value !== 25
+              ) && (
+                <button className="safe-zones-clear-filters" onClick={clearFilters}>
+                  Clear all
+                </button>
               )}
             </div>
-          ) : (
-            /* List View */
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {safeZones.map((safeZone) => (
-                <div key={safeZone.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-section-label">{safeZone.name}</h3>
-                    {safeZone.is_verified && (
-                      <div className="flex items-center gap-1 text-green-600">
-                        <Shield className="w-4 h-4" />
-                        <span className="text-small font-medium">Verified</span>
-                      </div>
-                    )}
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="safe-zones-loading-container">
+              <div className="safe-zones-map-skeleton safe-zones-skeleton-shimmer"></div>
+              <div className="safe-zones-list-skeleton">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="safe-zones-card-skeleton safe-zones-skeleton-shimmer">
+                    <div className="safe-zones-skeleton-line title safe-zones-skeleton-shimmer"></div>
+                    <div className="safe-zones-skeleton-line subtitle safe-zones-skeleton-shimmer"></div>
+                    <div className="safe-zones-skeleton-line content safe-zones-skeleton-shimmer"></div>
                   </div>
-                  
-                  <p className="text-body text-gray-600 mb-3">{safeZone.address}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-small text-gray-500">Type: {safeZone.zone_type}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="safe-zones-empty-results">
+              <div className="safe-zones-empty-icon">
+                ⚠️
+              </div>
+              <h3 className="safe-zones-empty-title">Error Loading Safe Zones</h3>
+              <p className="safe-zones-empty-description">{error}</p>
+              <button className="safe-zones-empty-action" onClick={fetchSafeZones}>
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {/* Content */}
+          {!loading && !error && (
+            <>
+              {safeZones.length === 0 ? (
+                /* Empty State */
+                <div className="safe-zones-empty-results">
+                  <div className="safe-zones-empty-icon">
+                    <MapPin className="w-8 h-8" />
+                  </div>
+                  <h3 className="safe-zones-empty-title">
+                    No safe zones found
+                  </h3>
+                  <p className="safe-zones-empty-description">
+                    Try adjusting your search criteria or expanding your distance range.
+                  </p>
+                  <button className="safe-zones-empty-action" onClick={clearFilters}>
+                    Clear all filters
+                  </button>
+                </div>
+              ) : (
+                /* Main Content Layout - Vercel-Style Grid */
+                <div className="safe-zones-content">
+                  {/* Map Section - Clean & Professional */}
+                  <div className="safe-zones-map-section">
+                    <div className="safe-zones-map-header">
+                      <h3 className="safe-zones-map-title">Interactive Map</h3>
+                      <div className="safe-zones-map-controls">
+                        <button 
+                          onClick={() => setViewMode('map')}
+                          className={`safe-zones-map-control-btn ${viewMode === 'map' ? 'active' : ''}`}
+                        >
+                          Map
+                        </button>
+                        <button 
+                          onClick={() => setViewMode('list')}
+                          className={`safe-zones-map-control-btn ${viewMode === 'list' ? 'active' : ''}`}
+                        >
+                          List
+                        </button>
+                      </div>
+                    </div>
+                    <div className="safe-zones-map-container">
+                      <SafeZoneMap
+                        safeZones={safeZones}
+                        loading={loading}
+                        error={null}
+                        showUserLocation={!!userLocation}
+                        onSafeZoneSelect={(safeZone) => {
+                          console.log('Selected safe zone:', safeZone.name);
+                        }}
+                        height="400px"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Safe Zone List - Notion-Style Information Cards */}
+                  <div className="safe-zones-sidebar">
+                    <div className="safe-zones-sidebar-header">
+                      <h3 className="safe-zones-sidebar-title">Safe Zones</h3>
+                      <p className="safe-zones-results-count">{safeZones.length} locations found</p>
                     </div>
                     
-                    {safeZone.average_rating && (
-                      <div className="flex items-center gap-2">
-                        <Star className="w-4 h-4 text-yellow-500" />
-                        <span className="text-small text-gray-500">Rating: {safeZone.average_rating}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-small text-gray-500">24/7 Available</span>
+                    <div className="safe-zones-list">
+                      {safeZones.slice(0, 10).map((safeZone) => (
+                        <div key={safeZone.id} className="safe-zone-card">
+                          <div className="safe-zones-zone-header">
+                            <h4 className="safe-zones-zone-name">{safeZone.name}</h4>
+                            {safeZone.is_verified && (
+                              <div className="safe-zones-zone-distance">Verified</div>
+                            )}
+                          </div>
+                          
+                          <div className={`safe-zones-zone-type ${safeZone.zone_type?.toLowerCase() || ''}`}>
+                            {safeZone.zone_type || 'Safe Zone'}
+                          </div>
+                          
+                          <div className="safe-zones-zone-address">
+                            {safeZone.address}
+                          </div>
+                          
+                          {safeZone.features && (
+                            <div className="safe-zones-zone-features">
+                              {safeZone.features.slice(0, 3).map((feature: string, idx: number) => (
+                                <span key={idx} className="safe-zones-feature-tag">{feature}</span>
+                              ))}
+                            </div>
+                          )}
+                          
+                          <div className="safe-zones-zone-footer">
+                            {safeZone.average_rating && (
+                              <div className="safe-zones-zone-rating">
+                                <span className="safe-zones-rating-stars">★</span>
+                                <span>{safeZone.average_rating.toFixed(1)}</span>
+                              </div>
+                            )}
+                            <div className="safe-zones-zone-actions">
+                              <button className="safe-zones-zone-action-btn">View</button>
+                              <button className="safe-zones-zone-action-btn primary">Select</button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {safeZones.length > 10 && (
+                        <div className="text-center mt-4">
+                          <button 
+                            onClick={() => setViewMode('list')} 
+                            className="safe-zones-empty-action"
+                          >
+                            View all {safeZones.length} safe zones
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+              
+              {/* List View - When switched to full list */}
+              {viewMode === 'list' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {safeZones.map((safeZone) => (
+                    <div key={safeZone.id} className="safe-zone-card">
+                      <div className="safe-zones-zone-header">
+                        <h3 className="safe-zones-zone-name">{safeZone.name}</h3>
+                        {safeZone.is_verified && (
+                          <div className="flex items-center gap-1 text-green-600">
+                            <Shield className="w-4 h-4" />
+                            <span className="text-xs font-medium">Verified</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className={`safe-zones-zone-type ${safeZone.zone_type?.toLowerCase() || ''}`}>
+                        {safeZone.zone_type || 'Safe Zone'}
+                      </div>
+                      
+                      <div className="safe-zones-zone-address">
+                        {safeZone.address}
+                      </div>
+                      
+                      <div className="safe-zones-zone-footer">
+                        {safeZone.average_rating ? (
+                          <div className="safe-zones-zone-rating">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span>{safeZone.average_rating.toFixed(1)} rating</span>
+                          </div>
+                        ) : (
+                          <div className="safe-zones-zone-rating">
+                            <Clock className="w-4 h-4" />
+                            <span>24/7 Available</span>
+                          </div>
+                        )}
+                        
+                        <div className="safe-zones-zone-actions">
+                          <button className="safe-zones-zone-action-btn">View Details</button>
+                          <button className="safe-zones-zone-action-btn primary">Select</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
-      )}
+      </div>
     </Layout>
   );
 }

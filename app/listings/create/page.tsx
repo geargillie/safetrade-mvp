@@ -267,24 +267,9 @@ export default function CreateListing() {
   // Main create listing form with consistent design
   return (
     <Layout showNavigation={true}>
-      {/* Navigation breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-3">
-          <div className="flex items-center gap-2 text-sm">
-            <Link href="/listings" className="text-gray-500 hover:text-gray-700 transition-colors">
-              Browse listings
-            </Link>
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            <span className="text-gray-900 font-medium">Create listing</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Clean Hero Section */}
+      {/* Compact Hero Section */}
       <section className="bg-white border-b border-gray-200 page-section">
-        <div className="max-w-4xl mx-auto px-6 text-center" style={{paddingTop: 'var(--space-4xl)', paddingBottom: 'var(--space-4xl)'}}>
+        <div className="max-w-4xl mx-auto px-6 text-center" style={{paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-lg)'}}>
           <h1 className="text-headline">
             Create New Listing
           </h1>
@@ -307,69 +292,69 @@ export default function CreateListing() {
 
       {/* Clean Main Content */}
       <div className="max-w-4xl mx-auto px-6 page-section">
-        <div className="grid grid-cols-1 lg:grid-cols-12" style={{gap: 'var(--space-2xl)'}}>
-          
-          {/* Clean Sidebar - Step Navigation */}
-          <div className="lg:col-span-3">
-            <div className="sticky w-full" style={{top: 'var(--space-xl)'}}>
+        
+        {/* Horizontal Progress Steps */}
+        <div className="bg-white rounded-lg border border-gray-200 mb-8" style={{padding: 'var(--space-xl)'}}>
+          <div className="horizontal-progress">
+            {/* Progress Line Background */}
+            <div className="progress-line-bg"></div>
+            
+            {/* Progress Line Active - calculated width based on progress */}
+            <div 
+              className="progress-line-active"
+              style={{
+                width: `${Math.max(0, (completedSteps.length + (currentStep > Math.max(...completedSteps, 0) ? 0.5 : 0)) / steps.length * 80)}%`
+              }}
+            ></div>
+            
+            {steps.map((step, index) => {
+              const isActive = currentStep === step.id
+              const isCompleted = completedSteps.includes(step.id)
+              const isAccessible = step.id <= currentStep || completedSteps.includes(step.id)
               
-              {/* Simple Steps Navigation */}
-              <div className="bg-white rounded-lg border border-gray-200" style={{padding: 'var(--space-xl)'}}>
-                <h3 className="text-sm font-semibold text-gray-900 small-gap">Steps</h3>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--space-md)'}}>
-                  {steps.map((step) => {
-                    const isActive = currentStep === step.id
-                    const isCompleted = completedSteps.includes(step.id)
-                    const isAccessible = step.id <= currentStep || completedSteps.includes(step.id)
-                    
-                    return (
-                      <div
-                        key={step.id}
-                        onClick={() => isAccessible && setCurrentStep(step.id)}
-                        style={{gap: 'var(--space-md)', padding: 'var(--space-md)'}}
-                        className={`flex items-center rounded-md transition-colors cursor-pointer ${
-                          isActive 
-                            ? 'bg-blue-50 border border-blue-200' 
-                            : isCompleted
-                            ? 'bg-gray-50 hover:bg-gray-100'
-                            : isAccessible
-                            ? 'hover:bg-gray-50'
-                            : 'opacity-50 cursor-not-allowed'
-                        }`}
-                      >
-                        <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${
-                          isActive
-                            ? 'bg-blue-600 text-white'
-                            : isCompleted
-                            ? 'bg-gray-600 text-white'
-                            : 'bg-gray-200 text-gray-600'
-                        }`}>
-                          {isCompleted ? (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <span>{step.id}</span>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-gray-900">
-                            {step.title}
-                          </h4>
-                          <p className="text-xs text-gray-500 mt-0.5">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })}
+              return (
+                <div key={step.id} className="flex flex-col items-center relative flex-1">
+                  {/* Step Circle */}
+                  <div
+                    onClick={() => isAccessible && setCurrentStep(step.id)}
+                    className={`step-circle ${
+                      isActive
+                        ? 'active'
+                        : isCompleted
+                        ? 'completed'
+                        : isAccessible
+                        ? 'inactive'
+                        : 'inaccessible'
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <span>{step.id}</span>
+                    )}
+                  </div>
+                  
+                  {/* Step Info */}
+                  <div className="step-info">
+                    <h4 className={`step-title ${
+                      isActive || isCompleted ? 'active' : 'inactive'
+                    }`}>
+                      {step.title}
+                    </h4>
+                    <p className="step-description hidden sm:block">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )
+            })}
           </div>
-          
-          {/* Main Form Content */}
-          <div className="lg:col-span-9">
+        </div>
+        
+        {/* Main Form Content */}
+        <div className="w-full">
 
             {/* Clean Notion-Style Form */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -507,312 +492,154 @@ export default function CreateListing() {
 
                 {/* Step 2: Vehicle Details */}
                 {currentStep === 2 && (
-                  <div className="p-8 space-y-6">
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Vehicle Details</h2>
-                      <p className="text-gray-600">Technical specifications and identification</p>
+                  <div className="form-section">
+                    <div className="section-header">
+                      <h3 className="section-title">Vehicle Details</h3>
+                      <p className="body-text">Technical specifications and identification</p>
                     </div>
                     
                     <div className="space-y-6">
                       {/* Vehicle Info Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="form-grid grid-cols-3">
                         {/* Make */}
-                        <div className="space-y-3 md:col-span-1">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                            <span>Make</span>
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative group">
-                            <input
-                              type="text"
-                              name="make"
-                              value={formData.make}
-                              onChange={handleInputChange}
-                              onFocus={() => setFocusedField('make')}
-                              onBlur={() => setFocusedField(null)}
-                              className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                validationErrors.make 
-                                  ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                  : focusedField === 'make'
-                                  ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                  : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                              }`}
-                              placeholder="Honda"
-                            />
-                          </div>
+                        <div className="form-field">
+                          <label className="form-label">Make <span className="text-error">*</span></label>
+                          <select
+                            name="make"
+                            value={formData.make}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.make ? 'border-error' : ''}`}
+                            style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNiA2TDExIDEiIHN0cm9rZT0iIzczNzM3MyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                          >
+                            <option value="">Select make</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Yamaha">Yamaha</option>
+                            <option value="Kawasaki">Kawasaki</option>
+                            <option value="Suzuki">Suzuki</option>
+                            <option value="Ducati">Ducati</option>
+                            <option value="BMW">BMW</option>
+                            <option value="Triumph">Triumph</option>
+                            <option value="Harley-Davidson">Harley-Davidson</option>
+                            <option value="KTM">KTM</option>
+                            <option value="Other">Other</option>
+                          </select>
                           {validationErrors.make && (
-                            <p className="text-xs text-red-600 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.make}</span>
-                            </p>
+                            <p className="form-error">{validationErrors.make}</p>
                           )}
                         </div>
 
                         {/* Model */}
-                        <div className="space-y-3 md:col-span-1">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                            <span>Model</span>
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative group">
-                            <input
-                              type="text"
-                              name="model"
-                              value={formData.model}
-                              onChange={handleInputChange}
-                              onFocus={() => setFocusedField('model')}
-                              onBlur={() => setFocusedField(null)}
-                              className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                validationErrors.model 
-                                  ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                  : focusedField === 'model'
-                                  ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                  : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                              }`}
-                              placeholder="CBR600RR"
-                            />
-                          </div>
+                        <div className="form-field">
+                          <label className="form-label">Model <span className="text-error">*</span></label>
+                          <input
+                            type="text"
+                            name="model"
+                            value={formData.model}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.model ? 'border-error' : ''}`}
+                            placeholder="CB650R"
+                          />
                           {validationErrors.model && (
-                            <p className="text-xs text-red-600 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.model}</span>
-                            </p>
+                            <p className="form-error">{validationErrors.model}</p>
                           )}
                         </div>
 
                         {/* Year */}
-                        <div className="space-y-3 md:col-span-1">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                            <span>Year</span>
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative group">
-                            <input
-                              type="number"
-                              name="year"
-                              value={formData.year}
-                              onChange={handleInputChange}
-                              onFocus={() => setFocusedField('year')}
-                              onBlur={() => setFocusedField(null)}
-                              className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                validationErrors.year 
-                                  ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                  : focusedField === 'year'
-                                  ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                  : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                              }`}
-                              min="1900"
-                              max={new Date().getFullYear() + 1}
-                              placeholder="2019"
-                            />
-                          </div>
+                        <div className="form-field">
+                          <label className="form-label">Year <span className="text-error">*</span></label>
+                          <input
+                            type="number"
+                            name="year"
+                            value={formData.year}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.year ? 'border-error' : ''}`}
+                            min="1900"
+                            max={new Date().getFullYear() + 1}
+                            placeholder="2019"
+                          />
                           {validationErrors.year && (
-                            <p className="text-xs text-red-600 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.year}</span>
-                            </p>
+                            <p className="form-error">{validationErrors.year}</p>
                           )}
                         </div>
 
                         {/* Mileage */}
-                        <div className="space-y-3 md:col-span-1">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                            <span>Mileage</span>
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative group">
-                            <input
-                              type="number"
-                              name="mileage"
-                              value={formData.mileage}
-                              onChange={handleInputChange}
-                              onFocus={() => setFocusedField('mileage')}
-                              onBlur={() => setFocusedField(null)}
-                              className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                validationErrors.mileage 
-                                  ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                  : focusedField === 'mileage'
-                                  ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                  : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                              }`}
-                              min="0"
-                              placeholder="12,000"
-                            />
-                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm font-medium">
-                              miles
-                            </div>
-                          </div>
+                        <div className="form-field">
+                          <label className="form-label">Mileage <span className="text-error">*</span></label>
+                          <input
+                            type="number"
+                            name="mileage"
+                            value={formData.mileage}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.mileage ? 'border-error' : ''}`}
+                            min="0"
+                            placeholder="12000"
+                          />
                           {validationErrors.mileage && (
-                            <p className="text-xs text-red-600 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.mileage}</span>
-                            </p>
+                            <p className="form-error">{validationErrors.mileage}</p>
                           )}
+                          <p className="form-help">Miles on the odometer</p>
                         </div>
                       </div>
 
-                      {/* Enhanced VIN Section */}
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                            <span>Vehicle Identification Number (VIN)</span>
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded-lg text-xs font-medium text-blue-700">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      {/* VIN Section */}
+                      <div className="form-field">
+                        <label className="form-label">VIN <span className="text-error">*</span></label>
+                        <input
+                          type="text"
+                          name="vin"
+                          value={formData.vin}
+                          onChange={(e) => {
+                            handleInputChange(e)
+                            if (e.target.value.length === 17) {
+                              verifyVIN(e.target.value)
+                            }
+                          }}
+                          className={`input ${validationErrors.vin ? 'border-error' : ''}`}
+                          maxLength={17}
+                          placeholder="1HGBH41JXMN109186"
+                        />
+                        {validationErrors.vin && (
+                          <p className="form-error">{validationErrors.vin}</p>
+                        )}
+                        <p className="form-help">17-character vehicle identification number</p>
+
+                        {/* VIN Verification Status */}
+                        {vinVerification.loading && (
+                          <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                            <span className="text-sm text-blue-800 font-medium">Verifying VIN...</span>
+                          </div>
+                        )}
+                        
+                        {vinVerification.result?.success && vinVerification.result.data?.isValid && (
+                          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>Auto-Verified</span>
+                            <span className="text-sm text-green-800 font-medium">VIN verified successfully</span>
                           </div>
-                        </div>
-                        
-                        <div className="relative group">
-                          <input
-                            type="text"
-                            name="vin"
-                            value={formData.vin}
-                            onChange={(e) => {
-                              handleInputChange(e)
-                              if (e.target.value.length === 17) {
-                                verifyVIN(e.target.value)
-                              }
-                            }}
-                            onFocus={() => setFocusedField('vin')}
-                            onBlur={() => setFocusedField(null)}
-                            className={`w-full px-4 py-3 border-2 rounded-xl font-mono text-sm transition-all duration-200 focus:outline-none ${
-                              formData.vin.length === 17
-                                ? vinVerification.result?.success && vinVerification.result.data?.isValid
-                                  ? 'border-emerald-300 focus:border-emerald-500 bg-emerald-50/50'
-                                  : vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false)
-                                  ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                  : 'border-gray-200 hover:border-gray-300 focus:border-indigo-500'
-                                : validationErrors.vin
-                                ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                : focusedField === 'vin'
-                                ? 'border-indigo-500 bg-indigo-50/50 shadow-lg shadow-indigo-500/10'
-                                : 'border-gray-200 hover:border-gray-300 focus:border-indigo-500'
-                            }`}
-                            maxLength={17}
-                            placeholder="1HGBH41JXMN109186"
-                          />
-                          
-                          {/* VIN Status Indicator */}
-                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                            {vinVerification.loading ? (
-                              <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                            ) : formData.vin.length === 17 && vinVerification.result?.success && vinVerification.result.data?.isValid ? (
-                              <div className="w-6 h-6 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center">
-                                <svg className="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                              </div>
-                            ) : formData.vin.length === 17 && vinVerification.result && (!vinVerification.result.success || vinVerification.result.data?.isValid === false) ? (
-                              <div className="w-6 h-6 bg-red-100 border border-red-200 rounded-full flex items-center justify-center">
-                                <svg className="w-3 h-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </div>
-                            ) : focusedField === 'vin' ? (
-                              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                            ) : null}
+                        )}
+
+                        {vinVerification.error && (
+                          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+                            </svg>
+                            <span className="text-sm text-red-800">{vinVerification.error}</span>
                           </div>
-                        </div>
-                        
-                        {/* VIN Feedback */}
-                        <div className="space-y-2">
-                          {vinVerification.loading && (
-                            <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                              <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-                              <span className="text-sm text-blue-800 font-medium">Verifying VIN and checking theft records...</span>
-                            </div>
-                          )}
-                          
-                          {vinVerification.result && (
-                            <div className={`p-4 rounded-xl border ${
-                              vinVerification.result?.success && vinVerification.result.data?.isValid
-                                ? 'bg-emerald-50 border-emerald-200'
-                                : 'bg-red-50 border-red-200'
-                            }`}>
-                              {vinVerification.result?.success && vinVerification.result.data?.isValid ? (
-                                <div className="space-y-2">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center">
-                                      <svg className="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                      </svg>
-                                    </div>
-                                    <span className="text-sm font-semibold text-emerald-800">VIN Verified Successfully</span>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-4 text-xs text-emerald-700">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-medium">Theft Status:</span>
-                                      <span className={vinVerification.result.data?.isStolen ? 'text-red-600 font-bold' : 'text-emerald-600 font-semibold'}>
-                                        {vinVerification.result.data?.isStolen ? '⚠️ STOLEN VEHICLE' : '✅ Clean'}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-medium">Total Loss:</span>
-                                      <span className={vinVerification.result.data?.isTotalLoss ? 'text-red-600 font-bold' : 'text-emerald-600 font-semibold'}>
-                                        {vinVerification.result.data?.isTotalLoss ? '⚠️ Yes' : '✅ No'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-2">
-                                  <div className="w-5 h-5 bg-red-100 border border-red-200 rounded-full flex items-center justify-center">
-                                    <svg className="w-3 h-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                                    </svg>
-                                  </div>
-                                  <span className="text-sm font-semibold text-red-800">Please verify VIN number</span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                          
-                          {vinVerification.error && (
-                            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span className="text-sm text-red-800">{vinVerification.error}</span>
-                            </div>
-                          )}
-                          
-                          {validationErrors.vin && (
-                            <p className="text-xs text-red-600 flex items-center gap-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.vin}</span>
-                            </p>
-                          )}
-                        </div>
-                        
-                        <p className="text-xs text-gray-500">17-character code usually found on the frame or registration documents</p>
+                        )}
                       </div>
+
                     </div>
                     
-                    {/* Step Navigation */}
-                    <div className="flex justify-between pt-6 border-t border-gray-100">
+                    {/* Form Actions */}
+                    <div className="form-actions">
                       <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="btn btn-secondary btn-md"
+                        className="btn-back"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span>Back</span>
+                        Back
                       </button>
                       <button
                         type="button"
@@ -822,12 +649,9 @@ export default function CreateListing() {
                             setCurrentStep(3)
                           }
                         }}
-                        className="btn btn-primary btn-lg"
+                        className="btn-publish"
                       >
-                        <span>Continue</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        Continue
                       </button>
                     </div>
                   </div>
@@ -835,178 +659,78 @@ export default function CreateListing() {
 
                 {/* Step 3: Location & Photos */}
                 {currentStep === 3 && (
-                  <div className="p-8 space-y-6">
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Location & Photos</h2>
-                      <p className="text-gray-600">Where you&apos;re located and showcase your motorcycle</p>
-                    </div>
-                    
-                    <div className="space-y-6">
-                      {/* Location Section */}
-                      <div className="space-y-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-                          <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg text-xs font-medium text-gray-700">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                            <span>Private</span>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          {/* City */}
-                          <div className="space-y-3 md:col-span-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                              <span>City</span>
-                              <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative group">
-                              <input
-                                type="text"
-                                name="city"
-                                value={formData.city}
-                                onChange={handleInputChange}
-                                onFocus={() => setFocusedField('city')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                  validationErrors.city 
-                                    ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                    : focusedField === 'city'
-                                    ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                    : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                                }`}
-                                placeholder="San Francisco"
-                              />
-                            </div>
-                            {validationErrors.city && (
-                              <p className="text-xs text-red-600 flex items-center gap-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                                </svg>
-                                <span>{validationErrors.city}</span>
-                              </p>
-                            )}
-                            <p className="text-xs text-gray-500">Your general location for buyers</p>
-                          </div>
-
-                          {/* ZIP Code */}
-                          <div className="space-y-3 md:col-span-1">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                              <span>ZIP Code</span>
-                              <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative group">
-                              <input
-                                type="text"
-                                name="zipCode"
-                                value={formData.zipCode}
-                                onChange={handleInputChange}
-                                onFocus={() => setFocusedField('zipCode')}
-                                onBlur={() => setFocusedField(null)}
-                                className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none ${
-                                  validationErrors.zipCode 
-                                    ? 'border-red-300 focus:border-red-500 bg-red-50/50'
-                                    : focusedField === 'zipCode'
-                                    ? 'border-orange-400 bg-orange-50/30 shadow-sm shadow-orange-500/10'
-                                    : 'border-gray-200 hover:border-gray-300 focus:border-orange-400'
-                                }`}
-                                placeholder="94102"
-                              />
-                            </div>
-                            {validationErrors.zipCode && (
-                              <p className="text-xs text-red-600 flex items-center gap-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                                </svg>
-                                <span>{validationErrors.zipCode}</span>
-                              </p>
-                            )}
-                            <p className="text-xs text-gray-500">For local search and shipping</p>
-                          </div>
-                        </div>
+                  <div className="space-y-8">
+                    {/* Location Section */}
+                    <div className="form-section">
+                      <div className="section-header">
+                        <h3 className="section-title">Location</h3>
+                        <p className="body-text">Where is your motorcycle located?</p>
                       </div>
-
-                      {/* Photos Section */}
-                      <div className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <h3 className="text-lg font-semibold text-gray-900">Photos</h3>
-                            <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-indigo-50 border border-indigo-200 rounded-lg text-xs font-medium text-indigo-700">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                              <span>Required</span>
-                            </div>
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {images.length}/10 photos
-                          </div>
-                        </div>
-                        
-                        {/* Enhanced Image Upload */}
-                        <div className="relative">
-                          <ImageUpload 
-                            onImagesUploaded={setImages}
-                            existingImages={images}
-                            maxImages={10}
+                    
+                      <div className="form-grid">
+                        <div className="form-field">
+                          <label className="form-label">City <span className="text-error">*</span></label>
+                          <input
+                            type="text"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.city ? 'border-error' : ''}`}
+                            placeholder="Los Angeles"
                           />
-                          {validationErrors.images && (
-                            <p className="text-xs text-red-600 flex items-center gap-1 mt-2">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
-                              </svg>
-                              <span>{validationErrors.images}</span>
-                            </p>
+                          {validationErrors.city && (
+                            <p className="form-error">{validationErrors.city}</p>
                           )}
                         </div>
-                        
-                        {/* Photo Tips */}
-                        <div className="p-4 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-200 rounded-xl">
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-blue-100 border border-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-semibold text-blue-900 mb-2">Photo Tips for Better Results</h4>
-                              <ul className="space-y-1 text-xs text-blue-800">
-                                <li className="flex items-start gap-2">
-                                  <div className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                                  <span>Take photos in good lighting, preferably outdoors</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <div className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                                  <span>Show multiple angles: front, back, sides, and close-ups</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <div className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                                  <span>Include interior shots and any damage or wear</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <div className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                                  <span>Clean your motorcycle before photographing</span>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
+
+                        <div className="form-field">
+                          <label className="form-label">Zip Code <span className="text-error">*</span></label>
+                          <input
+                            type="text"
+                            name="zipCode"
+                            value={formData.zipCode}
+                            onChange={handleInputChange}
+                            className={`input ${validationErrors.zipCode ? 'border-error' : ''}`}
+                            placeholder="90210"
+                            maxLength={5}
+                          />
+                          {validationErrors.zipCode && (
+                            <p className="form-error">{validationErrors.zipCode}</p>
+                          )}
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Step Navigation */}
-                    <div className="flex justify-between pt-6 border-t border-gray-100">
+
+                    {/* Photos Section */}
+                    <div className="form-section">
+                      <div className="section-header">
+                        <h3 className="section-title">Photos</h3>
+                        <p className="body-text">Add high-quality photos of your motorcycle</p>
+                      </div>
+
+                      <div className="image-upload-section">
+                        <ImageUpload 
+                          onImagesUploaded={setImages}
+                          existingImages={images}
+                          maxImages={8}
+                        />
+                        
+                        <p className="form-help">
+                          Add at least 3-5 photos showing different angles. High-quality photos get more interest!
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Form Actions */}
+                    <div className="form-actions">
                       <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="btn btn-secondary btn-md"
+                        className="btn-back"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span>Back</span>
+                        Back
                       </button>
+                      
                       <button
                         type="button"
                         onClick={() => {
@@ -1015,12 +739,9 @@ export default function CreateListing() {
                             setCurrentStep(4)
                           }
                         }}
-                        className="btn btn-primary btn-lg"
+                        className="btn-publish"
                       >
-                        <span>Review & Publish</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        Continue to Review
                       </button>
                     </div>
                   </div>
@@ -1028,10 +749,10 @@ export default function CreateListing() {
 
                 {/* Step 4: Review & Publish */}
                 {currentStep === 4 && (
-                  <div className="p-8 space-y-6">
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Review & Publish</h2>
-                      <p className="text-gray-600">Final review before your listing goes live</p>
+                  <div className="form-section">
+                    <div className="section-header">
+                      <h3 className="section-title">Review & Publish</h3>
+                      <p className="body-text">Final review before your listing goes live</p>
                     </div>
                     
                     {/* Listing Preview */}
@@ -1165,40 +886,27 @@ export default function CreateListing() {
                       </div>
                     )}
                     
-                    {/* Final Publish Button */}
-                    <div className="flex justify-between pt-6 border-t border-gray-100">
+                    {/* Form Actions */}
+                    <div className="form-actions">
                       <button
                         type="button"
                         onClick={() => setCurrentStep(3)}
-                        className="btn btn-secondary btn-md"
+                        className="btn-back"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span>Back</span>
+                        Back
                       </button>
                       
                       <button
                         type="submit"
                         disabled={loading}
-                        className={`btn btn-success btn-xl ${loading ? 'btn-loading' : ''}`}
+                        className={`btn-publish ${loading ? 'opacity-50 cursor-not-allowed transform-none shadow-none' : ''}`}
                       >
-                        {loading ? (
-                          <span>Publishing...</span>
-                        ) : (
-                          <>
-                            <span>Publish Listing</span>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </>
-                        )}
+                        {loading ? 'Publishing Listing...' : 'Publish Listing'}
                       </button>
                     </div>
                   </div>
                 )}
               </form>
-            </div>
           </div>
         </div>
       </div>

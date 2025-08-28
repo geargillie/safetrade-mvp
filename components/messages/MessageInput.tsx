@@ -96,74 +96,62 @@ export default function MessageInput({
   const canSend = value.trim() && !sending && !disabled;
 
   return (
-    <div className="px-6 py-4 bg-white border-t border-[#e5e5e5]">
-      <div className="flex items-end gap-3 max-w-4xl mx-auto">
-        
-        {/* Input Container */}
-        <div className="flex-1 relative">
-          <textarea
-            ref={textareaRef}
-            data-message-input
-            value={value}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={disabled || sending}
-            rows={minRows}
-            className={`
-              form-input field-message resize-none
-              ${disabled || sending ? 'bg-[#f5f5f5] cursor-not-allowed' : ''}
-            `}
-            style={{ 
-              minHeight: `${minRows * 20 + 24}px`, // 20px line height + padding
-              maxHeight: `${maxRows * 20 + 24}px`
-            }}
-          />
-          
-          {/* Character Count */}
-          {value.length > 1500 && (
-            <div className="absolute bottom-2 right-3 text-xs text-[#a3a3a3]">
-              {value.length}/2000
-            </div>
-          )}
-        </div>
+    <>
+      <div className="input-wrapper">
+        {/* Attachment Button */}
+        <button className="attachment-btn">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+          </svg>
+        </button>
+
+        {/* Message Input */}
+        <textarea
+          ref={textareaRef}
+          data-message-input
+          value={value}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          disabled={disabled || sending}
+          rows={minRows}
+          className="message-input"
+          style={{ 
+            minHeight: `${minRows * 20 + 8}px`,
+            maxHeight: `${maxRows * 20 + 8}px`
+          }}
+        />
 
         {/* Send Button */}
         <button
           onClick={handleSendClick}
           disabled={!canSend}
-          className={`
-            p-3 rounded-xl transition-all duration-200 flex items-center justify-center
-            ${canSend
-              ? 'bg-[#0070f3] text-white hover:bg-[#0051cc] transform hover:scale-105 shadow-sm'
-              : 'bg-[#f5f5f5] text-[#a3a3a3] cursor-not-allowed'
-            }
-          `}
+          className={`send-btn ${!canSend ? 'disabled' : ''}`}
           title={canSend ? 'Send message (Enter)' : 'Type a message to send'}
         >
           {sending ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <PaperAirplaneIcon className="w-5 h-5" />
+            <PaperAirplaneIcon className="w-4 h-4" />
           )}
         </button>
       </div>
 
       {/* Hint Text */}
       <div className="flex items-center justify-between mt-2 px-1 max-w-4xl mx-auto">
-        <p className="text-small">
-          Press <kbd className="px-1 py-0.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded text-[10px] font-mono">Enter</kbd> to send, 
-          <kbd className="px-1 py-0.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded text-[10px] font-mono ml-1">Shift+Enter</kbd> for new line
+        <p className="text-sm text-gray-600">
+          Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd> to send, 
+          <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono ml-1">Shift+Enter</kbd> for new line
         </p>
         
         {/* Security Badge */}
-        <div className="flex items-center gap-1 text-[#10b981] text-small">
+        <div className="flex items-center gap-1 text-green-600 text-sm">
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
           <span className="font-medium">Encrypted</span>
         </div>
       </div>
-    </div>
+    </>
   );
 }
