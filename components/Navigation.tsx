@@ -229,16 +229,16 @@ export default function Navigation() {
               
               {/* Additional mobile-only items */}
               <Link
-                href="/profile"
+                href="/favorites"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`mobile-nav-item ${
-                  pathname === '/profile' ? 'active' : ''
+                  pathname === '/favorites' ? 'active' : ''
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-                <span>Profile</span>
+                <span>Favorites</span>
               </Link>
 
               <Link
@@ -252,6 +252,19 @@ export default function Navigation() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5a2.25 2.25 0 0 1 21 11.25v7.5" />
                 </svg>
                 <span>Meetings</span>
+              </Link>
+
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`mobile-nav-item ${
+                  pathname === '/profile' ? 'active' : ''
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275" />
+                </svg>
+                <span>Profile</span>
               </Link>
             </nav>
           </div>
