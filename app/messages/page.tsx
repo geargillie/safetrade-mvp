@@ -1,6 +1,6 @@
 /**
- * Messages Page - Complete Redesign
- * Professional, minimalistic interface inspired by Notion/Vercel
+ * Messages Page - Real Conversation Interface
+ * Seller/Buyer messaging with SafeTrade layout
  */
 
 'use client';
@@ -9,9 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
-import ConversationList from '@/components/messages/ConversationList';
-import ChatArea from '@/components/messages/ChatArea';
-import ListingPanel from '@/components/messages/ListingPanel';
+import ConversationChat from '@/components/ConversationChat';
 import { useEnhancedMessaging } from '@/hooks/useEnhancedMessaging';
 import type { EnhancedConversation } from '@/hooks/useEnhancedMessaging';
 
@@ -27,25 +25,19 @@ export default function MessagesPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedConversation, setSelectedConversation] = useState<EnhancedConversation | null>(null);
-  const [showListingPanel, setShowListingPanel] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showConversationList, setShowConversationList] = useState(true);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const [showMobileConversations, setShowMobileConversations] = useState(true);
 
-  // Enhanced messaging hook
+  // Enhanced messaging hook for conversations
   const {
     conversations,
-    loading: conversationsLoading,
-    error: conversationsError,
-    connectionStatus,
     totalUnreadCount,
-    securityAlerts
+    securityAlerts,
+    connectionStatus
   } = useEnhancedMessaging(user?.id || '');
 
-  // Handle critical errors
-  if (conversationsError && conversationsError.includes('Network')) {
-    console.log('Network error in messages:', conversationsError);
-  }
+  // Get selected conversation object
+  const selectedConversation = conversations.find(c => c.id === selectedConversationId) || null;
 
   // Authentication check
   const checkUser = useCallback(async () => {
@@ -77,7 +69,7 @@ export default function MessagesPage() {
         // Use mock user for development testing
         console.log('🔧 Using mock user for development');
         const mockUser = {
-          id: '948a0f8c-2448-46ab-b65a-940482fc7d48', // Gear Gillie's ID
+          id: '948a0f8c-2448-46ab-b65a-940482fc7d48',
           user_metadata: {
             first_name: 'Test',
             last_name: 'User'
@@ -98,64 +90,29 @@ export default function MessagesPage() {
     }
   }, [router]);
 
-  // Screen size detection
-  const checkScreenSize = useCallback(() => {
-    const width = window.innerWidth;
-    setIsMobile(width < 768);
-    
-    // Auto-hide listing panel on smaller screens
-    if (width < 1024) {
-      setShowListingPanel(false);
-    } else {
-      setShowListingPanel(true);
-    }
-  }, []);
-
   useEffect(() => {
     checkUser();
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, [checkUser, checkScreenSize]);
+  }, [checkUser]);
 
-  // Navigation handlers
-  const handleSelectConversation = (conversation: EnhancedConversation) => {
-    console.log('🔄 Selected conversation:', {
-      id: conversation.id,
-      listing_id: conversation.listing_id,
-      seller_id: conversation.seller_id,
-      buyer_id: conversation.buyer_id,
-      listing_title: conversation.listing_title,
-      has_images: conversation.listing_images?.length > 0
-    });
-    
-    setSelectedConversation(conversation);
-    
-    // On mobile, hide conversation list when selecting chat
-    if (isMobile) {
-      setShowConversationList(false);
-    }
+  // Handle conversation selection
+  const handleConversationSelect = (conversationId: string) => {
+    setSelectedConversationId(conversationId);
+    setShowMobileConversations(false);
   };
 
-  const handleBackToList = () => {
-    setShowConversationList(true);
-    if (isMobile) {
-      setSelectedConversation(null);
-    }
-  };
-
-  const toggleListingPanel = () => {
-    setShowListingPanel(!showListingPanel);
+  const handleBackToConversations = () => {
+    setSelectedConversationId(null);
+    setShowMobileConversations(true);
   };
 
   // Loading state
   if (loading) {
     return (
       <Layout showNavigation={true}>
-        <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-          <div className="flex flex-col items-center" style={{gap: 'var(--space-lg)'}}>
-            <div className="w-8 h-8 border-2 border-[#e5e5e5] border-t-[#0070f3] rounded-full animate-spin"></div>
-            <div className="text-[#737373] text-sm">Loading messages...</div>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <div className="w-16 h-16 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-gray-600 font-medium">Loading messages...</div>
           </div>
         </div>
       </Layout>
@@ -166,10 +123,21 @@ export default function MessagesPage() {
   if (!user) {
     return (
       <Layout showNavigation={true}>
-        <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-[#171717] text-xl font-medium small-gap">Authentication Required</h1>
-            <p className="text-[#737373] text-sm">Please sign in to access your messages</p>
+        <div className="text-center py-16">
+          <div className="max-w-md mx-auto">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Sign in to access messages</h1>
+            <p className="text-gray-600 mb-8">Connect with buyers and sellers securely through our messaging system.</p>
+            <button 
+              onClick={() => window.location.href = '/auth/login?redirectTo=/messages'}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Sign In
+            </button>
           </div>
         </div>
       </Layout>
@@ -178,84 +146,111 @@ export default function MessagesPage() {
 
   return (
     <Layout showNavigation={true}>
-      <div className="messages-page">
-        <div className="messages-container">
-          {/* Page Header - Match Create Listing */}
-          <div className="messages-header">
-            <h1 className="page-title">Messages</h1>
-            <p className="page-description">
-              Communicate securely with buyers and sellers for safe transactions
-            </p>
-          </div>
+      {/* Hero Section - Similar to home/create pages */}
+      <section className="bg-white border-b border-gray-200 page-section">
+        <div className="max-w-4xl mx-auto px-6 text-center" style={{paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-lg)'}}>
+          <h1 className="text-headline">
+            Messages
+          </h1>
+          <p className="text-body max-w-2xl mx-auto element-group">
+            Connect with buyers and sellers for secure motorcycle transactions
+          </p>
+        </div>
+      </section>
 
-          {/* Chat Layout Container - Match Create Listing Form Container */}
-          <div className="chat-layout-container">
-            
-            {/* Left Sidebar - Conversations */}
-            <div className={`conversations-panel ${isMobile && showConversationList ? 'show' : ''}`}>
-              <ConversationList
-                conversations={conversations}
-                selectedConversationId={selectedConversation?.id}
-                onSelectConversation={handleSelectConversation}
-                loading={conversationsLoading}
-                error={conversationsError}
-                currentUserId={user.id}
-                totalUnreadCount={totalUnreadCount}
-                securityAlerts={securityAlerts}
-                connectionStatus={connectionStatus}
-              />
-            </div>
-
-            {/* Main Chat Area */}
-            <div className="chat-main">
-              {selectedConversation ? (
-                <ChatArea
-                  conversation={selectedConversation}
-                  currentUserId={user.id}
-                  onBack={isMobile ? handleBackToList : undefined}
-                  onToggleListingPanel={toggleListingPanel}
-                  showListingPanel={showListingPanel}
-                  isMobile={isMobile}
-                />
-              ) : (
-                <div className="empty-chat">
-                  <div className="empty-icon">
-                    <svg 
-                      className="w-8 h-8" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={1.5} 
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
-                      />
+      {/* Main Content Area - Clean 2 Column Layout */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Left Column - Conversations List */}
+          <div className={`${!showMobileConversations && selectedConversation ? 'hidden lg:block' : ''}`}>
+            <div className="bg-white rounded-lg border border-gray-200 p-6 h-full">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Conversations</h2>
+                {conversations.length > 0 && (
+                  <span className="text-sm text-gray-500">
+                    {conversations.filter(c => c.unread_count > 0).length} unread
+                  </span>
+                )}
+              </div>
+              
+              {conversations.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
-                  <h3 className="empty-title">Select a conversation</h3>
-                  <p className="empty-description">
-                    Choose a conversation from the sidebar to start chatting with buyers and sellers
-                  </p>
-                  <div className="conversation-starters">
-                    <button className="starter-btn">💬 "Is this still available?"</button>
-                    <button className="starter-btn">❓ "Can you tell me more details?"</button>
-                    <button className="starter-btn">📍 "Where can we meet?"</button>
-                  </div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">No conversations yet</h3>
+                  <p className="text-sm text-gray-500 mb-6">Start a conversation by contacting someone about a listing</p>
+                  <button
+                    onClick={() => router.push('/listings')}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    Browse Listings
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {conversations.map((conversation) => {
+                    const isCurrentUserBuyer = conversation.buyer_id === user.id;
+                    const otherUserName = isCurrentUserBuyer 
+                      ? `${conversation.seller_first_name} ${conversation.seller_last_name}`.trim()
+                      : `${conversation.buyer_first_name} ${conversation.buyer_last_name}`.trim();
+                    
+                    const isSelected = selectedConversationId === conversation.id;
+                    
+                    return (
+                      <div
+                        key={conversation.id}
+                        onClick={() => handleConversationSelect(conversation.id)}
+                        className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                          isSelected 
+                            ? 'bg-blue-50 border-blue-200 border' 
+                            : 'hover:bg-gray-50 border border-transparent'
+                        }`}
+                      >
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-blue-700 font-medium text-sm">
+                            {otherUserName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2)}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {otherUserName || 'Unknown User'}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {conversation.listing_title}
+                          </p>
+                          <div className="flex items-center justify-between mt-1">
+                            <p className="text-xs text-gray-400">
+                              {conversation.last_message_at ? new Date(conversation.last_message_at).toLocaleDateString() : 'No messages'}
+                            </p>
+                            {conversation.unread_count > 0 && (
+                              <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center ml-2">
+                                <span className="text-white text-xs font-medium">
+                                  {conversation.unread_count > 9 ? '9+' : conversation.unread_count}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Right Panel - Listing Details */}
-            {selectedConversation && showListingPanel && !isMobile && (
-              <div className="chat-sidebar">
-                <ListingPanel
-                  conversation={selectedConversation}
-                  onClose={() => setShowListingPanel(false)}
-                />
-              </div>
-            )}
+          {/* Right Column - Chat Interface */}
+          <div className={`${showMobileConversations && !selectedConversation ? 'hidden lg:block' : ''}`}>
+            <ConversationChat
+              selectedConversation={selectedConversation}
+              currentUserId={user.id}
+              onConversationSelect={handleBackToConversations}
+              className="h-full min-h-96"
+            />
           </div>
         </div>
       </div>

@@ -52,7 +52,7 @@ export default function Layout({
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${!showNavigation ? 'items-center justify-center' : ''}`} style={{backgroundColor: 'var(--neutral-50)'}}>
+    <div className={`min-h-screen flex flex-col ${!showNavigation ? 'items-center justify-center' : ''}`} style={{backgroundColor: '#F5F5F5'}}>
       {/* Navigation */}
       {showNavigation && <Navigation />}
 

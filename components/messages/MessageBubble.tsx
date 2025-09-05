@@ -1,127 +1,174 @@
 /**
- * MessageBubble - Individual message component
- * Clean, modern bubble design with Notion/Vercel styling
+ * Professional Message Record - Terminal-Style Communication Interface
+ * Ultra-minimal Swiss design for professional trading environments
+ * NO CHAT BUBBLES - Enterprise-grade message records
  */
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import type { EnhancedMessage } from '@/hooks/useEnhancedMessaging';
 
-interface MessageBubbleProps {
+interface MessageRecordProps {
   message: EnhancedMessage;
   isOwn: boolean;
   showAvatar?: boolean;
   isLastFromSender?: boolean;
   senderName: string;
+  otherUserName?: string;
 }
 
-export default function MessageBubble({
+export default function MessageRecord({
   message,
   isOwn,
   showAvatar = true,
   isLastFromSender = false,
-  senderName
-}: MessageBubbleProps) {
+  senderName,
+  otherUserName
+}: MessageRecordProps) {
   const [showDetails, setShowDetails] = useState(false);
 
-  // Format timestamp
-  const formatTime = (dateString: string) => {
+  // Professional timestamp formatting
+  const formatTimestamp = (dateString: string) => {
     const date = new Date(dateString);
+    
+    if (showDetails) {
+      return date.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+    }
+    
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
-    // Show full timestamp when clicked
-    if (showDetails) {
-      return date.toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      });
-    }
-    
-    // Show relative time by default
-    if (diffMins < 1) return 'now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return 'NOW';
+    if (diffMins < 60) return `${diffMins}MIN`;
+    if (diffHours < 24) return `${diffHours}HR`;
+    if (diffDays < 7) return `${diffDays}D`;
     
     return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
-    });
+      month: '2-digit', 
+      day: '2-digit',
+      year: '2-digit'
+    }).replace(/\//g, '');
   };
 
-  // Generate user avatar
-  const getUserAvatar = (name: string) => {
-    const initials = name
-      .split(' ')
-      .map(n => n.charAt(0))
-      .join('')
-      .toUpperCase()
-      .substring(0, 2);
-    
-    return initials || '?';
+  // Professional user identifier
+  const getUserCode = (name: string) => {
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
   };
 
-  // Get fraud indicator
-  const getFraudIndicator = () => {
+  // Security risk assessment
+  const getSecurityLevel = () => {
     const fraudScore = message.fraud_score || 0;
     const riskLevel = message.fraud_risk_level || 'low';
     
     if (riskLevel === 'high' || fraudScore > 80) {
       return {
-        color: '#ef4444',
-        icon: '⚠️',
-        text: 'High risk detected'
+        code: 'HIGH-RISK',
+        indicator: '●',
+        color: '#000000'
       };
     } else if (riskLevel === 'medium' || fraudScore > 50) {
       return {
-        color: '#f59e0b',
-        icon: '⚡',
-        text: 'Flagged for review'
+        code: 'FLAGGED',
+        indicator: '●',
+        color: '#666666'
       };
     }
     
-    return null;
+    return {
+      code: 'SECURE',
+      indicator: '●',
+      color: '#000000'
+    };
   };
 
-  const fraudIndicator = getFraudIndicator();
+  // Message status for terminal display
+  const getMessageStatus = () => {
+    if (!isOwn || !message.status) return null;
 
-  // Message content processing
-  const processMessageContent = (content: string) => {
-    // Simple URL detection and linking
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return content.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] underline">$1</a>');
+    const statusMap = {
+      sending: 'SENDING',
+      sent: 'SENT',
+      delivered: 'DELIVERED',
+      read: 'READ',
+      failed: 'FAILED'
+    };
+
+    return statusMap[message.status as keyof typeof statusMap] || null;
   };
+
+  const securityLevel = getSecurityLevel();
+  const messageStatus = getMessageStatus();
 
   return (
-    <>
-      <div className={`message-bubble ${isOwn ? 'sent' : 'received'} ${isLastFromSender ? '' : 'continued'}`}>
-        {message.content}
+    <div 
+      className="border-b border-gray-300 py-4 hover:bg-gray-50 transition-colors cursor-pointer"
+      onClick={() => setShowDetails(!showDetails)}
+    >
+      {/* Terminal-style message header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-4">
+          <div className="font-mono text-xs text-black font-medium">
+            {formatTimestamp(message.created_at)}
+          </div>
+          <div className="font-mono text-xs text-black font-medium">
+            {isOwn ? 'OUT' : 'IN'}
+          </div>
+          <div className="font-mono text-xs text-gray-600">
+            {getUserCode(isOwn ? senderName : otherUserName || senderName)}
+          </div>
+          <div className="font-mono text-xs text-gray-600 flex items-center">
+            <span 
+              className="mr-1" 
+              style={{ color: securityLevel.color }}
+            >
+              {securityLevel.indicator}
+            </span>
+            {securityLevel.code}
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          {messageStatus && (
+            <div className="font-mono text-xs text-gray-600">
+              {messageStatus}
+            </div>
+          )}
+          <div className="font-mono text-xs text-gray-600">
+            ID: {message.id.substring(0, 8).toUpperCase()}
+          </div>
+        </div>
       </div>
-      <div className="message-meta">
-        <span>{formatTime(message.created_at)}</span>
-        {isOwn && (
-          <div className="message-status">
-            <svg className={`status-icon ${message.is_read ? 'read' : 'delivered'}`} fill="currentColor" viewBox="0 0 20 20">
-              {message.is_read ? (
-                <>
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  <path fillRule="evenodd" d="M19.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-1-1a1 1 0 011.414-1.414l.293.293 7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" opacity="0.7" />
-                </>
-              ) : (
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              )}
-            </svg>
+      
+      {/* Message content - No bubbles, terminal-style */}
+      <div className="pl-6">
+        <div className="font-mono text-sm text-black leading-relaxed">
+          {message.content}
+        </div>
+        
+        {/* Security details (expanded) */}
+        {showDetails && (
+          <div className="mt-3 pt-3 border-t border-gray-300">
+            <div className="grid grid-cols-2 gap-4 font-mono text-xs text-gray-600">
+              <div>SENDER_ID: {message.sender_id.substring(0, 12)}...</div>
+              <div>FRAUD_SCORE: {message.fraud_score || 0}</div>
+              <div>CREATED: {new Date(message.created_at).toISOString()}</div>
+              <div>RISK_LEVEL: {(message.fraud_risk_level || 'low').toUpperCase()}</div>
+            </div>
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
+
+// Export both names for compatibility
+export { MessageRecord };
+export { MessageRecord as MessageBubble };
