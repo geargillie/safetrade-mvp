@@ -1,48 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { createClient } from '@supabase/supabase-js';
+import { AuthUtils } from '@/lib/auth-utils';
 
-// Create authenticated Supabase client from request
-function createAuthenticatedClient(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-
-  try {
-    return createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            authorization: authHeader,
-          },
-        },
-      }
-    );
-  } catch (error) {
-    return null;
-  }
-}
 
 // GET /api/favorites - Get user's favorites
 export async function GET(request: NextRequest) {
   try {
-    const authSupabase = createAuthenticatedClient(request);
-    
-    if (!authSupabase) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid or missing authorization header' }, { status: 401 });
-    }
-    
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid authentication' }, { status: 401 });
-    }
+    // 🔒 SECURE: Use standardized secure authentication
+    const user = await AuthUtils.requireAuth(request);
 
     // Fetch user's favorites with listing details
-    const { data: favorites, error } = await authSupabase
+    const { data: favorites, error } = await supabase
       .from('favorites')
       .select(`
         id,
@@ -83,17 +51,8 @@ export async function GET(request: NextRequest) {
 // POST /api/favorites - Add listing to favorites
 export async function POST(request: NextRequest) {
   try {
-    const authSupabase = createAuthenticatedClient(request);
-    
-    if (!authSupabase) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid or missing authorization header' }, { status: 401 });
-    }
-    
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid authentication' }, { status: 401 });
-    }
+    // 🔒 SECURE: Use standardized secure authentication
+    const user = await AuthUtils.requireAuth(request);
 
     const { listing_id } = await request.json();
     
@@ -102,7 +61,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if listing exists
-    const { data: listing, error: listingError } = await authSupabase
+    const { data: listing, error: listingError } = await supabase
       .from('listings')
       .select('id, user_id')
       .eq('id', listing_id)
@@ -118,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Add to favorites (will ignore if already exists due to unique constraint)
-    const { data, error } = await authSupabase
+    const { data, error } = await supabase
       .from('favorites')
       .insert({
         user_id: user.id,
@@ -150,17 +109,8 @@ export async function POST(request: NextRequest) {
 // DELETE /api/favorites - Remove listing from favorites
 export async function DELETE(request: NextRequest) {
   try {
-    const authSupabase = createAuthenticatedClient(request);
-    
-    if (!authSupabase) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid or missing authorization header' }, { status: 401 });
-    }
-    
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 SECURE: Use standardized secure authentication
+    const user = await AuthUtils.requireAuth(request);
 
     const { listing_id } = await request.json();
     
@@ -169,7 +119,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Remove from favorites
-    const { error } = await authSupabase
+    const { error } = await supabase
       .from('favorites')
       .delete()
       .eq('user_id', user.id)

@@ -9,6 +9,10 @@ import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import MessageSellerButton from '@/components/MessageSellerButton';
+import { formatPrice } from '@/lib/utils';
+import { useLoading } from '@/hooks/useLoading';
+import { Spinner } from '@/components/ui/spinner';
+import { formatJoinDate, formatListingDate } from '@/lib/date-utils';
 
 interface Listing {
   id: string;
@@ -41,7 +45,7 @@ export default function ListingDetailsPage() {
   const { user } = useAuth();
   const { toggleFavorite, isFavorited, loading: favoritesLoading } = useFavorites();
   const [listing, setListing] = useState<Listing | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { loading, withLoading } = useLoading(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showExactLocation, setShowExactLocation] = useState(false);
@@ -80,8 +84,7 @@ export default function ListingDetailsPage() {
   }, [params.id]);
 
   const fetchListing = async (id: string) => {
-    try {
-      setLoading(true);
+    await withLoading(async () => {
       setError(null);
 
       // First fetch the listing
@@ -112,14 +115,12 @@ export default function ListingDetailsPage() {
       };
       
       setListing(combinedData);
-    } catch (err: unknown) {
+    }).catch((err: unknown) => {
       console.error('Error fetching listing:', err);
       console.error('Error details:', JSON.stringify(err));
       const error = err as { message?: string };
       setError(error.message || 'Failed to load listing');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   const maskLocation = (city: string, zipCode?: string) => {
@@ -130,25 +131,13 @@ export default function ListingDetailsPage() {
     return { vicinity };
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
 
   const formatMileage = (mileage: number) => {
     return new Intl.NumberFormat('en-US').format(mileage)
   }
 
   const getSellerJoinDate = (createdAt: string) => {
-    const date = new Date(createdAt)
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long' 
-    })
+    return `Member since ${formatJoinDate(createdAt)}`;
   }
 
   const updateListingStatus = async (newStatus: 'available' | 'in_talks' | 'sold') => {
@@ -209,7 +198,7 @@ export default function ListingDetailsPage() {
       <Layout showNavigation={true}>
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <Spinner size="lg" className="mx-auto mb-4" />
             <p className="text-sm text-gray-600">Loading motorcycle...</p>
           </div>
         </div>
@@ -508,11 +497,7 @@ export default function ListingDetailsPage() {
               {/* Posted Date */}
               <div className="listing-details-section">
                 <div className="listing-details-posted-date">
-                  Listed {new Date(listing.created_at).toLocaleDateString('en-US', { 
-                    month: 'long', 
-                    day: 'numeric',
-                    year: 'numeric'
-                  })} • ID: {listing.id.slice(0, 8)}
+                  Listed {formatListingDate(listing.created_at)} • ID: {listing.id.slice(0, 8)}
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 // hooks/useEnhancedMessaging.ts
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export interface EnhancedMessage {
@@ -79,6 +79,49 @@ export const useEnhancedMessaging = (currentUserId: string) => {
   // Real-time subscriptions
   const conversationChannel = useRef<any>(null);
 
+  // Optimized conversation transformer function
+  const transformConversationData = useCallback((conv: any): EnhancedConversation => {
+    // Handle both view format and joined table format
+    const listing = conv.listings || {};
+    const buyer = conv.buyer || {};
+    const seller = conv.seller || {};
+
+    return {
+      ...conv,
+      listing_title: conv.listing_title || listing.title || 'Motorcycle Listing',
+      listing_price: conv.listing_price || listing.price || 0,
+      listing_make: conv.listing_make || listing.make || 'Unknown',
+      listing_model: conv.listing_model || listing.model || 'Unknown',
+      listing_year: conv.listing_year || listing.year || 2020,
+      listing_condition: conv.listing_condition || listing.condition || 'good',
+      listing_mileage: conv.listing_mileage || listing.mileage || 0,
+      listing_city: conv.listing_city || listing.city || 'Unknown City',
+      listing_zip_code: conv.listing_zip_code || listing.zip_code || '',
+      listing_description: conv.listing_description || listing.description || '',
+      listing_vin: conv.listing_vin || listing.vin || '',
+      listing_images: conv.listing_images || listing.images || [],
+      buyer_first_name: conv.buyer_first_name || buyer.first_name || 'Buyer',
+      buyer_last_name: conv.buyer_last_name || buyer.last_name || '',
+      seller_first_name: conv.seller_first_name || seller.first_name || 'Seller',
+      seller_last_name: conv.seller_last_name || seller.last_name || '',
+      last_message: conv.last_message || '',
+      last_message_at: conv.last_message_at || conv.updated_at,
+      last_message_timestamp: conv.last_message_at || conv.updated_at,
+      unread_count: conv.unread_count || 0,
+      security_level: conv.security_level || 'standard',
+      fraud_alerts_count: conv.fraud_alerts_count || 0,
+      encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,
+      metrics: {
+        total_messages: conv.total_messages || 0,
+        unread_count: conv.unread_count || 0,
+        last_activity: conv.last_message_at || conv.updated_at,
+        fraud_alerts: conv.fraud_alerts_count || 0,
+        security_level: conv.security_level || 'standard' as const
+      },
+      is_verified: (buyer.identity_verified && seller.identity_verified) || true
+    };
+  }, []);
+
   // Load conversations with enhanced security metrics
   const loadConversations = useCallback(async () => {
     if (!currentUserId) {
@@ -113,46 +156,75 @@ export const useEnhancedMessaging = (currentUserId: string) => {
 
         if (basicError) throw basicError;
 
-        // Enrich each conversation with listing and user data
-        const enrichedData = await Promise.all(
-          (basicConversations || []).map(async (conv) => {
-            // Get listing details
-            const { data: listing } = await supabase
+        // OPTIMIZED: Use batch queries to fix N+1 problem
+        if (!basicConversations || basicConversations.length === 0) {
+          conversationsData = [];
+        } else {
+          // Extract unique IDs for batch queries
+          const listingIds = [...new Set(basicConversations.map(conv => conv.listing_id))];
+          const userIds = [...new Set(basicConversations.flatMap(conv => [conv.buyer_id, conv.seller_id]))];
+          const conversationIds = basicConversations.map(conv => conv.id);
+
+          // Batch query all data in parallel instead of N+1 queries
+          const [
+            { data: listings },
+            { data: userProfiles },
+            { data: lastMessages }
+          ] = await Promise.all([
+            // Single query for all listings
+            supabase
               .from('listings')
-              .select('title, price, make, model, year, condition, mileage, city, zip_code, description, vin, images')
-              .eq('id', conv.listing_id)
-              .single();
-
-            // Get buyer details
-            const { data: buyer } = await supabase
+              .select('id, title, price, make, model, year, condition, mileage, city, zip_code, description, vin, images')
+              .in('id', listingIds),
+            
+            // Single query for all user profiles  
+            supabase
               .from('user_profiles')
-              .select('first_name, last_name, identity_verified')
-              .eq('id', conv.buyer_id)
-              .single();
-
-            // Get seller details
-            const { data: seller } = await supabase
-              .from('user_profiles')
-              .select('first_name, last_name, identity_verified')
-              .eq('id', conv.seller_id)
-              .single();
-
-            // Get last message
-            const { data: lastMessage } = await supabase
+              .select('id, first_name, last_name, identity_verified')
+              .in('id', userIds),
+            
+            // Single query for last messages
+            supabase
               .from('messages')
-              .select('content, created_at')
-              .eq('conversation_id', conv.id)
+              .select('conversation_id, content, created_at')
+              .in('conversation_id', conversationIds)
               .order('created_at', { ascending: false })
-              .limit(1)
-              .single();
+          ]);
 
-            // Get unread count
-            const { count: unreadCount } = await supabase
-              .from('messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('conversation_id', conv.id)
-              .eq('is_read', false)
-              .neq('sender_id', currentUserId);
+          // Batch query unread counts - use single query with GROUP BY
+          const { data: unreadCountsData } = await supabase
+            .from('messages')
+            .select('conversation_id')
+            .in('conversation_id', conversationIds)
+            .eq('is_read', false)
+            .neq('sender_id', currentUserId);
+
+          // Create efficient lookup maps
+          const listingMap = new Map(listings?.map(l => [l.id, l]) || []);
+          const userMap = new Map(userProfiles?.map(u => [u.id, u]) || []);
+          
+          // Create last message map
+          const lastMessageMap = new Map();
+          lastMessages?.forEach(msg => {
+            if (!lastMessageMap.has(msg.conversation_id)) {
+              lastMessageMap.set(msg.conversation_id, msg);
+            }
+          });
+
+          // Count unread messages per conversation
+          const unreadCountMap = new Map();
+          unreadCountsData?.forEach(msg => {
+            const count = unreadCountMap.get(msg.conversation_id) || 0;
+            unreadCountMap.set(msg.conversation_id, count + 1);
+          });
+
+          // Efficiently enrich conversations using O(1) lookups
+          const enrichedData = basicConversations.map(conv => {
+            const listing = listingMap.get(conv.listing_id) || {};
+            const buyer = userMap.get(conv.buyer_id) || {};
+            const seller = userMap.get(conv.seller_id) || {};
+            const lastMessage = lastMessageMap.get(conv.id);
+            const unreadCount = unreadCountMap.get(conv.id) || 0;
 
             return {
               ...conv,
@@ -161,58 +233,18 @@ export const useEnhancedMessaging = (currentUserId: string) => {
               seller: seller,
               last_message: lastMessage?.content || '',
               last_message_at: lastMessage?.created_at || conv.updated_at,
-              unread_count: unreadCount || 0
+              unread_count: unreadCount
             };
-          })
-        );
+          });
 
-        conversationsData = enrichedData;
+          conversationsData = enrichedData;
+        }
       } else if (viewError) {
         throw viewError;
       }
 
-      // Transform conversation data to EnhancedConversation format
-      const enhancedConversations = (conversationsData || []).map((conv: any) => {
-        // Handle both view format and joined table format
-        const listing = conv.listings || {};
-        const buyer = conv.buyer || {};
-        const seller = conv.seller || {};
-
-        return {
-          ...conv,
-          listing_title: conv.listing_title || listing.title || 'Motorcycle Listing',
-          listing_price: conv.listing_price || listing.price || 0,
-          listing_make: conv.listing_make || listing.make || 'Unknown',
-          listing_model: conv.listing_model || listing.model || 'Unknown',
-          listing_year: conv.listing_year || listing.year || 2020,
-          listing_condition: conv.listing_condition || listing.condition || 'good',
-          listing_mileage: conv.listing_mileage || listing.mileage || 0,
-          listing_city: conv.listing_city || listing.city || 'Unknown City',
-          listing_zip_code: conv.listing_zip_code || listing.zip_code || '',
-          listing_description: conv.listing_description || listing.description || '',
-          listing_vin: conv.listing_vin || listing.vin || '',
-          listing_images: conv.listing_images || listing.images || [],
-          buyer_first_name: conv.buyer_first_name || buyer.first_name || 'Buyer',
-          buyer_last_name: conv.buyer_last_name || buyer.last_name || '',
-          seller_first_name: conv.seller_first_name || seller.first_name || 'Seller',
-          seller_last_name: conv.seller_last_name || seller.last_name || '',
-          last_message: conv.last_message || '',
-          last_message_at: conv.last_message_at || conv.updated_at,
-          last_message_timestamp: conv.last_message_at || conv.updated_at,
-          unread_count: conv.unread_count || 0,
-          security_level: conv.security_level || 'standard',
-          fraud_alerts_count: conv.fraud_alerts_count || 0,
-          encryption_enabled: conv.encryption_enabled !== undefined ? conv.encryption_enabled : true,
-          metrics: {
-            total_messages: conv.total_messages || 0,
-            unread_count: conv.unread_count || 0,
-            last_activity: conv.last_message_at || conv.updated_at,
-            fraud_alerts: conv.fraud_alerts_count || 0,
-            security_level: conv.security_level || 'standard' as const
-          },
-          is_verified: (buyer.identity_verified && seller.identity_verified) || true
-        };
-      });
+      // Transform conversation data using optimized transformer
+      const enhancedConversations = (conversationsData || []).map(transformConversationData);
 
       setConversations(enhancedConversations);
       setError(null);
@@ -273,7 +305,7 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     } finally {
       setLoading(false);
     }
-  }, [currentUserId]);
+  }, [currentUserId, transformConversationData]);
 
   // Enhanced conversation creation with security checks
   const getOrCreateConversation = useCallback(async (
@@ -389,6 +421,23 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     };
   }, [currentUserId, loadConversations, conversations]);
 
+  // Memoized expensive calculations
+  const totalUnreadCount = useMemo(() => {
+    return conversations.reduce((sum, conv) => sum + conv.metrics.unread_count, 0);
+  }, [conversations]);
+
+  const hasUnreadMessages = useMemo(() => {
+    return totalUnreadCount > 0;
+  }, [totalUnreadCount]);
+
+  const secureConversations = useMemo(() => {
+    return conversations.filter(conv => conv.metrics.security_level === 'enhanced' || conv.metrics.security_level === 'high_security');
+  }, [conversations]);
+
+  const securityAlerts = useMemo(() => {
+    return conversations.reduce((sum, conv) => sum + conv.metrics.fraud_alerts, 0);
+  }, [conversations]);
+
   // Load conversations on mount
   useEffect(() => {
     if (currentUserId) {
@@ -403,8 +452,10 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     connectionStatus,
     loadConversations,
     getOrCreateConversation,
-    totalUnreadCount: conversations.reduce((sum, conv) => sum + conv.metrics.unread_count, 0),
-    securityAlerts: conversations.reduce((sum, conv) => sum + conv.metrics.fraud_alerts, 0)
+    totalUnreadCount,
+    hasUnreadMessages,
+    secureConversations,
+    securityAlerts
   };
 };
 

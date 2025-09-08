@@ -1,6 +1,7 @@
 // app/api/listings/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { secureLogger } from '@/lib/secure-logger';
 
 // GET - Fetch a single listing
 export async function GET(
@@ -16,7 +17,7 @@ export async function GET(
       .single();
 
     if (error) {
-      console.error('Error fetching listing:', error);
+      secureLogger.error('Error fetching listing:', error);
       return NextResponse.json(
         { error: 'Failed to fetch listing' },
         { status: 500 }
@@ -32,7 +33,7 @@ export async function GET(
 
     return NextResponse.json({ listing });
   } catch (error) {
-    console.error('Unexpected error:', error);
+    secureLogger.error('Unexpected error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -115,7 +116,7 @@ export async function PUT(
       .single();
 
     if (updateError) {
-      console.error('Error updating listing:', updateError);
+      secureLogger.error('Error updating listing:', updateError);
       return NextResponse.json(
         { error: 'Failed to update listing' },
         { status: 500 }
@@ -128,7 +129,7 @@ export async function PUT(
     });
 
   } catch (error) {
-    console.error('Unexpected error:', error);
+    secureLogger.error('Unexpected error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -155,19 +156,20 @@ export async function DELETE(
 
     // Create a supabase client with the user's session
     const token = authHeader.replace('Bearer ', '');
-    console.log(`🔑 Token received (first 50 chars): ${token.substring(0, 50)}...`);
+    // 🔒 SECURITY: Never log tokens or sensitive data
+    secureLogger.info('🔑 Authentication token received and validated');
     
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     
     if (authError || !user) {
-      console.log(`❌ Auth failed - Error: ${authError?.message}, User: ${user ? 'exists' : 'null'}`);
+      secureLogger.info(`❌ Auth failed - Error: ${authError?.message}, User: ${user ? 'exists' : 'null'}`);
       return NextResponse.json(
         { error: `Unauthorized - Auth error: ${authError?.message}` },
         { status: 401 }
       );
     }
     
-    console.log(`✅ Authenticated user: ${user.id} (${user.email || 'no email'})`);
+    secureLogger.logAuth('✅ User authenticated for listing access', user);
 
     // Check if listing exists and user owns it
     const { data: existingListing, error: fetchError } = await supabase
@@ -183,21 +185,21 @@ export async function DELETE(
       );
     }
 
-    console.log(`🔍 Ownership check - Listing owner: ${existingListing.user_id}, Current user: ${user.id}`);
+    secureLogger.info(`🔍 Ownership check - Listing owner: ${existingListing.user_id}, Current user: ${user.id}`);
     
     if (existingListing.user_id !== user.id) {
-      console.log(`❌ Ownership mismatch - User ${user.id} cannot delete listing owned by ${existingListing.user_id}`);
+      secureLogger.info(`❌ Ownership mismatch - User ${user.id} cannot delete listing owned by ${existingListing.user_id}`);
       return NextResponse.json(
         { error: 'Unauthorized - You can only delete your own listings' },
         { status: 403 }
       );
     }
     
-    console.log(`✅ Ownership verified - User ${user.id} owns listing ${id}`);
-    console.log(`🗑️ Attempting to delete listing ${id} for user ${user.id}`);
+    secureLogger.info(`✅ Ownership verified - User ${user.id} owns listing ${id}`);
+    secureLogger.info(`🗑️ Attempting to delete listing ${id} for user ${user.id}`);
     
     // Delete the listing and get the deleted data to confirm deletion
-    console.log(`🔧 Executing DELETE query: .eq('id', '${id}').eq('user_id', '${user.id}')`);
+    secureLogger.info(`🔧 Executing DELETE query: .eq('id', '${id}').eq('user_id', '${user.id}')`);
     
     const { data: deletedData, error: deleteError, count } = await supabase
       .from('listings')
@@ -206,10 +208,10 @@ export async function DELETE(
       .eq('user_id', user.id) // Double-check ownership
       .select();
 
-    console.log(`📊 Delete result - Error: ${deleteError ? deleteError.message : 'none'}, Data length: ${deletedData ? deletedData.length : 'null'}, Count: ${count}`);
+    secureLogger.info(`📊 Delete result - Error: ${deleteError ? deleteError.message : 'none'}, Data length: ${deletedData ? deletedData.length : 'null'}, Count: ${count}`);
 
     if (deleteError) {
-      console.error('❌ Database delete error for listing:', id, deleteError);
+      secureLogger.error('❌ Database delete error for listing:', id, deleteError);
       return NextResponse.json(
         { error: 'Failed to delete listing' },
         { status: 500 }
@@ -218,9 +220,9 @@ export async function DELETE(
 
     // Verify that a row was actually deleted
     if (!deletedData || deletedData.length === 0) {
-      console.error('❌ Delete operation succeeded but no row was affected for listing:', id, 'user:', user.id);
-      console.error('❌ This suggests the WHERE conditions did not match any rows');
-      console.error('❌ Query was: DELETE FROM listings WHERE id = ? AND user_id = ?', id, user.id);
+      secureLogger.error(`❌ Delete operation succeeded but no row was affected for listing: ${id} user: ${user.id}`);
+      secureLogger.error('❌ This suggests the WHERE conditions did not match any rows');
+      secureLogger.error(`❌ Query was: DELETE FROM listings WHERE id = ${id} AND user_id = ${user.id}`);
       return NextResponse.json(
         { error: 'Listing could not be deleted - it may have already been removed or you may not have permission' },
         { status: 404 }
@@ -229,7 +231,7 @@ export async function DELETE(
     
     const deletedListing = deletedData[0];
     
-    console.log(`✅ Successfully deleted listing ${id} titled "${deletedListing.title}" for user ${user.id}`);
+    secureLogger.info(`✅ Successfully deleted listing ${id} titled "${deletedListing.title}" for user ${user.id}`);
 
     return NextResponse.json({ 
       message: 'Listing deleted successfully',
@@ -238,7 +240,7 @@ export async function DELETE(
     });
 
   } catch (error) {
-    console.error('Unexpected error:', error);
+    secureLogger.error('Unexpected error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

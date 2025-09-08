@@ -1,24 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { AuthUtils } from '@/lib/auth-utils';
+import { supabase } from '@/lib/supabase';
 
-function createAuthenticatedClient(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader) {
-    throw new Error('No authorization header');
-  }
-
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers: {
-          authorization: authHeader,
-        },
-      },
-    }
-  );
-}
 
 // POST /api/favorites/[listingId] - Add to favorites
 export async function POST(
@@ -26,17 +9,12 @@ export async function POST(
   { params }: { params: Promise<{ listingId: string }> }
 ) {
   try {
-    const authSupabase = createAuthenticatedClient(request);
+    // 🔒 SECURE: Use standardized secure authentication
+    const user = await AuthUtils.requireAuth(request);
     const { listingId } = await params;
-    
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     // Check if listing exists
-    const { data: listing, error: listingError } = await authSupabase
+    const { data: listing, error: listingError } = await supabase
       .from('listings')
       .select('id, user_id, title')
       .eq('id', listingId)
@@ -53,7 +31,7 @@ export async function POST(
 
     // Try to add to database
     try {
-      const { data, error } = await authSupabase
+      const { data, error } = await supabase
         .from('favorites')
         .insert({
           user_id: user.id,
@@ -101,18 +79,13 @@ export async function DELETE(
   { params }: { params: Promise<{ listingId: string }> }
 ) {
   try {
-    const authSupabase = createAuthenticatedClient(request);
+    // 🔒 SECURE: Use standardized secure authentication
+    const user = await AuthUtils.requireAuth(request);
     const { listingId } = await params;
-    
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     // Try to remove from database
     try {
-      const { error } = await authSupabase
+      const { error } = await supabase
         .from('favorites')
         .delete()
         .eq('user_id', user.id)

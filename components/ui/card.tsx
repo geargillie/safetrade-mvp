@@ -3,7 +3,7 @@
  * Professional, consistent card styling with variants and interactions
  */
 
-import * as React from "react";
+import { forwardRef, type HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -58,12 +58,12 @@ const cardVariants = cva(
 );
 
 export interface CardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardVariants> {
   asChild?: boolean;
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
+const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, interactive, size, state, asChild = false, ...props }, ref) => {
     const Comp = asChild ? "div" : "div";
     return (
@@ -78,11 +78,11 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 Card.displayName = "Card";
 
 // Card Header component for consistent headers
-export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
   withBorder?: boolean;
 }
 
-const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
+const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, withBorder = false, ...props }, ref) => (
     <div
       ref={ref}
@@ -98,21 +98,21 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 CardHeader.displayName = "CardHeader";
 
 // Card Content component for consistent content padding
-const CardContent = React.forwardRef<
+const CardContent = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("", className)} {...props} /> // Use default card padding
 ));
 CardContent.displayName = "CardContent";
 
 // Card Footer component for actions and buttons
-export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
   withBorder?: boolean;
   align?: "left" | "center" | "right" | "between";
 }
 
-const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
+const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, withBorder = false, align = "left", ...props }, ref) => {
     const alignmentClasses = {
       left: "justify-start",
@@ -137,9 +137,9 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
 CardFooter.displayName = "CardFooter";
 
 // Card Title component for consistent typography
-const CardTitle = React.forwardRef<
+const CardTitle = forwardRef<
   HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement> & {
+  HTMLAttributes<HTMLHeadingElement> & {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
     size?: "sm" | "md" | "lg" | "xl";
   }
@@ -177,9 +177,9 @@ const CardTitle = React.forwardRef<
 CardTitle.displayName = "CardTitle";
 
 // Card Description component for subtitle text
-const CardDescription = React.forwardRef<
+const CardDescription = forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement> & {
+  HTMLAttributes<HTMLParagraphElement> & {
     size?: "sm" | "md" | "lg";
   }
 >(({ className, size = "md", ...props }, ref) => {
@@ -203,14 +203,14 @@ const CardDescription = React.forwardRef<
 CardDescription.displayName = "CardDescription";
 
 // Card Image component for consistent image handling
-export interface CardImageProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardImageProps extends HTMLAttributes<HTMLDivElement> {
   src: string;
   alt: string;
   aspectRatio?: "square" | "video" | "portrait" | "wide";
   objectFit?: "cover" | "contain" | "fill";
 }
 
-const CardImage = React.forwardRef<HTMLDivElement, CardImageProps>(
+const CardImage = forwardRef<HTMLDivElement, CardImageProps>(
   ({ className, src, alt, aspectRatio = "video", objectFit = "cover", ...props }, ref) => {
     return (
       <div
@@ -234,13 +234,13 @@ const CardImage = React.forwardRef<HTMLDivElement, CardImageProps>(
 CardImage.displayName = "CardImage";
 
 // Card Badge component for status indicators
-export interface CardBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardBadgeProps extends HTMLAttributes<HTMLDivElement> {
   variant?: "success" | "warning" | "error" | "info" | "neutral";
   size?: "sm" | "md";
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
 }
 
-const CardBadge = React.forwardRef<HTMLDivElement, CardBadgeProps>(
+const CardBadge = forwardRef<HTMLDivElement, CardBadgeProps>(
   ({ className, variant = "neutral", size = "sm", position = "top-right", ...props }, ref) => {
     const variantClasses = {
       success: "bg-emerald-100 text-emerald-800 border-emerald-200",

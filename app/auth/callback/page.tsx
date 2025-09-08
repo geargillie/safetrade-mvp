@@ -4,6 +4,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import Layout from '@/components/Layout'
+import { Button } from '@/components/ui/button'
 
 export default function AuthCallback() {
   const router = useRouter()
@@ -134,47 +136,63 @@ export default function AuthCallback() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8 text-center">
-        <div>
-          <h2 className="text-3xl font-extrabold text-gray-900">
-            Email Confirmation
-          </h2>
-        </div>
+    <div className="page-wrapper">
+      <Layout showNavigation={false}>
+        <div className="page-content">
+          <div className="container">
+            <div className="form-page">
+              <div className="form-section">
+                <div className="section-header text-center content-block">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto small-gap bg-brand-primary">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white">
+                      <span className="text-sm font-bold text-brand-primary">ST</span>
+                    </div>
+                  </div>
+                  <h1 className="page-title">Email Confirmation</h1>
+                  <p className="page-description">Verifying your email address</p>
+                </div>
         
-        {loading ? (
-          <div className="space-y-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600">Confirming your email...</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
+                {loading ? (
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="animate-spin rounded-full h-12 w-12 border-2 border-brand-primary border-t-transparent mx-auto"></div>
+                    <p className="text-body">Confirming your email...</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="bg-success-light w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                      <svg className="w-8 h-8 text-success" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    
+                    <p className="text-body-lg text-center">{message}</p>
+                    
+                    <div className="form-actions flex flex-col gap-3 w-full">
+                      <Button
+                        onClick={() => router.push('/auth/register')}
+                        variant="primary"
+                        size="lg"
+                        className="w-full"
+                      >
+                        Continue Registration
+                      </Button>
+                      
+                      <Button
+                        onClick={() => router.push('/listings')}
+                        variant="secondary"
+                        size="lg"
+                        className="w-full"
+                      >
+                        Go to Marketplace
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-            
-            <p className="text-lg text-gray-900">{message}</p>
-            
-            <div className="space-y-2">
-              <button
-                onClick={() => router.push('/auth/register')}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-              >
-                Continue Registration
-              </button>
-              
-              <button
-                onClick={() => router.push('/listings')}
-                className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
-              >
-                Go to Marketplace
-              </button>
-            </div>
           </div>
-        )}
-      </div>
+        </div>
+      </Layout>
     </div>
   )
 }

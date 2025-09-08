@@ -1,6 +1,8 @@
 // app/api/verify-vin/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { verifyVIN, validateRequestBody } from '@/lib/validation-schemas'
+import { z } from 'zod'
 
 // Define types for better TypeScript support
 interface Alert {
@@ -42,17 +44,26 @@ interface VerificationReport {
   alerts: Alert[];
 }
 
+// Request validation schema
+const vinRequestSchema = z.object({
+  vin: z.string()
+    .length(17, "VIN must be exactly 17 characters")
+    .regex(/^[A-HJ-NPR-Z0-9]+$/, "VIN contains invalid characters")
+    .transform(val => val.toUpperCase())
+});
+
 export async function POST(request: NextRequest) {
   try {
-    const { vin } = await request.json()
-
-    if (!vin || vin.length !== 17) {
-      return NextResponse.json({ 
-        error: 'Valid 17-character VIN required' 
-      }, { status: 400 })
+    // Validate and sanitize request
+    const validation = await validateRequestBody(vinRequestSchema)(request);
+    
+    if (!validation.success) {
+      return validation.response;
     }
 
-    const cleanVIN = vin.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const { vin } = validation.data;
+
+    const cleanVIN = vin; // Already validated and cleaned by schema
     
     // Step 1: Check our local stolen database first (fastest)
     const stolenCheck = await checkLocalStolenDatabase(cleanVIN)

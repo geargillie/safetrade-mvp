@@ -300,9 +300,9 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
       setLoading(true);
       setError(null);
 
-      // Check if we're in development mode with placeholder credentials
-      const isDevelopmentMode = process.env.NODE_ENV === 'development' && 
-        (!process.env.ONFIDO_API_TOKEN || process.env.ONFIDO_API_TOKEN === 'your_onfido_api_token_here');
+      // 🔒 SECURITY FIX: Cannot access server-only env vars in client components
+      // Use a development mode check instead
+      const isDevelopmentMode = process.env.NODE_ENV === 'development';
 
       if (isDevelopmentMode) {
         // In development mode, simulate the Onfido flow using our mock API

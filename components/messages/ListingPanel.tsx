@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { XMarkIcon, MapPinIcon, CalendarIcon, ClockIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import type { EnhancedConversation } from '@/hooks/useEnhancedMessaging';
+import { formatPrice } from '@/lib/utils';
 
 interface ListingPanelProps {
   conversation: EnhancedConversation;
@@ -60,15 +61,6 @@ export default function ListingPanel({
     window.open(`/listings/${conversation.listing_id}`, '_blank');
   };
 
-  // Format price
-  const formatPrice = (price: number | null) => {
-    if (!price) return 'Price not specified';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
 
   // Format mileage
   const formatMileage = (mileage: number | null) => {

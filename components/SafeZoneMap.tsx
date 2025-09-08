@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { SafeZone, SafeZoneType, GeolocationData } from '@/types/safe-zones';
 import {
   GOOGLE_MAPS_CONFIG,
@@ -57,7 +57,7 @@ interface MapFilters {
   maxDistance?: number;
 }
 
-export default function SafeZoneMap({
+const SafeZoneMap = React.memo(function SafeZoneMap({
   safeZones,
   loading = false,
   error = null,
@@ -260,6 +260,25 @@ export default function SafeZoneMap({
     });
   }, [safeZones, filters, userLocation]);
 
+  // Memoized marker icon generator for better performance
+  const generateMarkerIcon = useMemo(() => {
+    return (safeZone: SafeZone, isSelected: boolean, markerConfig: any) => {
+      const size = isSelected ? 32 : 24;
+      const radius = isSelected ? 12 : 8;
+      const center = isSelected ? 16 : 12;
+      
+      return {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+          <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="${center}" cy="${center}" r="${radius}" fill="${markerConfig.color}" fill-opacity="${safeZone.status === 'active' ? 1 : 0.6}" stroke="${isSelected ? '#000000' : '#ffffff'}" stroke-width="${isSelected ? 3 : 2}"/>
+          </svg>
+        `),
+        scaledSize: { width: size, height: size },
+        anchor: { x: center, y: center },
+      };
+    };
+  }, []);
+
   // Create safe zone markers
   useEffect(() => {
     if (!mapInstanceRef.current || !mapLoaded) return;
@@ -285,15 +304,7 @@ export default function SafeZoneMap({
         position: { lat: safeZone.latitude, lng: safeZone.longitude },
         map: enableClustering ? null : mapInstanceRef.current,
         title: safeZone.name,
-        icon: {
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-            <svg width="${isSelected ? 32 : 24}" height="${isSelected ? 32 : 24}" viewBox="0 0 ${isSelected ? 32 : 24} ${isSelected ? 32 : 24}" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="${isSelected ? 16 : 12}" cy="${isSelected ? 16 : 12}" r="${isSelected ? 12 : 8}" fill="${markerConfig.color}" fill-opacity="${safeZone.status === 'active' ? 1 : 0.6}" stroke="${isSelected ? '#000000' : '#ffffff'}" stroke-width="${isSelected ? 3 : 2}"/>
-            </svg>
-          `),
-          scaledSize: { width: isSelected ? 32 : 24, height: isSelected ? 32 : 24 },
-          anchor: { x: isSelected ? 16 : 12, y: isSelected ? 16 : 12 },
-        },
+        icon: generateMarkerIcon(safeZone, isSelected, markerConfig),
         zIndex: isSelected ? 1000 : markerConfig.priority
       });
 
@@ -329,7 +340,7 @@ export default function SafeZoneMap({
         }, 100);
       }
     }
-  }, [filteredSafeZones, selectedSafeZoneId, enableClustering, mapLoaded, onSafeZoneSelect]);
+  }, [filteredSafeZones, selectedSafeZoneId, enableClustering, mapLoaded, onSafeZoneSelect, generateMarkerIcon]);
 
   // Show info window for a safe zone
   const showInfoWindow = useCallback((marker: any, safeZone: SafeZone) => {
@@ -647,4 +658,6 @@ export default function SafeZoneMap({
       </div>
     </div>
   );
-}
+});
+
+export default SafeZoneMap;

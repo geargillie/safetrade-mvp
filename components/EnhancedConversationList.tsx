@@ -1,8 +1,9 @@
 // components/EnhancedConversationList.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import type { EnhancedConversation } from '@/hooks/useEnhancedMessaging';
+import { formatMessageTime } from '@/lib/date-utils';
 
 interface EnhancedConversationListProps {
   conversations: EnhancedConversation[];
@@ -14,7 +15,7 @@ interface EnhancedConversationListProps {
   connectionStatus: 'connecting' | 'connected' | 'disconnected';
 }
 
-export default function EnhancedConversationList({
+const EnhancedConversationList = memo(function EnhancedConversationList({
   conversations,
   currentUserId,
   onSelectConversation,
@@ -25,7 +26,8 @@ export default function EnhancedConversationList({
 }: EnhancedConversationListProps) {
   const [filter, setFilter] = useState<'all' | 'unread' | 'flagged'>('all');
 
-  const getFilteredConversations = () => {
+  // Optimized filtering with useMemo to prevent expensive re-calculations
+  const filteredConversations = useMemo(() => {
     switch (filter) {
       case 'unread':
         return conversations.filter(conv => conv.metrics.unread_count > 0);
@@ -34,15 +36,16 @@ export default function EnhancedConversationList({
       default:
         return conversations;
     }
-  };
+  }, [conversations, filter]);
 
-  const getOtherUserName = (conversation: EnhancedConversation) => {
+  // Optimized helper functions with useCallback
+  const getOtherUserName = useCallback((conversation: EnhancedConversation) => {
     return currentUserId === conversation.buyer_id
       ? `${conversation.seller_first_name} ${conversation.seller_last_name}`
       : `${conversation.buyer_first_name} ${conversation.buyer_last_name}`;
-  };
+  }, [currentUserId]);
 
-  const getSecurityIndicator = (conversation: EnhancedConversation) => {
+  const getSecurityIndicator = useCallback((conversation: EnhancedConversation) => {
     if (conversation.metrics.fraud_alerts > 0) {
       return { icon: '⚠️', color: 'text-red-500', title: 'Security Alert' };
     }
@@ -56,27 +59,21 @@ export default function EnhancedConversationList({
     }
     
     return { icon: '✓', color: 'text-gray-400', title: 'Standard Security' };
-  };
+  }, []);
 
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
-    if (diffInHours < 24) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (diffInHours < 168) { // 7 days
-      return date.toLocaleDateString([], { weekday: 'short' });
-    } else {
-      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    }
-  };
+  // Use centralized date formatting utility
+  const formatTimestamp = useCallback((timestamp: string) => {
+    return formatMessageTime(timestamp);
+  }, []);
 
-  const filteredConversations = getFilteredConversations();
-  const totalUnread = conversations.reduce((sum, conv) => sum + conv.metrics.unread_count, 0);
-  const totalFlagged = conversations.filter(conv => 
-    conv.metrics.fraud_alerts > 0
-  ).length;
+  // Memoize expensive calculations
+  const totalUnread = useMemo(() => {
+    return conversations.reduce((sum, conv) => sum + conv.metrics.unread_count, 0);
+  }, [conversations]);
+
+  const totalFlagged = useMemo(() => {
+    return conversations.filter(conv => conv.metrics.fraud_alerts > 0).length;
+  }, [conversations]);
 
   if (loading) {
     return (
@@ -320,4 +317,6 @@ export default function EnhancedConversationList({
       </div>
     </div>
   );
-}
+});
+
+export default EnhancedConversationList;

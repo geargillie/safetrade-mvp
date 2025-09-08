@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { AuthUtils } from '@/lib/auth-utils';
+import { sendMessageSchema, validateRequestBody } from '@/lib/validation-schemas';
 // import crypto from 'crypto';
 
 // Helper function to get Supabase client
@@ -17,7 +19,7 @@ function getSupabaseClient() {
 
 async function runFraudDetection(
   content: string,
-  _senderId: string,
+  _userId: string,
   _conversationId: string,
   _participantIds: string[]
 ) {
@@ -58,18 +60,21 @@ async function runFraudDetection(
 
 export async function POST(request: NextRequest) {
   try {
-    const { conversationId, senderId, content, messageType = 'text' } = await request.json();
-
-    if (!conversationId || !senderId || !content) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    // 🔒 SECURE: Authenticate user first
+    const user = await AuthUtils.requireAuth(request);
+    
+    // 🔒 SECURE: Validate and sanitize message content
+    const validation = await validateRequestBody(sendMessageSchema)(request);
+    
+    if (!validation.success) {
+      return validation.response;
     }
+
+    const { conversation_id: conversationId, content, message_type: messageType } = validation.data;
 
     const supabase = getSupabaseClient();
 
-    // Verify user authorization
+    // 🔒 SECURE: Verify user is authorized to send messages in this conversation
     const { data: conversation, error: convError } = await supabase
       .from('conversations')
       .select('id, buyer_id, seller_id, listing_id')
@@ -83,8 +88,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if sender is participant
-    if (conversation.buyer_id !== senderId && conversation.seller_id !== senderId) {
+    // 🔒 SECURE: Check if authenticated user is participant
+    if (conversation.buyer_id !== user.id && conversation.seller_id !== user.id) {
       return NextResponse.json(
         { error: 'Unauthorized: Not a participant in this conversation' },
         { status: 403 }
@@ -106,7 +111,7 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           content,
-          senderId,
+          userId: user.id,
           conversationId,
           messageContext: {
             participantIds,
@@ -121,11 +126,11 @@ export async function POST(request: NextRequest) {
         fraudAnalysis = fraudResult.analysis;
       } else {
         console.warn('Advanced fraud detection failed, falling back to basic detection');
-        fraudAnalysis = await runFraudDetection(content, senderId, conversationId, participantIds);
+        fraudAnalysis = await runFraudDetection(content, user.id, conversationId, participantIds);
       }
     } catch (error) {
       console.error('Fraud detection error, using fallback:', error);
-      fraudAnalysis = await runFraudDetection(content, senderId, conversationId, participantIds);
+      fraudAnalysis = await runFraudDetection(content, user.id, conversationId, participantIds);
     }
 
     // Block message if fraud detection flags it as high risk
@@ -135,7 +140,7 @@ export async function POST(request: NextRequest) {
       // Log the blocked attempt
       try {
         await supabase.from('fraud_alerts').insert({
-          user_id: senderId,
+          user_id: user.id,
           conversation_id: conversationId,
           alert_type: 'blocked_message',
           risk_level: fraudAnalysis.riskLevel || 'high',
@@ -168,7 +173,7 @@ export async function POST(request: NextRequest) {
     // Store the message with fraud metadata (using existing columns for now)
     const messageData = {
       conversation_id: conversationId,
-      sender_id: senderId,
+      sender_id: user.id,
       content: encryptedContent,
       message_type: messageType,
       is_encrypted: false, // Disabled for now

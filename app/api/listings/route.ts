@@ -1,31 +1,9 @@
 // app/api/listings/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { createClient } from '@supabase/supabase-js';
+import { AuthUtils } from '@/lib/auth-utils';
+import { createListingSchema, validateRequestBody, verifyVIN } from '@/lib/validation-schemas';
 
-// Create authenticated Supabase client from request
-function createAuthenticatedClient(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-
-  try {
-    return createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            authorization: authHeader,
-          },
-        },
-      }
-    );
-  } catch (error) {
-    return null;
-  }
-}
 
 // GET /api/listings - Fetch all listings with optional filtering
 export async function GET(request: NextRequest) {
@@ -139,64 +117,30 @@ export async function GET(request: NextRequest) {
 // POST /api/listings - Create a new listing
 export async function POST(request: NextRequest) {
   try {
-    // Create authenticated client
-    const authSupabase = createAuthenticatedClient(request);
+    // 🔒 SECURE: Comprehensive authentication validation
+    const user = await AuthUtils.requireAuth(request);
     
-    if (!authSupabase) {
-      return NextResponse.json(
-        { error: 'Unauthorized - Invalid or missing authorization header' },
-        { status: 401 }
-      );
-    }
+    // 🔒 SECURE: Validate and sanitize all input data
+    const validation = await validateRequestBody(createListingSchema)(request);
     
-    // Get current user
-    const { data: { user }, error: authError } = await authSupabase.auth.getUser();
+    if (!validation.success) {
+      return validation.response;
+    }
+
+    const listingData = validation.data;
+
+    // 🔒 SECURE: Server-side VIN verification (cannot be bypassed)
+    const vinVerification = await verifyVIN(listingData.vin);
     
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized - Invalid authentication' },
-        { status: 401 }
-      );
+    if (!vinVerification.valid) {
+      return NextResponse.json({
+        error: 'VIN verification failed',
+        details: vinVerification.error
+      }, { status: 400 });
     }
 
-    // Parse request body
-    const listingData = await request.json();
-
-    // Validate required fields
-    const requiredFields = ['title', 'description', 'price', 'make', 'model', 'year', 'mileage', 'condition', 'city', 'zip_code'];
-    for (const field of requiredFields) {
-      if (!listingData[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Validate data types and ranges
-    if (typeof listingData.price !== 'number' || listingData.price <= 0) {
-      return NextResponse.json(
-        { error: 'Price must be a positive number' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof listingData.year !== 'number' || listingData.year < 1900 || listingData.year > new Date().getFullYear() + 1) {
-      return NextResponse.json(
-        { error: 'Year must be a valid year' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof listingData.mileage !== 'number' || listingData.mileage < 0) {
-      return NextResponse.json(
-        { error: 'Mileage must be a non-negative number' },
-        { status: 400 }
-      );
-    }
-
-    // Create the listing
-    const { data: newListing, error: insertError } = await authSupabase
+    // 🔒 SECURE: Create listing with validated data
+    const { data: newListing, error: insertError } = await supabase
       .from('listings')
       .insert({
         ...listingData,

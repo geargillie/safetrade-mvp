@@ -6,6 +6,9 @@ import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
+import { formatPrice } from '@/lib/utils';
+import { useLoading } from '@/hooks/useLoading';
+import { Spinner } from '@/components/ui/spinner';
 
 interface Listing {
   id: string;
@@ -29,20 +32,17 @@ export default function FavoritesPage() {
   const { user } = useAuth();
   const { favorites, loading: favoritesLoading, removeFavorite } = useFavorites();
   const [favoriteListings, setFavoriteListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { loading, withLoading } = useLoading(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!favoritesLoading && favorites.length > 0) {
       fetchFavoriteListings();
-    } else if (!favoritesLoading) {
-      setLoading(false);
     }
   }, [favorites, favoritesLoading]);
 
   const fetchFavoriteListings = async () => {
-    try {
-      setLoading(true);
+    await withLoading(async () => {
       setError(null);
 
       if (favorites.length === 0) {
@@ -61,23 +61,13 @@ export default function FavoritesPage() {
       if (fetchError) throw fetchError;
 
       setFavoriteListings(listings || []);
-    } catch (err: unknown) {
+    }).catch((err: unknown) => {
       console.error('Error fetching favorite listings:', err);
       const error = err as { message?: string };
       setError(error.message || 'Failed to load favorite listings');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
 
   const formatMileage = (mileage: number) => {
     return new Intl.NumberFormat('en-US').format(mileage);
@@ -142,7 +132,7 @@ export default function FavoritesPage() {
       <Layout showNavigation={true}>
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <Spinner size="lg" className="mx-auto mb-4" />
             <p className="text-sm text-gray-600">Loading your favorites...</p>
           </div>
         </div>
