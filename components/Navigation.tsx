@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import UserProfileMenu from './UserProfileMenu';
-import { designSystemV3 } from '@/lib/design-system-v3';
 
 interface User {
   id: string;
@@ -116,88 +115,50 @@ export default function Navigation() {
   ];
 
   return (
-    <header className={`
-      fixed top-0 left-0 right-0 z-50 
-      bg-white/95 backdrop-blur-md border-b border-neutral-100
-      transition-all duration-150 ease-out
-    `}>
-      <div className={`
-        max-w-6xl mx-auto px-4
-        h-12 flex items-center justify-between
-        gap-6
-      `}>
+    <header className="site-header">
+      <div className="header-container">
         {/* Logo */}
-        <Link 
-          href="/" 
-          className={`
-            flex items-center gap-2
-            ${designSystemV3.animations.interactions.scaleHover}
-            ${designSystemV3.utils.transition}
-          `}
-        >
-          <div className={`
-            w-7 h-7 rounded-md
-            bg-gradient-to-br from-primary-500 to-primary-600
-            flex items-center justify-center
-            shadow-sm
-          `}>
-            <span className="text-white text-xs font-bold">ST</span>
+        <Link href="/" className="header-logo">
+          <div className="header-logo-icon">
+            <span>ST</span>
           </div>
-          <div className="font-semibold text-base text-neutral-950 tracking-tight">
-            SafeTrade
-          </div>
+          <div className="header-logo-text">SafeTrade</div>
         </Link>
 
         {/* Main Navigation - Only for authenticated users */}
         {user && (
-          <nav className="hidden md:flex items-center gap-1">
-            {mainNavItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`
-                    flex items-center gap-2 px-3 py-1.5
-                    text-sm font-medium rounded-md
-                    transition-all duration-100 ease-out
-                    ${isActive 
-                      ? 'bg-neutral-950 text-white shadow-sm' 
-                      : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
-                    }
-                    ${designSystemV3.animations.interactions.press}
-                  `}
-                >
-                  <span className={`${designSystemV3.iconSizes.sm}`}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+          <nav className="header-nav hidden md:flex">
+            {mainNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`header-nav-item ${
+                  pathname === item.href ? 'active' : ''
+                }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            ))}
           </nav>
         )}
 
         {/* User Section */}
-        <div className="flex items-center gap-2">
+        <div className="header-user-section">
           {/* Mobile Menu Button */}
           {user && (
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className={`
-                md:hidden p-2 rounded-md
-                text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100
-                ${designSystemV3.animations.interactions.press}
-                ${designSystemV3.utils.transition}
-              `}
+              className="mobile-menu-button md:hidden"
               aria-label="Open mobile menu"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           )}
 
+          
           {/* User Profile Menu */}
           <UserProfileMenu 
             user={user} 
@@ -213,104 +174,57 @@ export default function Navigation() {
         <>
           {/* Overlay */}
           <div 
-            className={`
-              fixed inset-0 z-40 bg-black/20 backdrop-blur-sm
-              transition-all duration-200 ease-out
-              ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
-            `}
+            className={`mobile-nav-overlay ${mobileMenuOpen ? 'open' : ''}`}
             onClick={() => setMobileMenuOpen(false)}
           />
 
           {/* Mobile Menu */}
-          <div className={`
-            fixed top-0 right-0 bottom-0 z-50 w-72
-            bg-white border-l border-neutral-100 shadow-lg
-            transform transition-transform duration-200 ease-out
-            ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-          `}>
+          <div className={`mobile-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
             {/* Menu Header */}
-            <div className="flex items-center justify-between p-4 border-b border-neutral-100">
-              <Link 
-                href="/" 
-                className="flex items-center gap-2" 
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <div className={`
-                  w-7 h-7 rounded-md
-                  bg-gradient-to-br from-primary-500 to-primary-600
-                  flex items-center justify-center
-                  shadow-sm
-                `}>
-                  <span className="text-white text-xs font-bold">ST</span>
+            <div className="mobile-nav-header">
+              <Link href="/" className="header-logo" onClick={() => setMobileMenuOpen(false)}>
+                <div className="header-logo-icon">
+                  <span>ST</span>
                 </div>
-                <div className="font-semibold text-base text-neutral-950 tracking-tight">
-                  SafeTrade
-                </div>
+                <div className="header-logo-text">SafeTrade</div>
               </Link>
               
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className={`
-                  p-2 rounded-md
-                  text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100
-                  ${designSystemV3.animations.interactions.press}
-                  ${designSystemV3.utils.transition}
-                `}
+                className="mobile-nav-close"
                 aria-label="Close mobile menu"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Menu Items */}
-            <nav className="p-4 space-y-1">
-              {mainNavItems.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`
-                      flex items-center gap-3 px-3 py-2.5
-                      text-sm font-medium rounded-md
-                      transition-all duration-100 ease-out
-                      ${isActive 
-                        ? 'bg-neutral-950 text-white shadow-sm' 
-                        : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
-                      }
-                      ${designSystemV3.animations.interactions.press}
-                    `}
-                  >
-                    <span className={`${designSystemV3.iconSizes.md}`}>
-                      {item.icon}
-                    </span>
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-              
-              {/* Divider */}
-              <div className="h-px bg-neutral-200 my-3" />
+            <nav className="mobile-nav-items">
+              {mainNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`mobile-nav-item ${
+                    pathname === item.href ? 'active' : ''
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Link>
+              ))}
               
               {/* Additional mobile-only items */}
               <Link
                 href="/favorites"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5
-                  text-sm font-medium rounded-md
-                  transition-all duration-100 ease-out
-                  ${pathname === '/favorites' 
-                    ? 'bg-neutral-950 text-white shadow-sm' 
-                    : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
-                  }
-                  ${designSystemV3.animations.interactions.press}
-                `}
+                className={`mobile-nav-item ${
+                  pathname === '/favorites' ? 'active' : ''
+                }`}
               >
-                <svg className={`${designSystemV3.iconSizes.md}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <span>Favorites</span>
@@ -319,18 +233,11 @@ export default function Navigation() {
               <Link
                 href="/meetings"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5
-                  text-sm font-medium rounded-md
-                  transition-all duration-100 ease-out
-                  ${pathname === '/meetings' 
-                    ? 'bg-neutral-950 text-white shadow-sm' 
-                    : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
-                  }
-                  ${designSystemV3.animations.interactions.press}
-                `}
+                className={`mobile-nav-item ${
+                  pathname === '/meetings' ? 'active' : ''
+                }`}
               >
-                <svg className={`${designSystemV3.iconSizes.md}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5a2.25 2.25 0 0 1 21 11.25v7.5" />
                 </svg>
                 <span>Meetings</span>
@@ -339,18 +246,11 @@ export default function Navigation() {
               <Link
                 href="/profile"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5
-                  text-sm font-medium rounded-md
-                  transition-all duration-100 ease-out
-                  ${pathname === '/profile' 
-                    ? 'bg-neutral-950 text-white shadow-sm' 
-                    : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
-                  }
-                  ${designSystemV3.animations.interactions.press}
-                `}
+                className={`mobile-nav-item ${
+                  pathname === '/profile' ? 'active' : ''
+                }`}
               >
-                <svg className={`${designSystemV3.iconSizes.md}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275" />
                 </svg>
                 <span>Profile</span>

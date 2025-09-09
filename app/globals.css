@@ -9,11 +9,6 @@
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", system-ui, sans-serif;
 }
 
-/* Design System v3 - Fixed Header Layout */
-body {
-  padding-top: 3rem; /* h-12 header height */
-}
-
 /* Premium Message Animation System */
 @keyframes message-appear {
   0% {
