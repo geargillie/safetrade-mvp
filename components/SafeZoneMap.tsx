@@ -101,7 +101,7 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
       try {
         // Check if API key is configured
         if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
-          throw new Error('Google Maps API key is not configured. Please add your API key to NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in .env.local');
+          throw new Error('Google Maps API key is not configured. Contact support for map functionality.');
         }
 
         if (!isGoogleMapsLoaded()) {
@@ -453,17 +453,85 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
   if (mapError) {
     return (
       <div 
-        className="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg"
+        className="flex flex-col bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
         style={{ height }}
       >
-        <div className="text-center p-6">
-          <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center mx-auto mb-3">
-            <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
+        {/* Error Header */}
+        <div className="flex items-center justify-center p-6 border-b border-gray-200 bg-white">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3v10" />
+              </svg>
+            </div>
+            <h3 className="text-sm font-medium text-gray-900 mb-1">Interactive Map Unavailable</h3>
+            <p className="text-xs text-gray-500">{mapError}</p>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 mb-1">Map unavailable</h3>
-          <p className="text-xs text-gray-500">{mapError}</p>
+        </div>
+
+        {/* Safe Zones List Fallback */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <h4 className="text-sm font-medium text-gray-900 mb-3">Available Safe Zones</h4>
+          <div className="space-y-3">
+            {filteredSafeZones.length > 0 ? (
+              filteredSafeZones.map(safeZone => {
+                const markerConfig = getMarkerConfig(safeZone);
+                return (
+                  <div 
+                    key={safeZone.id}
+                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow cursor-pointer"
+                    onClick={() => onSafeZoneSelect?.(safeZone)}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{markerConfig.icon}</span>
+                        <div>
+                          <h5 className="font-medium text-gray-900 text-sm">{safeZone.name}</h5>
+                          <p className="text-xs text-gray-600">{safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                        </div>
+                      </div>
+                      {safeZone.isVerified && (
+                        <div className="flex items-center gap-1 text-xs text-green-600">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span>Verified</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="text-xs text-gray-600 mb-2">{safeZone.address}</div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <span>Security: {safeZone.securityLevel}/5</span>
+                        <span>★ {safeZone.averageRating.toFixed(1)} ({safeZone.totalReviews})</span>
+                      </div>
+                      
+                      <a 
+                        href={getDirectionsUrl({ lat: safeZone.latitude, lng: safeZone.longitude })}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded hover:bg-blue-600 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Directions
+                      </a>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-sm text-gray-500 text-center py-8">No safe zones match your current filters.</p>
+            )}
+          </div>
+        </div>
+        
+        {/* Results Counter */}
+        <div className="border-t border-gray-200 bg-white px-4 py-2">
+          <p className="text-xs text-gray-600 text-center">
+            Showing {filteredSafeZones.length} of {safeZones.length} safe zones
+          </p>
         </div>
       </div>
     );
