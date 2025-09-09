@@ -124,50 +124,139 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
         </svg>
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Design System v3.0 Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-          {/* User Info Header */}
-          <div className="px-4 py-3 border-b border-gray-100">
+        <div className="dropdown-menu" style={{
+          position: 'absolute',
+          top: '100%',
+          right: '0',
+          marginTop: 'var(--space-2)',
+          width: '280px',
+          background: '#ffffff',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          border: '1px solid var(--color-border)',
+          padding: 'var(--space-1)',
+          zIndex: 50
+        }}>
+          {/* User Info Header - Clean Design System v3.0 Style */}
+          <div style={{
+            padding: 'var(--space-4)',
+            borderBottom: '1px solid var(--color-border-light)',
+            marginBottom: 'var(--space-2)'
+          }}>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-sm">
-                  <span className="text-base font-semibold text-white">
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <span style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: '#ffffff',
+                    letterSpacing: '-0.01em'
+                  }}>
                     {getInitials(user.user_metadata?.first_name)}
                   </span>
                 </div>
                 {isVerified && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-orange-500 border-2 border-white rounded-full" />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-2px',
+                    right: '-2px',
+                    width: '14px',
+                    height: '14px',
+                    background: '#ff6600',
+                    border: '2px solid #ffffff',
+                    borderRadius: '50%'
+                  }} />
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-gray-900 truncate">
+              <div style={{flex: '1', minWidth: '0'}}>
+                <div style={{
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: 'var(--color-text-primary)',
+                  lineHeight: '1.4',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
                   {getUserDisplayName()}
                 </div>
-                <div className="text-xs text-gray-500 truncate">
+                <div style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text-tertiary)',
+                  lineHeight: '1.3',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
                   {user.email}
                 </div>
-                {/* Verification Status */}
-                <div className="mt-1">
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-orange-50 text-orange-700 text-xs font-medium rounded-md">
-                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
-                    Identity Verified
+                {/* Enhanced Verification Badge */}
+                <div style={{marginTop: 'var(--space-2)'}}>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-1)',
+                    padding: '4px 8px',
+                    background: '#fff7ed',
+                    color: '#ff6600',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    borderRadius: 'var(--radius-full)',
+                    border: '1px solid #fed7aa'
+                  }}>
+                    <div style={{
+                      width: '6px',
+                      height: '6px',
+                      background: '#ff6600',
+                      borderRadius: '50%'
+                    }} />
+                    VERIFIED
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Navigation Items */}
-          <div className="py-1">
+          {/* Navigation Items - Design System v3.0 */}
+          <div style={{padding: 'var(--space-1)'}}>
             {menuItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-3)',
+                  padding: 'var(--space-3) var(--space-3)',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: 'var(--color-text-secondary)',
+                  borderRadius: 'var(--radius-md)',
+                  textDecoration: 'none',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--color-bg-secondary)';
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--color-text-secondary)';
+                }}
               >
-                <div className="text-gray-400">
+                <div style={{color: 'var(--color-text-tertiary)'}}>
                   {item.icon}
                 </div>
                 {item.label}
@@ -176,15 +265,37 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
           </div>
 
           {/* Settings Section */}
-          <div className="py-1 border-t border-gray-100">
-            
+          <div style={{
+            padding: 'var(--space-1)',
+            borderTop: '1px solid var(--color-border-light)',
+            marginTop: 'var(--space-2)'
+          }}>
             <Link
               href="/profile"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-3)',
+                padding: 'var(--space-3) var(--space-3)',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: 'var(--color-text-secondary)',
+                borderRadius: 'var(--radius-md)',
+                textDecoration: 'none',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-secondary)';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'var(--color-text-secondary)';
+              }}
             >
-              <div className="text-gray-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{color: 'var(--color-text-tertiary)'}}>
+                <svg style={{width: '16px', height: '16px'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275" />
                 </svg>
               </div>
@@ -194,36 +305,140 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
             <Link
               href="/admin"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-3)',
+                padding: 'var(--space-3) var(--space-3)',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: 'var(--color-text-secondary)',
+                borderRadius: 'var(--radius-md)',
+                textDecoration: 'none',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-secondary)';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'var(--color-text-secondary)';
+              }}
             >
-              <div className="text-gray-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{color: 'var(--color-text-tertiary)'}}>
+                <svg style={{width: '16px', height: '16px'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                 </svg>
               </div>
-              Admin Panel
-              <div className="ml-auto px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md font-medium">
-                Admin
+              <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
+                <span>Admin Panel</span>
+                <div style={{
+                  marginLeft: 'auto',
+                  padding: '2px 6px',
+                  background: 'var(--color-bg-tertiary)',
+                  color: 'var(--color-text-quaternary)',
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  borderRadius: 'var(--radius-sm)',
+                  textTransform: 'uppercase'
+                }}>
+                  Admin
+                </div>
               </div>
             </Link>
           </div>
 
-          {/* Sign Out */}
-          <div className="py-1 border-t border-gray-100">
+          {/* Sign Out - Enhanced with Design System v3.0 */}
+          <div style={{
+            padding: 'var(--space-1)',
+            borderTop: '1px solid var(--color-border-light)',
+            marginTop: 'var(--space-2)'
+          }}>
             <button
               onClick={() => {
                 setIsOpen(false);
                 onSignOut();
               }}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-3)',
+                padding: 'var(--space-3) var(--space-3)',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#dc2626',
+                borderRadius: 'var(--radius-md)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fef2f2';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
             >
-              <div className="text-red-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{color: '#dc2626'}}>
+                <svg style={{width: '16px', height: '16px'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                 </svg>
               </div>
               Sign out
             </button>
+          </div>
+
+          {/* Design System Indicator */}
+          <div style={{
+            padding: 'var(--space-2) var(--space-3)',
+            borderTop: '1px solid var(--color-border-light)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 'var(--space-2)',
+            marginTop: 'var(--space-1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-1)',
+              padding: '2px 6px',
+              background: 'var(--color-bg-secondary)',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '10px',
+              color: 'var(--color-text-tertiary)',
+              fontWeight: '600'
+            }}>
+              <div style={{
+                width: '4px',
+                height: '4px',
+                background: '#1f2937',
+                borderRadius: '50%'
+              }} />
+              <span>Design System v3.0</span>
+            </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-1)',
+              padding: '2px 6px',
+              background: '#fff7ed',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '10px',
+              color: '#ff6600',
+              fontWeight: '600'
+            }}>
+              <div style={{
+                width: '4px',
+                height: '4px',
+                background: '#ff6600',
+                borderRadius: '50%'
+              }} />
+              <span>Vercel Orange</span>
+            </div>
           </div>
         </div>
       )}
