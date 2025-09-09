@@ -8,6 +8,37 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Design System v3 - Mocha Mousse Primary (Pantone 2025)
+        primary: {
+          50: '#fdfcfb',
+          100: '#faf7f4',
+          200: '#f4ede7',
+          300: '#ebe0d6',
+          400: '#d4c4b4',
+          500: '#a47864',  // Main Mocha Mousse
+          600: '#8b6a56',
+          700: '#6b5242',
+          800: '#4a3a2e',
+          900: '#2d221a',
+          950: '#1a1411',
+        },
+        
+        // Sophisticated Neutral Scale - Vercel Inspired
+        neutral: {
+          0: '#ffffff',      // Pure white
+          50: '#fefefe',     // Ultra-clean background
+          100: '#fcfcfc',    // Elevated surfaces
+          200: '#f8f8f8',    // Hover states
+          300: '#f4f4f4',    // Pressed states
+          400: '#e5e5e5',    // Borders
+          500: '#a3a3a3',    // Light gray text
+          600: '#737373',    // Medium gray
+          700: '#525252',    // Secondary text
+          800: '#262626',    // Dark gray
+          900: '#171717',    // Near black
+          950: '#000000',    // Pure black
+        },
+        
         // Modern gradient palette from reference
         'purple-gradient-start': '#8B5CF6',
         'purple-gradient-end': '#3B82F6',
