@@ -16,7 +16,7 @@ async function seedSafeZones() {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // First, let's clear any existing data
+    // First, let's clear any existing data to re-seed
     await supabase.from('safe_zones').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
     // Seed safe zone locations for Newark, NJ area - using only basic types
