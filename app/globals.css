@@ -3732,7 +3732,7 @@ html, body {
    SAFE ZONES PAGE STYLING - Vercel & Notion Inspired
    =============================================== */
 
-/* Page Container (Consistent with Other Pages) */
+/* Page Container - Now uses consistent max-w-4xl layout from design system 
 .safe-zones-page {
   min-height: 100vh;
   background: var(--color-background);
@@ -3751,6 +3751,7 @@ html, body {
     padding: var(--space-6) var(--space-4);
   }
 }
+*/
 
 /* Page Header (Notion-Inspired Clean Typography) */
 .safe-zones-header {

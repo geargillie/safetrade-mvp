@@ -147,8 +147,8 @@ export default function SafeZonesPage() {
         </div>
       </section>
       
-      <div className="safe-zones-page">
-        <div className="container">
+      {/* Main Content Area - Match Messages/Create Listing Layout */}
+      <div className="max-w-4xl mx-auto px-6 py-8">
             
           {/* Quick Stats */}
           <div className="safe-zones-page-stats">
@@ -418,7 +418,6 @@ export default function SafeZonesPage() {
               )}
             </>
           )}
-        </div>
       </div>
       </Layout>
     </div>
