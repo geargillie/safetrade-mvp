@@ -122,49 +122,21 @@ export default function SafeZonesPage() {
   return (
     <div className="page-wrapper">
       <Layout showNavigation={true}>
-        {/* Hero Section - Clean header section */}
-        <section className="bg-white border-b border-gray-200 py-12">
+        {/* Compact Hero Section */}
+        <section className="bg-white border-b border-gray-200 py-6">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Safe Zones
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-            Find verified safe meeting locations near you. All safe zones are monitored, 
-            well-lit, and provide a secure environment for your transactions.
+          <p className="text-base text-gray-600 max-w-2xl mx-auto mb-3">
+            Find verified safe meeting locations near you
           </p>
-          
-          {/* Design System Indicator */}
-          <div className="flex items-center justify-center gap-3 mt-4 mb-2">
-            <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
-              <div className="w-2 h-2 bg-black rounded-full"></div>
-              <span>Design System v3.0</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
-              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
-              <span>Vercel Orange</span>
-            </div>
-          </div>
         </div>
       </section>
       
-      {/* Main Content Area - Match Messages/Create Listing Layout */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      {/* Main Content Area - Compact Layout */}
+      <div className="max-w-4xl mx-auto px-6 py-4">
             
-          {/* Quick Stats */}
-          <div className="safe-zones-page-stats">
-              <div className="safe-zones-stat-item">
-                <div className="safe-zones-stat-number">{safeZones.length}</div>
-                <div className="safe-zones-stat-label">Locations</div>
-              </div>
-              <div className="safe-zones-stat-item">
-                <div className="safe-zones-stat-number">{safeZones.filter(sz => sz.is_verified).length}</div>
-                <div className="safe-zones-stat-label">Verified</div>
-              </div>
-              <div className="safe-zones-stat-item">
-                <div className="safe-zones-stat-number">24/7</div>
-                <div className="safe-zones-stat-label">Monitored</div>
-              </div>
-          </div>
 
           {/* Search & Filter Section - Vercel-Style Clean Interface */}
           <div className="safe-zones-search-section">

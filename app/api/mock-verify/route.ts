@@ -3,6 +3,11 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
+    // This endpoint is for development only - block in production
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ message: 'Mock verification not available in production' }, { status: 403 });
+    }
+
     const { userId, bypassAuth } = await request.json();
     
     // In development mode with bypass flag, skip auth validation

@@ -251,57 +251,7 @@ export const useEnhancedMessaging = (currentUserId: string) => {
     } catch (err: any) {
       console.error('Error loading conversations:', err);
       
-      // Handle network/connection errors gracefully
-      if (err.message.includes('SSL') || err.message.includes('525') || err.message.includes('fetch')) {
-        console.warn('Database connection unavailable - using development fallback');
-        setError('Database temporarily unavailable - using offline mode');
-        
-        // In development, provide mock data
-        if (process.env.NODE_ENV === 'development') {
-          const mockConversations: EnhancedConversation[] = [
-            {
-              id: 'mock-conv-1',
-              listing_id: 'mock-listing-1',
-              buyer_id: '4f2f019a-ce02-4c23-8062-a9a6757e408b',
-              seller_id: '948a0f8c-2448-46ab-b65a-940482fc7d48',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              listing_title: '2020 Honda CB650R - Great Condition',
-              listing_price: 8500,
-              listing_make: 'Honda',
-              listing_model: 'CB650R',
-              listing_year: 2020,
-              listing_condition: 'excellent',
-              listing_mileage: 12000,
-              listing_city: 'Los Angeles',
-              listing_zip_code: '90210',
-              listing_description: 'Well maintained motorcycle, garage kept',
-              listing_vin: 'MOCK1234567890123',
-              listing_images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'],
-              buyer_first_name: 'John',
-              buyer_last_name: 'Buyer',
-              seller_first_name: 'Test',
-              seller_last_name: 'User',
-              last_message: 'Hi, is this motorcycle still available?',
-              last_message_at: new Date().toISOString(),
-              last_message_timestamp: new Date().toISOString(),
-              unread_count: 2,
-              metrics: {
-                total_messages: 5,
-                unread_count: 2,
-                last_activity: new Date().toISOString(),
-                fraud_alerts: 0,
-                security_level: 'standard' as const
-              },
-              is_verified: true
-            }
-          ];
-          setConversations(mockConversations);
-          setError(null);
-        }
-      } else {
-        setError(err.message);
-      }
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -585,10 +535,10 @@ export const useEnhancedConversationMessages = (
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          conversationId,
+          conversation_id: conversationId,
           senderId: currentUserId,
           content: content.trim(),
-          messageType
+          message_type: messageType
         })
       });
 
