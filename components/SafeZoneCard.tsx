@@ -163,7 +163,7 @@ export default function SafeZoneCard({
                 {safeZone.name}
               </h3>
               <p className="text-xs text-gray-600">
-                {safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {safeZone.zoneType ? safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Safe Zone'}
               </p>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function SafeZoneCard({
                 )}
               </div>
               <p className="text-sm text-gray-600 mb-2">
-                {safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {safeZone.zoneType ? safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Safe Zone'}
               </p>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,7 +326,7 @@ export default function SafeZoneCard({
                   key={index}
                   className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
                 >
-                  {feature.replace('_', ' ')}
+                  {feature ? feature.replace('_', ' ') : 'Feature'}
                 </span>
               );
             })}

@@ -341,7 +341,7 @@ export default function SafeZonesPage() {
                           
                           {safeZone.features && (
                             <div className="safe-zones-zone-features">
-                              {safeZone.features.slice(0, 3).map((feature: string, idx: number) => (
+                              {safeZone.features.filter(Boolean).slice(0, 3).map((feature: string, idx: number) => (
                                 <span key={idx} className="safe-zones-feature-tag">{feature}</span>
                               ))}
                             </div>

@@ -378,7 +378,7 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
             <div class="text-xl">${markerConfig.icon}</div>
             <div>
               <h3 class="font-semibold text-gray-900 text-sm">${safeZone.name}</h3>
-              <p class="text-xs text-gray-600">${safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+              <p class="text-xs text-gray-600">${safeZone.zoneType ? safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Safe Zone'}</p>
             </div>
           </div>
           ${safeZone.isVerified ? '<div class="text-green-500 text-xs">✓ Verified</div>' : ''}
@@ -498,7 +498,7 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
                         <span className="text-lg">{markerConfig.icon}</span>
                         <div>
                           <h5 className="font-medium text-gray-900 text-sm">{safeZone.name}</h5>
-                          <p className="text-xs text-gray-600">{safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                          <p className="text-xs text-gray-600">{safeZone.zoneType ? safeZone.zoneType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Safe Zone'}</p>
                         </div>
                       </div>
                       {safeZone.isVerified && (

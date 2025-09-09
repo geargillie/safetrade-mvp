@@ -470,7 +470,7 @@ export default function SafeZoneListingCard({
                     className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
                   >
                     {getFeatureIcon(feature)}
-                    <span className="capitalize">{feature.replace('_', ' ')}</span>
+                    <span className="capitalize">{feature ? feature.replace('_', ' ') : 'Feature'}</span>
                   </div>
                 ))}
                 {safeZone.features.length > (compact ? 3 : 6) && (
