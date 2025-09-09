@@ -201,15 +201,15 @@ export default function ListingsPage() {
               Discover your next motorcycle from verified sellers. All listings include identity verification and vehicle history checks.
             </p>
             
-            {/* Design System Indicator */}
+            {/* Browse Features */}
             <div className="flex items-center justify-center gap-3 mt-4 mb-2">
               <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
                 <div className="w-2 h-2 bg-black rounded-full"></div>
-                <span>Design System v3.0</span>
+                <span>Quality Listings</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
                 <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
-                <span>Vercel Orange</span>
+                <span>Verified History</span>
               </div>
             </div>
           </div>

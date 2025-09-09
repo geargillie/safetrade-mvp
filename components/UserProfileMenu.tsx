@@ -391,45 +391,56 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
             </button>
           </div>
 
-          {/* Design System Indicator */}
+          {/* Help & Support Section */}
           <div style={{
             padding: 'var(--space-2) var(--space-3)',
             borderTop: '1px solid var(--color-border-light)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 'var(--space-2)',
+            gap: 'var(--space-3)',
             marginTop: 'var(--space-1)'
           }}>
+            <Link
+              href="/help"
+              onClick={() => setIsOpen(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-1)',
+                padding: '4px 8px',
+                background: 'var(--color-bg-secondary)',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '11px',
+                color: 'var(--color-text-tertiary)',
+                fontWeight: '500',
+                textDecoration: 'none',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-tertiary)';
+                e.currentTarget.style.color = 'var(--color-text-secondary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-secondary)';
+                e.currentTarget.style.color = 'var(--color-text-tertiary)';
+              }}
+            >
+              <svg style={{width: '12px', height: '12px'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Help</span>
+            </Link>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: 'var(--space-1)',
-              padding: '2px 6px',
-              background: 'var(--color-bg-secondary)',
-              borderRadius: 'var(--radius-full)',
-              fontSize: '10px',
-              color: 'var(--color-text-tertiary)',
-              fontWeight: '600'
-            }}>
-              <div style={{
-                width: '4px',
-                height: '4px',
-                background: '#1f2937',
-                borderRadius: '50%'
-              }} />
-              <span>Design System v3.0</span>
-            </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-1)',
-              padding: '2px 6px',
+              padding: '4px 8px',
               background: '#fff7ed',
               borderRadius: 'var(--radius-full)',
-              fontSize: '10px',
+              fontSize: '11px',
               color: '#ff6600',
-              fontWeight: '600'
+              fontWeight: '500'
             }}>
               <div style={{
                 width: '4px',
@@ -437,7 +448,7 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
                 background: '#ff6600',
                 borderRadius: '50%'
               }} />
-              <span>Vercel Orange</span>
+              <span>SafeTrade</span>
             </div>
           </div>
         </div>
