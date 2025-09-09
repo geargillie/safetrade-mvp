@@ -440,7 +440,7 @@ export default function SafeZoneListingCard({
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Shield className="w-4 h-4 text-blue-500" />
                   <span className="font-semibold text-gray-900">
-                    {safeZone.security_level || '—'}/5
+                    {safeZone.securityLevel || '—'}/5
                   </span>
                 </div>
                 <p className="text-xs text-gray-500">Security</p>

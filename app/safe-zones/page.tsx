@@ -348,10 +348,10 @@ export default function SafeZonesPage() {
                           )}
                           
                           <div className="safe-zones-zone-footer">
-                            {safeZone.average_rating && (
+                            {safeZone.averageRating && (
                               <div className="safe-zones-zone-rating">
                                 <span className="safe-zones-rating-stars">★</span>
-                                <span>{safeZone.average_rating.toFixed(1)}</span>
+                                <span>{safeZone.averageRating.toFixed(1)}</span>
                               </div>
                             )}
                             <div className="safe-zones-zone-actions">
@@ -401,10 +401,10 @@ export default function SafeZonesPage() {
                       </div>
                       
                       <div className="safe-zones-zone-footer">
-                        {safeZone.average_rating ? (
+                        {safeZone.averageRating ? (
                           <div className="safe-zones-zone-rating">
                             <Star className="w-4 h-4 text-yellow-500" />
-                            <span>{safeZone.average_rating.toFixed(1)} rating</span>
+                            <span>{safeZone.averageRating.toFixed(1)} rating</span>
                           </div>
                         ) : (
                           <div className="safe-zones-zone-rating">

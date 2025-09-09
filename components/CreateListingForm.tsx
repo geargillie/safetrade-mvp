@@ -420,10 +420,10 @@ export default function CreateListingForm({
                             <MapPin className="w-4 h-4" />
                             <span className="truncate">{safeZone.address}</span>
                           </div>
-                          {(safeZone.average_rating || 0) > 0 && (
+                          {(safeZone.averageRating || 0) > 0 && (
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 text-yellow-500" />
-                              <span>{safeZone.average_rating.toFixed(1)} ({safeZone.total_reviews || 0} reviews)</span>
+                              <span>{safeZone.averageRating.toFixed(1)} ({safeZone.totalReviews || 0} reviews)</span>
                             </div>
                           )}
                         </div>

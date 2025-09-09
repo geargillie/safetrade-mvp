@@ -14,6 +14,35 @@ import {
   sanitizeObject,
   handleCorsPreFlight
 } from '@/lib/middleware/auth';
+
+// Transform database response to match TypeScript interface
+function transformSafeZone(dbSafeZone: any) {
+  return {
+    ...dbSafeZone,
+    // Convert snake_case to camelCase for frontend compatibility
+    zoneType: dbSafeZone.zone_type,
+    zipCode: dbSafeZone.zip_code,
+    operatingHours: dbSafeZone.operating_hours || {},
+    securityLevel: dbSafeZone.security_level,
+    hasParking: dbSafeZone.has_parking,
+    hasSecurityCameras: dbSafeZone.has_security_cameras,
+    hasSecurityGuard: dbSafeZone.has_security_guard,
+    wellLit: dbSafeZone.well_lit,
+    indoorMeetingArea: dbSafeZone.indoor_meeting_area,
+    outdoorMeetingArea: dbSafeZone.outdoor_meeting_area,
+    totalMeetings: dbSafeZone.total_meetings,
+    completedMeetings: dbSafeZone.completed_meetings,
+    averageRating: dbSafeZone.average_rating,
+    totalReviews: dbSafeZone.total_reviews,
+    isVerified: dbSafeZone.is_verified,
+    verifiedBy: dbSafeZone.verified_by,
+    verificationDate: dbSafeZone.verification_date,
+    verificationNotes: dbSafeZone.verification_notes,
+    createdBy: dbSafeZone.created_by,
+    createdAt: dbSafeZone.created_at,
+    updatedAt: dbSafeZone.updated_at
+  };
+}
 import { 
   SafeZoneQuerySchema, 
   CreateSafeZoneSchema,
@@ -117,7 +146,10 @@ export async function GET(request: NextRequest) {
       return handleDatabaseError(error);
     }
 
-    return createPaginatedResponse(data || [], page, limit, count || 0);
+    // Transform database response to match TypeScript interface
+    const transformedData = (data || []).map(transformSafeZone);
+
+    return createPaginatedResponse(transformedData, page, limit, count || 0);
 
   } catch (error) {
     console.error('Error in GET /api/safe-zones:', error);

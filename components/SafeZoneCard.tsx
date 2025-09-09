@@ -99,8 +99,8 @@ export default function SafeZoneCard({
                 {safeZone.address}
               </p>
               <div className="flex items-center gap-3 text-xs text-gray-500">
-                <span>⭐ {safeZone.average_rating ? safeZone.average_rating.toFixed(1) : 'N/A'}</span>
-                <span>🔒 Level {safeZone.security_level || 3}</span>
+                <span>⭐ {safeZone.averageRating ? safeZone.averageRating.toFixed(1) : 'N/A'}</span>
+                <span>🔒 Level {safeZone.securityLevel || 3}</span>
                 {distance && (
                   <span>📍 {formatDistance(distance)}</span>
                 )}
@@ -185,13 +185,13 @@ export default function SafeZoneCard({
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-lg font-semibold text-gray-900">
-              {safeZone.average_rating ? safeZone.average_rating.toFixed(1) : 'N/A'}
+              {safeZone.averageRating ? safeZone.averageRating.toFixed(1) : 'N/A'}
             </div>
             <div className="text-xs text-gray-500">Rating</div>
           </div>
           <div>
             <div className="text-lg font-semibold text-gray-900">
-              {safeZone.security_level || 3}/5
+              {safeZone.securityLevel || 3}/5
             </div>
             <div className="text-xs text-gray-500">Security</div>
           </div>
@@ -270,14 +270,14 @@ export default function SafeZoneCard({
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-gray-50 rounded-lg">
             <div className="text-xl font-bold text-gray-900 mb-1">
-              {safeZone.average_rating ? safeZone.average_rating.toFixed(1) : 'N/A'}
+              {safeZone.averageRating ? safeZone.averageRating.toFixed(1) : 'N/A'}
             </div>
             <div className="text-xs text-gray-500 mb-1">Average Rating</div>
             <div className="flex justify-center">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className={`w-3 h-3 ${i < Math.floor(safeZone.average_rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`}
+                  className={`w-3 h-3 ${i < Math.floor(safeZone.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300'}`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -286,13 +286,13 @@ export default function SafeZoneCard({
               ))}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              {safeZone.total_reviews || 0} reviews
+              {safeZone.totalReviews || 0} reviews
             </div>
           </div>
 
           <div className="text-center p-3 bg-gray-50 rounded-lg">
             <div className="text-xl font-bold text-gray-900 mb-1">
-              {safeZone.security_level || 3}
+              {safeZone.securityLevel || 3}
             </div>
             <div className="text-xs text-gray-500 mb-1">Security Level</div>
             <div className="flex justify-center gap-1">
@@ -300,7 +300,7 @@ export default function SafeZoneCard({
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full ${
-                    i < (safeZone.security_level || 3) ? 'bg-blue-500' : 'bg-gray-300'
+                    i < (safeZone.securityLevel || 3) ? 'bg-blue-500' : 'bg-gray-300'
                   }`}
                 />
               ))}
