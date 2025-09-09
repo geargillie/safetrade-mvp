@@ -216,10 +216,10 @@ export default function SafetyCheckInModal({
               <div className="space-y-3">
                 <button
                   onClick={() => handleStatusSelect('safe')}
-                  className="w-full p-4 border border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left"
+                  className="w-full p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+                    <CheckCircle className="w-6 h-6 text-orange-600" />
                     <div>
                       <div className="font-medium text-green-900">I'm Safe</div>
                       <div className="text-sm text-green-700">
@@ -286,13 +286,13 @@ export default function SafetyCheckInModal({
                   <div className={cn(
                     "p-4 rounded-lg border",
                     locationVerified 
-                      ? "border-green-200 bg-green-50" 
+                      ? "border-orange-200 bg-orange-50" 
                       : "border-orange-200 bg-orange-50"
                   )}>
                     <div className="flex items-center gap-3">
                       <Navigation className={cn(
                         "w-5 h-5",
-                        locationVerified ? "text-green-600" : "text-orange-600"
+                        locationVerified ? "text-orange-600" : "text-orange-600"
                       )} />
                       <div>
                         <div className="font-medium">
@@ -470,8 +470,8 @@ export default function SafetyCheckInModal({
           {/* Complete Step */}
           {currentStep === 'complete' && (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-orange-600" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {safetyStatus === 'emergency' ? 'Emergency Alert Sent' : 'Check-In Complete'}

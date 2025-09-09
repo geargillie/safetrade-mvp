@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 // import { supabase } from '@/lib/supabase';
 
 interface User {
@@ -88,14 +87,14 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
     return (
       <div className="header-auth-buttons">
         <Link href="/auth/login">
-          <Button variant="ghost" size="sm">
+          <button className="btn btn-ghost btn-sm">
             Sign in
-          </Button>
+          </button>
         </Link>
         <Link href="/auth/register">
-          <Button variant="primary" size="sm">
+          <button className="btn btn-black btn-sm">
             Sign up
-          </Button>
+          </button>
         </Link>
       </div>
     );
@@ -138,7 +137,7 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
                   </span>
                 </div>
                 {isVerified && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-orange-500 border-2 border-white rounded-full" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -150,8 +149,8 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
                 </div>
                 {/* Verification Status */}
                 <div className="mt-1">
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded-md">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-orange-50 text-orange-700 text-xs font-medium rounded-md">
+                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
                     Identity Verified
                   </div>
                 </div>
@@ -195,15 +194,15 @@ export default function UserProfileMenu({ user, loading, isVerified, onSignOut }
             <Link
               href="/admin"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-purple-700 hover:bg-purple-50 transition-colors"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <div className="text-purple-500">
+              <div className="text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                 </svg>
               </div>
               Admin Panel
-              <div className="ml-auto px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-md font-medium">
+              <div className="ml-auto px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md font-medium">
                 Admin
               </div>
             </Link>

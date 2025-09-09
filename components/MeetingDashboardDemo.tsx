@@ -362,7 +362,7 @@ export default function MeetingDashboardDemo() {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Completed:</span>
-              <span className="font-medium text-green-600">
+              <span className="font-medium text-orange-600">
                 {mockDashboardData.stats.completedMeetings}
               </span>
             </div>
@@ -374,7 +374,7 @@ export default function MeetingDashboardDemo() {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Success Rate:</span>
-              <span className="font-medium text-green-600">
+              <span className="font-medium text-orange-600">
                 {mockDashboardData.stats.successRate}%
               </span>
             </div>
@@ -387,7 +387,7 @@ export default function MeetingDashboardDemo() {
           </h3>
           <div className="space-y-3 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
               <span className="text-gray-600">Meeting countdown timers</span>
             </div>
             <div className="flex items-center gap-2">

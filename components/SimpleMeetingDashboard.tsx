@@ -92,7 +92,7 @@ function MeetingCard({
       case 'scheduled':
         return { icon: Clock, color: 'text-blue-600 bg-blue-100', text: 'Scheduled' };
       case 'completed':
-        return { icon: CheckCircle, color: 'text-green-600 bg-green-100', text: 'Completed' };
+        return { icon: CheckCircle, color: 'text-orange-600 bg-orange-100', text: 'Completed' };
       case 'in_progress':
         return { icon: Activity, color: 'text-yellow-600 bg-yellow-100', text: 'In Progress' };
       default:
@@ -227,7 +227,7 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
 
         <div className="card">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-4 h-4 text-green-600" />
+            <CheckCircle className="w-4 h-4 text-orange-600" />
             <span className="meta-text">Completed</span>
           </div>
           <div className="text-2xl font-bold text-primary">{mockStats.completedMeetings}</div>
@@ -341,7 +341,7 @@ export default function SimpleMeetingDashboard({ userId }: SimpleMeetingDashboar
                   </div>
                   <div className="flex justify-between">
                     <span className="body-text">Success Rate:</span>
-                    <span className="body-text font-medium text-green-600">{mockStats.successRate}%</span>
+                    <span className="body-text font-medium text-orange-600">{mockStats.successRate}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="body-text">Average Duration:</span>

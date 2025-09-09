@@ -405,7 +405,7 @@ export default function CreateListingForm({
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-medium text-gray-900">{safeZone.name}</h4>
                           {safeZone.isVerified && (
-                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                            <Badge className="bg-orange-100 text-orange-800 border-orange-200 text-xs">
                               <Shield className="w-3 h-3 mr-1" />
                               Verified
                             </Badge>

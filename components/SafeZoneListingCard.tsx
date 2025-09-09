@@ -322,7 +322,7 @@ export default function SafeZoneListingCard({
               )}
               <Badge 
                 variant={operatingStatus.isOpen ? "default" : "secondary"}
-                className={operatingStatus.isOpen ? "bg-green-100 text-green-800 text-xs" : "text-xs"}
+                className={operatingStatus.isOpen ? "bg-orange-100 text-orange-800 text-xs" : "text-xs"}
               >
                 <Clock className="w-3 h-3 mr-1" />
                 {operatingStatus.isOpen ? "Open" : "Closed"}
@@ -385,7 +385,7 @@ export default function SafeZoneListingCard({
                   {!compact && (
                     <div className={cn(
                       "flex items-center gap-1",
-                      operatingStatus.isOpen ? "text-green-600" : "text-orange-600"
+                      operatingStatus.isOpen ? "text-orange-600" : "text-orange-600"
                     )}>
                       <Clock className="w-4 h-4" />
                       <span>{operatingStatus.status}</span>

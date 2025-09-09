@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import UserProfileMenu from './UserProfileMenu';
 
 interface User {

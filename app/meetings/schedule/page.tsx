@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
 import { ArrowLeft, Shield, MapPin, Clock, Phone } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -41,6 +40,7 @@ function ScheduleMeetingContent() {
   const searchParams = useSearchParams();
   const listingId = searchParams.get('listingId');
   const sellerId = searchParams.get('sellerId');
+  const buyerId = searchParams.get('buyerId');
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -153,7 +153,7 @@ function ScheduleMeetingContent() {
         body: JSON.stringify({
           safeZoneId: selectedSafeZone,
           listingId: listingId,
-          buyerId: user.id,
+          buyerId: buyerId || user.id,
           sellerId: sellerId,
           scheduledDatetime,
           estimatedDuration,
@@ -198,11 +198,9 @@ function ScheduleMeetingContent() {
         <div className="w-full max-w-md bg-white rounded-lg shadow-sm border p-6 text-center">
             <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
             <p className="text-gray-600 mb-4">{error}</p>
-            <Link href="/listings">
-              <Button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Listings
-              </Button>
+            <Link href="/listings" className="btn btn-secondary btn-md inline-flex items-center">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Listings
             </Link>
         </div>
       </div>
@@ -214,7 +212,7 @@ function ScheduleMeetingContent() {
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <Link href={`/listings/${listingId}`} className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
+          <Link href={`/listings/${listingId}`} className="inline-flex items-center text-gray-600 hover:text-gray-700 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Listing
           </Link>
@@ -253,11 +251,11 @@ function ScheduleMeetingContent() {
                     <h4 className="font-medium text-gray-900 mb-2">Meeting Participants</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <div className="w-2 h-2 bg-gray-500 rounded-full mr-2"></div>
                         <span><strong>Buyer:</strong> {user?.first_name} {user?.last_name}</span>
                       </div>
                       <div className="flex items-center">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <div className="w-2 h-2 bg-[#ff6600] rounded-full mr-2"></div>
                         <span><strong>Seller:</strong> {seller?.first_name} {seller?.last_name}</span>
                       </div>
                     </div>
@@ -307,7 +305,7 @@ function ScheduleMeetingContent() {
                       id="safeZone"
                       value={selectedSafeZone}
                       onChange={(e) => setSelectedSafeZone(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                       required
                     >
                       <option value="">Choose a verified safe zone...</option>
@@ -335,7 +333,7 @@ function ScheduleMeetingContent() {
                         onChange={(e) => setScheduledDatetime(e.target.value)}
                         min={minDateTime}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
                     <div>
@@ -344,7 +342,7 @@ function ScheduleMeetingContent() {
                         id="duration"
                         value={estimatedDuration}
                         onChange={(e) => setEstimatedDuration(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                       >
                         <option value="15 minutes">15 minutes</option>
                         <option value="30 minutes">30 minutes</option>
@@ -365,7 +363,7 @@ function ScheduleMeetingContent() {
                       placeholder="(555) 123-4567"
                       value={emergencyContactPhone}
                       onChange={(e) => setEmergencyContactPhone(e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                     />
                     <p className="text-sm text-gray-500 mt-1">
                       Optional: A trusted contact who can be reached in case of emergency
@@ -381,7 +379,7 @@ function ScheduleMeetingContent() {
                       value={meetingNotes}
                       onChange={(e) => setMeetingNotes(e.target.value)}
                       rows={3}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                     />
                   </div>
 
@@ -390,14 +388,14 @@ function ScheduleMeetingContent() {
                     <button
                       type="button"
                       onClick={() => router.back()}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="btn btn-secondary btn-md flex-1"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={submitting || !selectedSafeZone || !scheduledDatetime}
-                      className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="btn btn-success btn-md flex-1 inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitting ? (
                         <>

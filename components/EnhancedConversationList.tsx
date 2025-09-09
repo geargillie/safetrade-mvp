@@ -51,11 +51,11 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
     }
     
     if (conversation.metrics.security_level === 'high_security') {
-      return { icon: '🔒', color: 'text-green-600', title: 'High Security' };
+      return { icon: '🔒', color: 'text-orange-600', title: 'High Security' };
     }
     
     if (conversation.metrics.security_level === 'enhanced') {
-      return { icon: '🛡️', color: 'text-blue-600', title: 'Enhanced Security' };
+      return { icon: '🛡️', color: 'text-orange-600', title: 'Enhanced Security' };
     }
     
     return { icon: '✓', color: 'text-gray-400', title: 'Standard Security' };
@@ -112,7 +112,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
           {/* Modern connection status */}
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${
-              connectionStatus === 'connected' ? 'bg-green-500 animate-pulse' :
+              connectionStatus === 'connected' ? 'bg-orange-500 animate-pulse' :
               connectionStatus === 'connecting' ? 'bg-yellow-500 animate-bounce' : 'bg-red-500'
             }`} />
             <span className="text-xs text-gray-600 font-medium font-ios capitalize">
@@ -131,7 +131,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
           <input
             type="text"
             placeholder="Search messages..."
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 font-ios"
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 font-ios"
           />
         </div>
 
@@ -156,14 +156,14 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                 onClick={() => setFilter(filterType)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 whitespace-nowrap font-ios ${
                   isActive
-                    ? 'bg-purple-blue-gradient text-white shadow-lg'
+                    ? 'bg-black text-white shadow-lg'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
                 }`}
               >
                 <span className="capitalize">{filterType}</span>
                 {count > 0 && (
                   <span className={`inline-flex items-center justify-center w-5 h-5 text-xs rounded-full font-semibold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-purple-500 text-white'
+                    isActive ? 'bg-white/20 text-white' : 'bg-green-600 text-white'
                   }`}>
                     {count > 99 ? '99+' : count}
                   </span>
@@ -179,7 +179,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
         {filteredConversations.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center px-6">
             <div className="max-w-xs">
-              <div className="w-16 h-16 bg-purple-blue-gradient rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
@@ -204,7 +204,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                   onClick={() => onSelectConversation(conversation)}
                   className={`p-4 rounded-2xl cursor-pointer transition-all duration-200 border group relative overflow-hidden ${
                     isSelected
-                      ? 'bg-purple-blue-gradient text-white shadow-lg scale-[1.02]'
+                      ? 'bg-gray-900 text-white shadow-lg scale-[1.02]'
                       : 'bg-white border-gray-100 hover:bg-gray-50 hover:border-gray-200 hover:shadow-md'
                   }`}
                 >
@@ -215,12 +215,12 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg shadow-lg ${
                         isSelected 
                           ? 'bg-white/20 text-white border-2 border-white/30' 
-                          : 'bg-gradient-to-br from-purple-500 to-blue-500 text-white'
+                          : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white'
                       }`}>
                         {otherUserName.charAt(0).toUpperCase()}
                       </div>
                       {/* Online indicator */}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-orange-500 border-2 border-white rounded-full"></div>
                     </div>
                     
                     {/* Content */}
@@ -229,7 +229,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <h3 className={`font-semibold text-base truncate font-messaging ${
-                            isSelected ? 'text-white' : 'text-messaging-text-primary'
+                            isSelected ? 'text-white' : 'text-gray-900'
                           }`}>
                             {otherUserName}
                           </h3>
@@ -238,7 +238,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                             <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
                               isSelected 
                                 ? 'bg-white/20 text-white border border-white/30' 
-                                : 'bg-messaging-success bg-opacity-10 text-messaging-success border border-messaging-success border-opacity-20'
+                                : 'bg-orange-100 text-orange-800 border border-orange-200'
                             }`}>
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
@@ -259,7 +259,7 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                             <div className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold ${
                               isSelected 
                                 ? 'bg-white/30 text-white' 
-                                : 'bg-messaging-accent text-white'
+                                : 'bg-green-600 text-white'
                             }`}>
                               {conversation.metrics.unread_count > 99 ? '99+' : conversation.metrics.unread_count}
                             </div>
@@ -278,30 +278,30 @@ const EnhancedConversationList = memo(function EnhancedConversationList({
                       <div className={`flex items-center justify-between p-2.5 rounded-card border transition-all duration-200 ${
                         isSelected 
                           ? 'bg-white/10 border-white/20' 
-                          : 'bg-messaging-surface-secondary border-messaging-border-subtle hover:bg-messaging-background'
+                          : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                       }`}>
                         <div className="flex items-center gap-2">
                           <div className={`w-6 h-6 rounded-card flex items-center justify-center ${
                             isSelected 
                               ? 'bg-white/20' 
-                              : 'bg-gradient-messaging'
+                              : 'bg-gray-600'
                           }`}>
                             <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                             </svg>
                           </div>
                           <span className={`text-xs font-medium font-messaging ${
-                            isSelected ? 'text-white/90' : 'text-messaging-text-secondary'
+                            isSelected ? 'text-white/90' : 'text-gray-600'
                           }`}>
                             {conversation.listing_year} {conversation.listing_make}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <svg className={`w-3 h-3 ${isSelected ? 'text-white/80' : 'text-messaging-success'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-3 h-3 ${isSelected ? 'text-white/80' : 'text-orange-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2" />
                           </svg>
                           <span className={`text-sm font-bold font-messaging ${
-                            isSelected ? 'text-white' : 'text-messaging-text-primary'
+                            isSelected ? 'text-white' : 'text-gray-900'
                           }`}>
                             ${conversation.listing_price?.toLocaleString()}
                           </span>

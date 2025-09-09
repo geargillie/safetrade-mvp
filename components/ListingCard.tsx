@@ -150,12 +150,12 @@ export default function ListingCard({
             {/* Status Badges */}
             <div className="absolute top-3 left-3 flex flex-wrap gap-2 max-w-[calc(100%-6rem)]">
               {listing.vin_verified && (
-                <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                <Badge variant="default" className="bg-orange-100 text-orange-800 text-xs">
                   VIN Verified
                 </Badge>
               )}
               {sellerVerified && (
-                <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
+                <Badge variant="default" className="bg-orange-100 text-orange-800 text-xs">
                   Verified Seller
                 </Badge>
               )}
@@ -226,7 +226,7 @@ export default function ListingCard({
               <div className="text-2xl font-bold text-gray-900">
                 ${listing.price?.toLocaleString()}
               </div>
-              <Badge variant="default" className="bg-blue-100 text-blue-800 group-hover:bg-blue-50">
+              <Badge variant="default" className="bg-orange-100 text-orange-800 group-hover:bg-orange-50">
                 View Details →
               </Badge>
             </div>
@@ -236,9 +236,9 @@ export default function ListingCard({
           {isOwner && (
             <CardFooter 
               withBorder 
-              className="bg-blue-50 border-blue-100"
+              className="bg-orange-50 border-orange-100"
             >
-              <div className="flex items-center gap-2 text-sm font-medium text-blue-800">
+              <div className="flex items-center gap-2 text-sm font-medium text-orange-800">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>

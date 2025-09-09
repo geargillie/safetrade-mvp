@@ -73,15 +73,15 @@ export default function MeetingAgreement({
           </h3>
           <div className="text-sm text-blue-800 space-y-1">
             <p className="font-medium">{listingTitle}</p>
-            <p className="text-xl font-bold text-green-600">${listingPrice.toLocaleString()}</p>
+            <p className="text-xl font-bold text-orange-600">${listingPrice.toLocaleString()}</p>
             <p>📍 Located in {vicinity}</p>
           </div>
         </div>
 
         {isSellerView ? (
           <div className="space-y-4">
-            <div className="bg-green-100 rounded-lg p-4">
-              <p className="text-sm text-green-800">
+            <div className="bg-orange-100 rounded-lg p-4">
+              <p className="text-sm text-orange-800">
                 The buyer is interested in purchasing your motorcycle. 
                 Would you like to arrange a safe meeting location?
               </p>
@@ -227,7 +227,7 @@ export default function MeetingAgreement({
     return (
       <div className="card max-w-lg mx-auto">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             📍
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-2">Choose Safe Meeting Location</h3>
@@ -342,21 +342,21 @@ export default function MeetingAgreement({
     const finalLocation = selectedLocation === 'custom' ? customLocation : selectedLocation
     
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-md mx-auto">
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 max-w-md mx-auto">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             ✅
           </div>
           <h3 className="text-lg font-bold text-green-900 mb-2">Confirm Meeting Details</h3>
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white rounded-lg p-4 border border-green-200">
+          <div className="bg-white rounded-lg p-4 border border-orange-200">
             <div className="space-y-2 text-sm">
               <div><strong>Vehicle:</strong> {listingTitle}</div>
               <div className="flex items-center justify-between">
                 <span><strong>Agreed Price:</strong></span>
-                <span className="text-lg font-bold text-green-600">${agreedPrice.toLocaleString()}</span>
+                <span className="text-lg font-bold text-orange-600">${agreedPrice.toLocaleString()}</span>
               </div>
               {priceNegotiated && (
                 <div className="text-xs text-gray-600">

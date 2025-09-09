@@ -277,6 +277,18 @@ export default function CreateListing() {
             Sell your motorcycle safely with verified buyers and secure transactions
           </p>
           
+          {/* New Design System Indicator */}
+          <div className="flex items-center justify-center gap-3 mt-4 mb-2">
+            <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+              <div className="w-2 h-2 bg-black rounded-full"></div>
+              <span>Design System v3.0</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-orange-600">
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <span>Orange Palette</span>
+            </div>
+          </div>
+          
           {/* Simple Progress */}
           <div className="flex items-center justify-center element-group" style={{gap: 'var(--space-sm)'}}>
             <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -479,7 +491,7 @@ export default function CreateListing() {
                             setCurrentStep(2)
                           }
                         }}
-                        className="btn btn-primary btn-lg"
+                        className="btn btn-black btn-lg"
                       >
                         <span>Continue</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -612,11 +624,11 @@ export default function CreateListing() {
                         )}
                         
                         {vinVerification.result?.success && vinVerification.result.data?.isValid && (
-                          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <div className="flex items-center gap-2 p-3 bg-green-50 border border-orange-200 rounded-lg">
                             <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span className="text-sm text-green-800 font-medium">VIN verified successfully</span>
+                            <span className="text-sm text-orange-800 font-medium">VIN verified successfully</span>
                           </div>
                         )}
 
@@ -637,7 +649,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="btn-back"
+                        className="btn btn-secondary btn-md"
                       >
                         Back
                       </button>
@@ -649,7 +661,7 @@ export default function CreateListing() {
                             setCurrentStep(3)
                           }
                         }}
-                        className="btn-publish"
+                        className="btn btn-black btn-md"
                       >
                         Continue
                       </button>
@@ -726,7 +738,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="btn-back"
+                        className="btn btn-secondary btn-md"
                       >
                         Back
                       </button>
@@ -739,7 +751,7 @@ export default function CreateListing() {
                             setCurrentStep(4)
                           }
                         }}
-                        className="btn-publish"
+                        className="btn btn-black btn-md"
                       >
                         Continue to Review
                       </button>
@@ -891,7 +903,7 @@ export default function CreateListing() {
                       <button
                         type="button"
                         onClick={() => setCurrentStep(3)}
-                        className="btn-back"
+                        className="btn btn-secondary btn-md"
                       >
                         Back
                       </button>
@@ -899,7 +911,7 @@ export default function CreateListing() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className={`btn-publish ${loading ? 'opacity-50 cursor-not-allowed transform-none shadow-none' : ''}`}
+                        className={`btn btn-success btn-lg ${loading ? 'opacity-50 cursor-not-allowed transform-none shadow-none' : ''}`}
                       >
                         {loading ? 'Publishing Listing...' : 'Publish Listing'}
                       </button>

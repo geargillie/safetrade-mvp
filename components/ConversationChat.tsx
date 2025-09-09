@@ -126,8 +126,8 @@ export default function ConversationChat({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-blue-700 font-medium text-sm">
+          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-gray-700 font-medium text-sm">
               {conversationInfo!.otherUserName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2)}
             </span>
           </div>
@@ -137,7 +137,7 @@ export default function ConversationChat({
               {conversationInfo!.listingId ? (
                 <Link 
                   href={`/listings/${conversationInfo!.listingId}`}
-                  className="hover:text-blue-600 hover:underline transition-colors"
+                  className="hover:text-orange-600 hover:underline transition-colors"
                 >
                   {conversationInfo!.listingTitle}
                 </Link>
@@ -145,7 +145,7 @@ export default function ConversationChat({
                 <span>{conversationInfo!.listingTitle}</span>
               )}
               {conversationInfo!.listingPrice && (
-                <span className="ml-2 font-medium text-green-600">
+                <span className="ml-2 font-medium text-orange-600">
                   ${conversationInfo!.listingPrice.toLocaleString()}
                 </span>
               )}
@@ -164,7 +164,7 @@ export default function ConversationChat({
         {loading && messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-2"></div>
+              <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-2"></div>
               <p className="text-gray-500 text-sm">Loading messages...</p>
             </div>
           </div>
@@ -229,25 +229,25 @@ export default function ConversationChat({
                   <div
                     className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                       isOwnMessage
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-gray-900 text-white'
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
                     <p className="text-sm">{message.content}</p>
                     <div className="flex items-center justify-between mt-1">
                       <p className={`text-xs ${
-                        isOwnMessage ? 'text-blue-100' : 'text-gray-500'
+                        isOwnMessage ? 'text-gray-200' : 'text-gray-500'
                       }`}>
                         {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                       {isOwnMessage && message.status && (
                         <div className={`text-xs ${
-                          message.status === 'read' ? 'text-blue-100' : 'text-blue-200'
+                          message.status === 'read' ? 'text-gray-200' : 'text-gray-300'
                         }`}>
                           {message.status === 'sending' && '○'}
                           {message.status === 'sent' && '✓'}
                           {message.status === 'delivered' && '✓✓'}
-                          {message.status === 'read' && <span className="text-blue-100">✓✓</span>}
+                          {message.status === 'read' && <span className="text-gray-200">✓✓</span>}
                         </div>
                       )}
                     </div>
@@ -269,14 +269,14 @@ export default function ConversationChat({
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={`Message ${conversationInfo!.otherUserName}...`}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-[#ff6600] resize-none"
             rows={2}
             disabled={loading || sending}
           />
           <button
             onClick={handleSendMessage}
             disabled={!newMessage.trim() || sending}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-16"
+            className="btn btn-black btn-md px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-16"
           >
             {sending ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -292,6 +292,21 @@ export default function ConversationChat({
           <span>Press Enter to send, Shift+Enter for new line</span>
           <span>{newMessage.length}/500</span>
         </div>
+        
+        {/* Meeting Request Button */}
+        {conversationInfo && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <Link
+              href={`/meetings/schedule?listingId=${conversationInfo.listingId}&sellerId=${selectedConversation!.seller_id}&buyerId=${selectedConversation!.buyer_id}`}
+              className="btn btn-success btn-sm w-full flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Request Safe Meeting
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

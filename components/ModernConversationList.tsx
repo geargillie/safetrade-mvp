@@ -92,7 +92,7 @@ export default function ModernConversationList({
           {/* Enhanced connection status */}
           <div className="flex items-center gap-2">
             <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${
-              connectionStatus === 'connected' ? 'bg-green-500 animate-pulse' :
+              connectionStatus === 'connected' ? 'bg-orange-500 animate-pulse' :
               connectionStatus === 'connecting' ? 'bg-yellow-500 animate-bounce' : 'bg-red-500'
             }`} />
             <span className="text-xs text-gray-500 font-medium capitalize">
@@ -199,7 +199,7 @@ export default function ModernConversationList({
                         {otherUserName.charAt(0).toUpperCase()}
                       </div>
                       {/* Premium online indicator */}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-orange-500 border-2 border-white rounded-full shadow-sm"></div>
                     </div>
                     
                     {/* Enhanced content */}
@@ -217,7 +217,7 @@ export default function ModernConversationList({
                             <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
                               isSelected 
                                 ? 'bg-white/20 text-white border border-white/30' 
-                                : 'bg-green-50 text-green-700 border border-green-200'
+                                : 'bg-orange-50 text-green-700 border border-orange-200'
                             }`}>
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
@@ -278,7 +278,7 @@ export default function ModernConversationList({
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <svg className={`w-3 h-3 ${isSelected ? 'text-white/80' : 'text-green-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-3 h-3 ${isSelected ? 'text-white/80' : 'text-orange-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2" />
                           </svg>
                           <span className={`text-sm font-bold ${

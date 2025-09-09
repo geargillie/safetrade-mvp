@@ -120,21 +120,38 @@ export default function SafeZonesPage() {
   ];
 
   return (
-    <Layout showNavigation={true}>
+    <div className="page-wrapper">
+      <Layout showNavigation={true}>
+        {/* Hero Section - Clean header section */}
+        <section className="bg-white border-b border-gray-200 py-12">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Safe Zones
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            Find verified safe meeting locations near you. All safe zones are monitored, 
+            well-lit, and provide a secure environment for your transactions.
+          </p>
+          
+          {/* Design System Indicator */}
+          <div className="flex items-center justify-center gap-3 mt-4 mb-2">
+            <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+              <div className="w-2 h-2 bg-black rounded-full"></div>
+              <span>Design System v3.0</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
+              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
+              <span>Vercel Orange</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <div className="safe-zones-page">
-        <div className="safe-zones-container">
-          {/* Page Header - Notion-Inspired Clean Typography */}
-          <div className="safe-zones-header">
-            <h1 className="safe-zones-page-title">
-              Safe Zones
-            </h1>
-            <p className="safe-zones-page-subtitle">
-              Find verified safe meeting locations near you. All safe zones are monitored, 
-              well-lit, and provide a secure environment for your transactions.
-            </p>
+        <div className="container">
             
-            {/* Quick Stats */}
-            <div className="safe-zones-page-stats">
+          {/* Quick Stats */}
+          <div className="safe-zones-page-stats">
               <div className="safe-zones-stat-item">
                 <div className="safe-zones-stat-number">{safeZones.length}</div>
                 <div className="safe-zones-stat-label">Locations</div>
@@ -147,7 +164,6 @@ export default function SafeZonesPage() {
                 <div className="safe-zones-stat-number">24/7</div>
                 <div className="safe-zones-stat-label">Monitored</div>
               </div>
-            </div>
           </div>
 
           {/* Search & Filter Section - Vercel-Style Clean Interface */}
@@ -168,11 +184,11 @@ export default function SafeZonesPage() {
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   placeholder="Search by name, address, or features..."
-                  className="safe-zones-search-input"
+                  className="input"
                 />
                 <MapPin className="safe-zones-search-icon" />
               </div>
-              <button className="safe-zones-search-btn" onClick={fetchSafeZones}>
+              <button className="btn btn-black btn-md" onClick={fetchSafeZones}>
                 Search
               </button>
             </div>
@@ -185,14 +201,14 @@ export default function SafeZonesPage() {
                   <button
                     key={option.value}
                     onClick={() => setFilters({ ...filters, type: filters.type === option.value ? '' : option.value })}
-                    className={`safe-zones-filter-btn ${filters.type === option.value ? 'active' : ''}`}
+                    className={`btn btn-sm ${filters.type === option.value ? 'btn-primary' : 'btn-secondary'}`}
                   >
                     {option.label}
                   </button>
                 ))}
                 <button
                   onClick={() => setFilters({ ...filters, verified: filters.verified === true ? null : true })}
-                  className={`safe-zones-filter-btn ${filters.verified === true ? 'active' : ''}`}
+                  className={`btn btn-sm ${filters.verified === true ? 'btn-success' : 'btn-secondary'}`}
                 >
                   Verified Only
                 </button>
@@ -200,7 +216,7 @@ export default function SafeZonesPage() {
               {Object.values(filters).some(value => 
                 value !== '' && value !== null && value !== 0 && value !== 25
               ) && (
-                <button className="safe-zones-clear-filters" onClick={clearFilters}>
+                <button className="btn btn-ghost btn-sm" onClick={clearFilters}>
                   Clear all
                 </button>
               )}
@@ -231,7 +247,7 @@ export default function SafeZonesPage() {
               </div>
               <h3 className="safe-zones-empty-title">Error Loading Safe Zones</h3>
               <p className="safe-zones-empty-description">{error}</p>
-              <button className="safe-zones-empty-action" onClick={fetchSafeZones}>
+              <button className="btn btn-black btn-md" onClick={fetchSafeZones}>
                 Try Again
               </button>
             </div>
@@ -252,7 +268,7 @@ export default function SafeZonesPage() {
                   <p className="safe-zones-empty-description">
                     Try adjusting your search criteria or expanding your distance range.
                   </p>
-                  <button className="safe-zones-empty-action" onClick={clearFilters}>
+                  <button className="btn btn-black btn-md" onClick={clearFilters}>
                     Clear all filters
                   </button>
                 </div>
@@ -266,13 +282,13 @@ export default function SafeZonesPage() {
                       <div className="safe-zones-map-controls">
                         <button 
                           onClick={() => setViewMode('map')}
-                          className={`safe-zones-map-control-btn ${viewMode === 'map' ? 'active' : ''}`}
+                          className={`btn btn-sm ${viewMode === 'map' ? 'btn-black' : 'btn-secondary'}`}
                         >
                           Map
                         </button>
                         <button 
                           onClick={() => setViewMode('list')}
-                          className={`safe-zones-map-control-btn ${viewMode === 'list' ? 'active' : ''}`}
+                          className={`btn btn-sm ${viewMode === 'list' ? 'btn-black' : 'btn-secondary'}`}
                         >
                           List
                         </button>
@@ -301,7 +317,7 @@ export default function SafeZonesPage() {
                     
                     <div className="safe-zones-list">
                       {safeZones.slice(0, 10).map((safeZone) => (
-                        <div key={safeZone.id} className="safe-zone-card">
+                        <div key={safeZone.id} className="card card-interactive">
                           <div className="safe-zones-zone-header">
                             <h4 className="safe-zones-zone-name">{safeZone.name}</h4>
                             {safeZone.is_verified && (
@@ -333,8 +349,8 @@ export default function SafeZonesPage() {
                               </div>
                             )}
                             <div className="safe-zones-zone-actions">
-                              <button className="safe-zones-zone-action-btn">View</button>
-                              <button className="safe-zones-zone-action-btn primary">Select</button>
+                              <button className="btn btn-sm btn-ghost">View</button>
+                              <button className="btn btn-sm btn-success">Select</button>
                             </div>
                           </div>
                         </div>
@@ -344,7 +360,7 @@ export default function SafeZonesPage() {
                         <div className="text-center mt-4">
                           <button 
                             onClick={() => setViewMode('list')} 
-                            className="safe-zones-empty-action"
+                            className="btn btn-black btn-md"
                           >
                             View all {safeZones.length} safe zones
                           </button>
@@ -404,6 +420,7 @@ export default function SafeZonesPage() {
           )}
         </div>
       </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 }

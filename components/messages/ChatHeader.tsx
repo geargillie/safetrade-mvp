@@ -47,8 +47,8 @@ export default function ChatHeader({
   const getVerificationBadge = () => {
     if (conversation.is_verified) {
       return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-50 border border-green-200 rounded-full">
-          <ShieldCheckIcon className="w-3.5 h-3.5 text-green-600" />
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 rounded-full">
+          <ShieldCheckIcon className="w-3.5 h-3.5 text-orange-600" />
           <span className="text-xs font-semibold text-green-700">Verified</span>
         </div>
       );
@@ -78,7 +78,7 @@ export default function ChatHeader({
                 {getUserAvatar(otherUser.name)}
               </div>
               {/* Modern online status indicator */}
-              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm animate-pulse"></div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-orange-500 border-2 border-white rounded-full shadow-sm animate-pulse"></div>
             </div>
             
             {/* Enhanced User Details */}
@@ -101,7 +101,7 @@ export default function ChatHeader({
                 
                 {/* Activity status */}
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                   <span className="text-xs text-gray-500">Active now</span>
                 </div>
               </div>

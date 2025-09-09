@@ -101,16 +101,16 @@ export default function AuthStatus({ className = '', showDetails = false }: Auth
   }
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-md text-xs ${className}`}>
-      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 border border-orange-200 rounded-md text-xs ${className}`}>
+      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
       <span className="text-green-700 font-medium">Authenticated</span>
       
       {showDetails && (
-        <div className="flex items-center gap-2 ml-2 pl-2 border-l border-green-200">
-          <span className="text-green-600">{getExpiryStatus()}</span>
+        <div className="flex items-center gap-2 ml-2 pl-2 border-l border-orange-200">
+          <span className="text-orange-600">{getExpiryStatus()}</span>
           <button
             onClick={handleRefresh}
-            className="px-2 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded text-xs font-medium transition-colors"
+            className="px-2 py-1 bg-orange-100 hover:bg-orange-200 text-green-700 rounded text-xs font-medium transition-colors"
             title="Refresh session"
           >
             Refresh
@@ -119,7 +119,7 @@ export default function AuthStatus({ className = '', showDetails = false }: Auth
       )}
       
       {authStatus.error && (
-        <div className="ml-2 pl-2 border-l border-green-200">
+        <div className="ml-2 pl-2 border-l border-orange-200">
           <span className="text-red-600 text-xs">{authStatus.error}</span>
         </div>
       )}

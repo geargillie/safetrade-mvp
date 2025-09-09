@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function HomePage() {
@@ -46,26 +45,32 @@ export default function HomePage() {
               <p className="page-description">
                 All-in-one platform that verifies identities, checks vehicle histories, and secures transactions, right where you buy and sell.
               </p>
+              
+              {/* New Design System Indicator */}
+              <div className="flex items-center justify-center gap-3 mt-4 mb-2">
+                <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+                  <div className="w-2 h-2 bg-black rounded-full"></div>
+                  <span>Design System v3.0</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
+                  <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
+                  <span>Vercel Orange</span>
+                </div>
+              </div>
 
               {/* CTA Buttons with design system */}
               <div className="flex flex-col sm:flex-row justify-center items-center element-group" style={{gap: 'var(--space-lg)'}}>
                 <Link href="/listings">
-                  <Button 
-                    variant="primary" 
-                    size="xl" 
-                    className="min-w-48"
-                  >
+                  <button className="btn btn-black btn-xl min-w-48">
                     Browse motorcycles
-                  </Button>
+                  </button>
                 </Link>
-                <Button 
-                  variant="secondary" 
-                  size="xl" 
-                  className="min-w-48"
+                <button 
+                  className="btn btn-success btn-xl min-w-48"
                   onClick={handleStartSelling}
                 >
                   Create listing
-                </Button>
+                </button>
               </div>
             </div>
           </div>

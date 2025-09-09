@@ -216,7 +216,7 @@ export default function SafeZoneDetailPage({ params }: SafeZoneDetailPageProps) 
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-2xl font-bold text-gray-900">{safeZone.name}</h1>
                 {safeZone.isVerified && (
-                  <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <Badge className="bg-orange-100 text-orange-800 border-orange-200">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Verified
                   </Badge>

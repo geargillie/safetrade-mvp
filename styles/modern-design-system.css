@@ -1,0 +1,484 @@
+/* 
+ * SafeTrade Modern Design System v3.0
+ * Inspired by Grok.com (light mode), Vercel.com, and Notion.com
+ * Ultra-modern, clean, and professional aesthetic
+ */
+
+/* ================================
+ * COLOR SYSTEM - Modern & Fresh
+ * ================================ */
+:root {
+  /* Background Colors - Ultra-clean like Grok */
+  --color-background: #fefefe;           /* Ultra-light background */
+  --color-surface: #ffffff;             /* Pure white for cards */
+  --color-surface-elevated: #fbfbfb;    /* Slightly elevated surfaces */
+  --color-surface-hover: #f8fafc;       /* Hover states */
+  --color-surface-pressed: #f1f5f9;     /* Pressed states */
+  
+  /* Text Colors - High Contrast like Vercel */
+  --color-text-primary: #000000;        /* True black for headings */
+  --color-text-secondary: #525252;      /* Medium gray for body */
+  --color-text-tertiary: #a3a3a3;       /* Light gray for meta info */
+  --color-text-quaternary: #d4d4d4;     /* Very light for placeholders */
+  --color-text-inverse: #ffffff;        /* White text on dark backgrounds */
+  
+  /* Accent Colors - Grok.com inspired with black primary */
+  --color-accent-primary: #000000;      /* Grok-style black */
+  --color-accent-primary-hover: #1a1a1a; /* Dark gray on hover */
+  --color-accent-secondary: #525252;    /* Medium gray accent */
+  --color-accent-success: #059669;      /* Clean green */
+  --color-accent-warning: #ea580c;      /* Orange */
+  --color-accent-error: #dc2626;        /* Red */
+  
+  /* Border Colors - Subtle like Notion */
+  --color-border-light: #f3f4f6;        /* Very light borders */
+  --color-border-medium: #e5e7eb;       /* Standard borders */
+  --color-border-strong: #d1d5db;       /* Emphasized borders */
+  --color-border-accent: #e5e5e5;       /* Accent borders - gray for black theme */
+  
+  /* Modern Gradients - Grok-inspired with black */
+  --gradient-primary: linear-gradient(135deg, #000000 0%, #2a2a2a 100%);
+  --gradient-secondary: linear-gradient(135deg, #525252 0%, #737373 100%);
+  --gradient-subtle: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  --gradient-accent: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  
+  /* Shadow System - Modern and Soft */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+}
+
+/* ================================
+ * TYPOGRAPHY SYSTEM - Modern Hierarchy
+ * ================================ */
+:root {
+  /* Font Families - Clean and Modern */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  
+  /* Font Sizes - Modern Scale */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+  
+  /* Line Heights - Optimized for readability */
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
+/* ================================
+ * SPACING SYSTEM - Consistent Scale
+ * ================================ */
+:root {
+  --space-px: 1px;
+  --space-0: 0;
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+  --space-32: 8rem;      /* 128px */
+}
+
+/* ================================
+ * BORDER RADIUS - Modern Rounded Corners
+ * ================================ */
+:root {
+  --radius-none: 0;
+  --radius-sm: 0.375rem;     /* 6px */
+  --radius-md: 0.5rem;       /* 8px */
+  --radius-lg: 0.75rem;      /* 12px */
+  --radius-xl: 1rem;         /* 16px */
+  --radius-2xl: 1.5rem;      /* 24px */
+  --radius-full: 9999px;     /* Fully rounded */
+}
+
+/* ================================
+ * BASE STYLES - Clean Foundation
+ * ================================ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-normal);
+}
+
+/* ================================
+ * TYPOGRAPHY CLASSES - Notion-inspired
+ * ================================ */
+.text-display {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+.text-headline {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+.text-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+.text-subtitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-primary);
+}
+
+.text-body {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+.text-body-sm {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+.text-caption {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-tertiary);
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+/* ================================
+ * COLOR UTILITIES
+ * ================================ */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-quaternary { color: var(--color-text-quaternary); }
+.text-inverse { color: var(--color-text-inverse); }
+.text-accent { color: var(--color-accent-secondary); }
+.text-success { color: var(--color-accent-success); }
+.text-warning { color: var(--color-accent-warning); }
+.text-error { color: var(--color-accent-error); }
+
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-elevated { background-color: var(--color-surface-elevated); }
+.bg-surface-hover { background-color: var(--color-surface-hover); }
+.bg-accent { background-color: var(--color-accent-secondary); }
+.bg-accent-hover { background-color: var(--color-text-secondary); }
+.bg-success { background-color: var(--color-accent-success); }
+.bg-warning { background-color: var(--color-accent-warning); }
+.bg-error { background-color: var(--color-accent-error); }
+
+/* ================================
+ * MODERN BUTTON SYSTEM - Vercel/Grok inspired
+ * ================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: all 0.1s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-secondary);
+  outline-offset: 2px;
+}
+
+/* Primary Button - Using secondary color */
+.btn-primary {
+  background: var(--gradient-secondary);
+  color: var(--color-text-inverse);
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Secondary Button - Clean and minimal */
+.btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-medium);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Ghost Button - Minimal interaction */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* Button Sizes */
+.btn-sm {
+  height: 2rem;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.btn-md {
+  height: 2.5rem;
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-base);
+}
+
+.btn-lg {
+  height: 3rem;
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+.btn-xl {
+  height: 3.5rem;
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-lg);
+}
+
+/* ================================
+ * MODERN CARD SYSTEM
+ * ================================ */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.08s ease;
+}
+
+.card:hover {
+  border-color: var(--color-border-medium);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-elevated {
+  box-shadow: var(--shadow-md);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ================================
+ * MODERN INPUT SYSTEM
+ * ================================ */
+.input {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 var(--space-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  transition: all 0.08s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent-secondary);
+  box-shadow: 0 0 0 3px var(--color-border-accent);
+}
+
+.input::placeholder {
+  color: var(--color-text-quaternary);
+}
+
+.textarea {
+  min-height: 4rem;
+  padding: var(--space-2) var(--space-3);
+  resize: vertical;
+  line-height: var(--line-height-normal);
+}
+
+/* ================================
+ * MODERN LAYOUT UTILITIES
+ * ================================ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.container-sm {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.stack-sm { gap: var(--space-2); }
+.stack-md { gap: var(--space-4); }
+.stack-lg { gap: var(--space-6); }
+.stack-xl { gap: var(--space-8); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { align-items: center; justify-content: center; }
+.flex-between { justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* ================================
+ * MODERN ANIMATIONS
+ * ================================ */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* ================================
+ * RESPONSIVE BREAKPOINTS
+ * ================================ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-4);
+  }
+  
+  .text-display {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .text-headline {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* ================================
+ * ACCESSIBILITY
+ * ================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.btn:focus-visible,
+.input:focus-visible {
+  outline: 2px solid var(--color-accent-secondary);
+  outline-offset: 2px;
+}

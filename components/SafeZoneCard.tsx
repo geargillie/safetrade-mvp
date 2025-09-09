@@ -169,7 +169,7 @@ export default function SafeZoneCard({
           </div>
           
           {safeZone.isVerified && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+            <div className="flex items-center gap-1 px-2 py-1 bg-orange-100 text-green-700 rounded-full text-xs">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
@@ -229,7 +229,7 @@ export default function SafeZoneCard({
                   {safeZone.name}
                 </h3>
                 {safeZone.isVerified && (
-                  <div className="flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                  <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-green-700 rounded-full text-xs font-medium">
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -252,7 +252,7 @@ export default function SafeZoneCard({
           {/* Status Indicator */}
           <div className={`
             w-3 h-3 rounded-full
-            ${safeZone.status === 'active' ? 'bg-green-500' : 
+            ${safeZone.status === 'active' ? 'bg-orange-500' : 
               safeZone.status === 'temporarily_closed' ? 'bg-yellow-500' : 'bg-gray-400'}
           `} title={safeZone.status} />
         </div>

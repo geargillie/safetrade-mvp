@@ -522,7 +522,7 @@ export default function EditListing() {
               {message && (
                 <div className={`p-3 rounded-lg mb-3 ${message.includes('error') || message.includes('failed') || message.includes('correct')
                   ? 'bg-red-50 border border-red-200 text-red-800' 
-                  : 'bg-green-50 border border-green-200 text-green-800'
+                  : 'bg-green-50 border border-orange-200 text-orange-800'
                 }`}>
                   <div className="flex items-center gap-2">
                     {message.includes('error') || message.includes('failed') || message.includes('correct') ? (

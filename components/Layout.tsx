@@ -62,7 +62,7 @@ export default function Layout({
           {loading ? (
             <div className="flex items-center justify-center min-h-64">
               <div className="text-center animate-fade-in">
-                <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4" style={{borderWidth: '2px', borderColor: 'var(--neutral-200)', borderTopColor: 'var(--brand-primary)'}}></div>
+                <div className="animate-spin rounded-full h-12 w-12 mx-auto mb-4" style={{borderWidth: '2px', borderColor: 'var(--neutral-200)', borderTopColor: '#000000'}}></div>
                 <p className="text-body" style={{color: 'var(--neutral-600)'}}>Loading...</p>
               </div>
             </div>

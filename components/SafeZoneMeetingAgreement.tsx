@@ -259,7 +259,7 @@ export default function SafeZoneMeetingAgreement({
           </h3>
           <div className="text-sm text-blue-800 space-y-1">
             <p className="font-medium">{listingTitle}</p>
-            <p className="text-xl font-bold text-green-600">${listingPrice.toLocaleString()}</p>
+            <p className="text-xl font-bold text-orange-600">${listingPrice.toLocaleString()}</p>
           </div>
         </div>
 
@@ -274,8 +274,8 @@ export default function SafeZoneMeetingAgreement({
 
         {isSellerView ? (
           <div className="space-y-4">
-            <div className="bg-green-100 rounded-lg p-4">
-              <p className="text-sm text-green-800">
+            <div className="bg-orange-100 rounded-lg p-4">
+              <p className="text-sm text-orange-800">
                 The buyer wants to purchase your motorcycle using SafeTrade&apos;s secure process.
               </p>
             </div>
@@ -414,7 +414,7 @@ export default function SafeZoneMeetingAgreement({
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Your Status:</span>
-              <span className="text-green-600 font-medium">✅ Agreed</span>
+              <span className="text-orange-600 font-medium">✅ Agreed</span>
             </div>
             <div className="flex justify-between">
               <span>{isSellerView ? 'Buyer' : 'Seller'} Status:</span>
@@ -422,7 +422,7 @@ export default function SafeZoneMeetingAgreement({
             </div>
             <div className="flex justify-between items-center">
               <span>Agreed Price:</span>
-              <span className="font-bold text-green-600">${agreedPrice.toLocaleString()}</span>
+              <span className="font-bold text-orange-600">${agreedPrice.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -440,7 +440,7 @@ export default function SafeZoneMeetingAgreement({
     return (
       <div className="card max-w-2xl mx-auto">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             📍
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-2">Choose Safe Meeting Location</h3>
@@ -449,12 +449,12 @@ export default function SafeZoneMeetingAgreement({
           </p>
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-green-900">🤝 Deal Confirmed:</span>
-            <span className="text-lg font-bold text-green-600">${agreedPrice.toLocaleString()}</span>
+            <span className="text-lg font-bold text-orange-600">${agreedPrice.toLocaleString()}</span>
           </div>
-          <p className="text-sm text-green-800">
+          <p className="text-sm text-orange-800">
             Contact information is now available to both parties.
           </p>
         </div>
@@ -490,7 +490,7 @@ export default function SafeZoneMeetingAgreement({
                     <p className="text-sm text-gray-600 mb-1">{zone.address}</p>
                     <div className="flex flex-wrap gap-1">
                       {zone.features.map((feature, idx) => (
-                        <span key={idx} className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                        <span key={idx} className="text-xs bg-orange-100 text-green-700 px-2 py-0.5 rounded">
                           {feature.replace('_', ' ')}
                         </span>
                       ))}
@@ -596,22 +596,22 @@ export default function SafeZoneMeetingAgreement({
     const finalLocation = selectedZone ? selectedZone.name : customLocation
     
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-md mx-auto">
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 max-w-md mx-auto">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             ✅
           </div>
           <h3 className="text-lg font-bold text-green-900 mb-2">Meeting Confirmed!</h3>
-          <p className="text-sm text-green-800">
+          <p className="text-sm text-orange-800">
             Safe transaction details have been shared with both parties.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg p-4 border border-green-200 space-y-3">
+        <div className="bg-white rounded-lg p-4 border border-orange-200 space-y-3">
           <div><strong>Vehicle:</strong> {listingTitle}</div>
           <div className="flex justify-between items-center">
             <strong>Final Price:</strong>
-            <span className="text-lg font-bold text-green-600">${agreedPrice.toLocaleString()}</span>
+            <span className="text-lg font-bold text-orange-600">${agreedPrice.toLocaleString()}</span>
           </div>
           <div><strong>Location:</strong> {finalLocation}</div>
           <div><strong>Date & Time:</strong> {selectedDate} at {selectedTime}</div>

@@ -37,8 +37,8 @@ export default function UserDiagnostic() {
           <div><strong>ID:</strong> {userInfo.id.substring(0, 12)}...</div>
           <div><strong>Email:</strong> {userInfo.email || 'N/A'}</div>
           <div><strong>Role:</strong> authenticated</div>
-          <div className="mt-2 p-2 bg-green-100 rounded">
-            <div className="text-green-800 font-medium">✅ Authenticated</div>
+          <div className="mt-2 p-2 bg-orange-100 rounded">
+            <div className="text-orange-800 font-medium">✅ Authenticated</div>
             <div className="text-green-700 text-xs">You can delete listings you own</div>
           </div>
         </div>

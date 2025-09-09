@@ -122,20 +122,20 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-between">
                     <h3 className="section-title">Identity Verification</h3>
                     {isVerified && (
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm font-medium">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-orange-200 text-green-700 rounded-md text-sm font-medium">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                         Verified
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start gap-3 p-4 bg-green-50 border border-orange-200 rounded-lg">
+                  <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-lg">✓</span>
                   </div>
                   <div>
-                    <h4 className="card-title mb-2 text-green-800">
+                    <h4 className="card-title mb-2 text-orange-800">
                       Identity Verified
                     </h4>
                     <p className="body-text text-green-700">

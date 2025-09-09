@@ -150,7 +150,7 @@ export default function AdminDashboard() {
 
   const getStatusBadge = (status: SafeZoneStatus) => {
     const variants: Record<SafeZoneStatus, string> = {
-      [SafeZoneStatus.ACTIVE]: 'bg-green-100 text-green-800 border-green-200',
+      [SafeZoneStatus.ACTIVE]: 'bg-orange-100 text-orange-800 border-orange-200',
       [SafeZoneStatus.INACTIVE]: 'bg-gray-100 text-gray-800 border-gray-200',
       [SafeZoneStatus.TEMPORARILY_CLOSED]: 'bg-orange-100 text-orange-800 border-orange-200',
       [SafeZoneStatus.PENDING_VERIFICATION]: 'bg-blue-100 text-blue-800 border-blue-200'
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3 mt-4">
               <Badge 
                 className={`${
-                  stats.systemHealth === 'healthy' ? 'bg-green-100 text-green-800 border-green-200' :
+                  stats.systemHealth === 'healthy' ? 'bg-orange-100 text-orange-800 border-orange-200' :
                   stats.systemHealth === 'warning' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
                   'bg-red-100 text-red-800 border-red-200'
                 }`}
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
                 {/* Safe Zones */}
                 <div className="stat-card">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                       <Shield className="w-6 h-6 text-green-600" />
                     </div>
                     <TrendingUp className="w-5 h-5 text-green-500" />
@@ -329,7 +329,7 @@ export default function AdminDashboard() {
                     <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.type === 'user' ? 'bg-blue-100 text-blue-600' :
-                        activity.type === 'safezone' ? 'bg-green-100 text-green-600' :
+                        activity.type === 'safezone' ? 'bg-orange-100 text-green-600' :
                         activity.type === 'meeting' ? 'bg-purple-100 text-purple-600' :
                         'bg-orange-100 text-orange-600'
                       }`}>
@@ -530,21 +530,21 @@ export default function AdminDashboard() {
                       <CheckCircle className="w-5 h-5 text-green-600" />
                       <span className="text-sm font-medium text-gray-900">Database</span>
                     </div>
-                    <Badge className="bg-green-100 text-green-800 border-green-200">Healthy</Badge>
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-200">Healthy</Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <CheckCircle className="w-5 h-5 text-green-600" />
                       <span className="text-sm font-medium text-gray-900">API Services</span>
                     </div>
-                    <Badge className="bg-green-100 text-green-800 border-green-200">Healthy</Badge>
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-200">Healthy</Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <CheckCircle className="w-5 h-5 text-green-600" />
                       <span className="text-sm font-medium text-gray-900">Safety Systems</span>
                     </div>
-                    <Badge className="bg-green-100 text-green-800 border-green-200">Healthy</Badge>
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-200">Healthy</Badge>
                   </div>
                 </div>
               </div>

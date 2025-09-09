@@ -222,7 +222,7 @@ export default function ListingDetailsPage() {
             </p>
             <Link 
               href="/listings"
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+              className="btn btn-black btn-lg"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -253,6 +253,18 @@ export default function ListingDetailsPage() {
               </Link>
             </nav>
             
+            {/* New Design System Indicator */}
+            <div className="flex items-center justify-center gap-3 mt-4 mb-6">
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+                <div className="w-2 h-2 bg-black rounded-full"></div>
+                <span>Design System v3.0</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-orange-600">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <span>No-Blue Detail View</span>
+              </div>
+            </div>
+            
             {/* Hero Image Gallery */}
             <div className="listing-details-hero">
               {listing.images && listing.images.length > 0 ? (
@@ -269,14 +281,14 @@ export default function ListingDetailsPage() {
                       <>
                         <button
                           onClick={() => setSelectedImageIndex(prev => prev === 0 ? listing.images.length - 1 : prev - 1)}
-                          className="listing-details-nav-btn listing-details-nav-prev"
+                          className="btn btn-secondary btn-sm"
                           aria-label="Previous image"
                         >
                           ←
                         </button>
                         <button
                           onClick={() => setSelectedImageIndex(prev => prev === listing.images.length - 1 ? 0 : prev + 1)}
-                          className="listing-details-nav-btn listing-details-nav-next"
+                          className="btn btn-secondary btn-sm"
                           aria-label="Next image"
                         >
                           →
@@ -340,7 +352,7 @@ export default function ListingDetailsPage() {
                     <button
                       onClick={handleToggleFavorite}
                       disabled={isTogglingFavorite || favoritesLoading}
-                      className={`listing-details-favorite-btn ${isFavorited(listing.id) ? 'favorited' : ''}`}
+                      className={`btn btn-secondary btn-sm ${isFavorited(listing.id) ? 'bg-orange-100 text-orange-800 hover:bg-orange-200' : ''}`}
                       aria-label={isFavorited(listing.id) ? 'Remove from favorites' : 'Add to favorites'}
                       title={isFavorited(listing.id) ? 'Remove from favorites' : 'Add to favorites'}
                     >
@@ -520,7 +532,7 @@ export default function ListingDetailsPage() {
                       <div className="listing-details-status-management">
                         <button
                           onClick={() => setShowStatusSelector(!showStatusSelector)}
-                          className="listing-details-manage-btn"
+                          className="btn btn-secondary btn-sm"
                           disabled={isUpdatingStatus}
                         >
                           {isUpdatingStatus ? 'Updating...' : 'Manage Status'}
@@ -556,13 +568,13 @@ export default function ListingDetailsPage() {
                       <div className="listing-details-owner-actions">
                         <Link 
                           href={`/listings/${listing.id}/edit`} 
-                          className="listing-details-action-btn primary"
+                          className="btn btn-black btn-md"
                         >
                           Edit listing
                         </Link>
                         <Link 
                           href="/messages" 
-                          className="listing-details-action-btn secondary"
+                          className="btn btn-secondary btn-md"
                         >
                           View messages
                         </Link>
@@ -590,7 +602,7 @@ export default function ListingDetailsPage() {
                             sellerId={listing.user_id}
                             buyerId={user.id}
                             size="lg"
-                            className="listing-details-message-btn"
+                            className="btn btn-success btn-md"
                             context="listing"
                           />
                         </div>
@@ -603,7 +615,7 @@ export default function ListingDetailsPage() {
                     <p className="listing-details-signin-text">Sign in to contact the seller through our secure platform</p>
                     <Link 
                       href="/auth/login" 
-                      className="listing-details-action-btn primary"
+                      className="btn btn-black btn-md"
                     >
                       Sign in to message seller
                     </Link>

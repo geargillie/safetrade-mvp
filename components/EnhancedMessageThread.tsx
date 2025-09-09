@@ -251,14 +251,14 @@ export default function EnhancedMessageThread({
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Encryption:</span>
                   <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                     <span className="text-black font-medium">End-to-end</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Fraud Detection:</span>
                   <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                     <span className="text-black font-medium">Active</span>
                   </div>
                 </div>

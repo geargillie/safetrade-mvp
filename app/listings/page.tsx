@@ -193,15 +193,27 @@ export default function ListingsPage() {
   return (
     <div className="page-wrapper browse-page">
       <Layout showNavigation={true}>
-        {/* Page Header */}
-        <div className="page-header">
-          <div className="container">
-            <h1 className="page-title">Browse Motorcycles</h1>
-            <p className="page-description">
-              Find your perfect ride from verified sellers across the marketplace
+        {/* Hero Section - Clean header section */}
+        <section className="bg-white border-b border-gray-200 py-12">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Browse Motorcycles</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+              Discover your next motorcycle from verified sellers. All listings include identity verification and vehicle history checks.
             </p>
+            
+            {/* Design System Indicator */}
+            <div className="flex items-center justify-center gap-3 mt-4 mb-2">
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+                <div className="w-2 h-2 bg-black rounded-full"></div>
+                <span>Design System v3.0</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
+                <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
+                <span>Vercel Orange</span>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
         <div className="page-content">
           <div className="container">
@@ -267,13 +279,12 @@ export default function ListingsPage() {
               <div className="flex items-center justify-between text-sm text-tertiary">
                 <span className="body-text">{listings.length} motorcycles found</span>
                 {Object.values(filters).some(value => value !== '') && (
-                  <Button
+                  <button
                     onClick={clearFilters}
-                    variant="ghost"
-                    size="sm"
+                    className="btn btn-ghost btn-sm"
                   >
                     Clear filters
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
@@ -281,7 +292,7 @@ export default function ListingsPage() {
             {/* Loading State */}
             {loading && (
               <div className="content-section text-center page-section">
-                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto small-gap"></div>
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto small-gap"></div>
                 <p className="body-text">Loading motorcycles...</p>
               </div>
             )}
@@ -304,12 +315,12 @@ export default function ListingsPage() {
                   }
                 </p>
                 {Object.values(filters).some(value => value !== '') && (
-                  <Button
+                  <button
                     onClick={clearFilters}
-                    variant="ghost"
+                    className="btn btn-black btn-md"
                   >
                     View all motorcycles
-                  </Button>
+                  </button>
                 )}
               </div>
             )}

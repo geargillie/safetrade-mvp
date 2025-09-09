@@ -5,9 +5,9 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Layout from '@/components/Layout';
 import ConversationChat from '@/components/ConversationChat';
 import { useEnhancedMessaging } from '@/hooks/useEnhancedMessaging';
@@ -21,8 +21,9 @@ interface User {
   };
 }
 
-export default function MessagesPage() {
+function MessagesPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
@@ -94,6 +95,18 @@ export default function MessagesPage() {
     checkUser();
   }, [checkUser]);
 
+  // Handle URL parameter for conversation selection
+  useEffect(() => {
+    const conversationId = searchParams.get('conversationId');
+    if (conversationId && conversations.length > 0) {
+      const conversationExists = conversations.find(c => c.id === conversationId);
+      if (conversationExists) {
+        setSelectedConversationId(conversationId);
+        setShowMobileConversations(false);
+      }
+    }
+  }, [searchParams, conversations]);
+
   // Handle conversation selection
   const handleConversationSelect = (conversationId: string) => {
     setSelectedConversationId(conversationId);
@@ -111,7 +124,7 @@ export default function MessagesPage() {
       <Layout showNavigation={true}>
         <div className="flex items-center justify-center min-h-96">
           <div className="text-center">
-            <div className="w-16 h-16 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-2 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-gray-600 font-medium">Loading messages...</div>
           </div>
         </div>
@@ -134,7 +147,7 @@ export default function MessagesPage() {
             <p className="text-gray-600 mb-8">Connect with buyers and sellers securely through our messaging system.</p>
             <button 
               onClick={() => window.location.href = '/auth/login?redirectTo=/messages'}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="btn btn-black btn-lg"
             >
               Sign In
             </button>
@@ -147,14 +160,26 @@ export default function MessagesPage() {
   return (
     <Layout showNavigation={true}>
       {/* Hero Section - Similar to home/create pages */}
-      <section className="bg-white border-b border-gray-200 page-section">
-        <div className="max-w-4xl mx-auto px-6 text-center" style={{paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-lg)'}}>
-          <h1 className="text-headline">
+      <section className="bg-white border-b border-gray-200 py-12">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Messages
           </h1>
-          <p className="text-body max-w-2xl mx-auto element-group">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
             Connect with buyers and sellers for secure motorcycle transactions
           </p>
+          
+          {/* Design System Indicator */}
+          <div className="flex items-center justify-center gap-3 mt-4 mb-2">
+            <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full text-xs text-gray-600">
+              <div className="w-2 h-2 bg-black rounded-full"></div>
+              <span>Design System v3.0</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1 bg-orange-50 rounded-full text-xs text-[#ff6600]">
+              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
+              <span>Vercel Orange</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -185,7 +210,7 @@ export default function MessagesPage() {
                   <p className="text-sm text-gray-500 mb-6">Start a conversation by contacting someone about a listing</p>
                   <button
                     onClick={() => router.push('/listings')}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    className="btn btn-black btn-md"
                   >
                     Browse Listings
                   </button>
@@ -206,12 +231,12 @@ export default function MessagesPage() {
                         onClick={() => handleConversationSelect(conversation.id)}
                         className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors ${
                           isSelected 
-                            ? 'bg-blue-50 border-blue-200 border' 
+                            ? 'bg-orange-50 border-[#ff6600] border' 
                             : 'hover:bg-gray-50 border border-transparent'
                         }`}
                       >
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-blue-700 font-medium text-sm">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-gray-700 font-medium text-sm">
                             {otherUserName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2)}
                           </span>
                         </div>
@@ -227,7 +252,7 @@ export default function MessagesPage() {
                               {conversation.last_message_at ? new Date(conversation.last_message_at).toLocaleDateString() : 'No messages'}
                             </p>
                             {conversation.unread_count > 0 && (
-                              <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center ml-2">
+                              <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center ml-2">
                                 <span className="text-white text-xs font-medium">
                                   {conversation.unread_count > 9 ? '9+' : conversation.unread_count}
                                 </span>
@@ -255,5 +280,22 @@ export default function MessagesPage() {
         </div>
       </div>
     </Layout>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={
+      <Layout showNavigation={true}>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <div className="w-16 h-16 border-2 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-gray-600 font-medium">Loading messages...</div>
+          </div>
+        </div>
+      </Layout>
+    }>
+      <MessagesPageContent />
+    </Suspense>
   );
 }

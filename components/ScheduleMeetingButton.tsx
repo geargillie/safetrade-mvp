@@ -49,8 +49,8 @@ export default function ScheduleMeetingButton({
   
   const variantClasses = {
     button: 'bg-green-600 hover:bg-green-700 text-white border-2 border-green-600 hover:border-green-700',
-    link: 'text-green-600 hover:text-green-700 underline decoration-2 underline-offset-4 hover:decoration-green-700',
-    compact: 'bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 hover:border-green-300'
+    link: 'text-orange-600 hover:text-green-700 underline decoration-2 underline-offset-4 hover:decoration-green-700',
+    compact: 'bg-orange-50 hover:bg-orange-100 text-green-700 border border-orange-200 hover:border-green-300'
   };
 
   const iconSize = size === 'lg' ? 'w-5 h-5' : 'w-4 h-4';

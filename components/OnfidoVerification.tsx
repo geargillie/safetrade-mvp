@@ -485,7 +485,7 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
         {/* Header */}
         <div className="text-center py-8 px-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full shadow-sm">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium text-gray-700">Secure & Encrypted</span>
           </div>
           
@@ -513,13 +513,13 @@ export default function OnfidoVerification({ userId, onComplete, onError }: Onfi
         {/* Trust indicators */}
         <div className="text-center px-6 pb-8">
           <div className="flex flex-wrap justify-center items-center gap-2 max-w-lg mx-auto">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 backdrop-blur-fallback border border-green-200 rounded-full shadow-sm">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shadow-sm">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 backdrop-blur-fallback border border-orange-200 rounded-full shadow-sm">
+              <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center shadow-sm">
                 <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-xs font-semibold text-green-800">Bank-Grade Security</span>
+              <span className="text-xs font-semibold text-orange-800">Bank-Grade Security</span>
             </div>
             
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-cyan-50 backdrop-blur-fallback border border-blue-200 rounded-full shadow-sm">

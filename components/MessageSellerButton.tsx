@@ -32,14 +32,19 @@ export default function MessageSellerButton({
     setError(null);
     
     try {
-      await getOrCreateConversation(
+      const conversation = await getOrCreateConversation(
         listingId,
         buyerId,
         sellerId
       );
       
-      // Redirect to enhanced messages page
-      router.push('/messages');
+      // Redirect to messages page with conversation selected
+      // The RPC function returns just the conversation ID as a UUID
+      if (conversation) {
+        router.push(`/messages?conversationId=${conversation}`);
+      } else {
+        router.push('/messages');
+      }
     } catch (error: unknown) {
       console.error('Error starting conversation:', error);
       
@@ -59,7 +64,7 @@ export default function MessageSellerButton({
 
   // Get button styles based on size - Safe zones page inspired
   const getButtonStyles = () => {
-    const baseStyles = 'font-medium transition-all duration-200 flex items-center justify-center gap-2 rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2';
+    const baseStyles = 'font-medium transition-all duration-200 flex items-center justify-center gap-2 rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2';
     
     const sizeStyles = {
       sm: 'px-3 py-2 text-sm',
@@ -67,9 +72,9 @@ export default function MessageSellerButton({
       lg: 'px-6 py-3 text-base'
     };
     
-    // Use safe zones/listing details styling
+    // Use safe zones/listing details styling with Vercel orange accent
     const contextStyles = context === 'listing' 
-      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:border-blue-700'
+      ? 'bg-[#ff6600] text-white border-[#ff6600] hover:bg-[#e55a00] hover:border-[#e55a00]'
       : 'bg-gray-100 text-black border-gray-300 hover:bg-gray-200';
     
     return `${baseStyles} ${sizeStyles[size]} ${contextStyles}`;
@@ -121,7 +126,7 @@ export default function MessageSellerButton({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
           <span>Contact Seller</span>
-          <div className="w-1.5 h-1.5 bg-green-400 rounded-full ml-1 animate-pulse"></div>
+          <div className="w-1.5 h-1.5 bg-[#ff6600] rounded-full ml-1 animate-pulse opacity-70"></div>
         </>
       )}
     </button>
