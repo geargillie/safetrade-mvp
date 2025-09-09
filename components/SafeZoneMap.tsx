@@ -95,13 +95,16 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
   const [searchLoading, setSearchLoading] = useState(false);
   const [mapType, setMapType] = useState<'roadmap' | 'satellite'>('roadmap');
 
-  // Initialize Google Maps
+  // Initialize Google Maps with comprehensive error handling
   useEffect(() => {
     const initMap = async () => {
       try {
         // Check if API key is configured
         if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
-          throw new Error('Google Maps API key is not configured. Contact support for map functionality.');
+          // Set error state but don't throw - this allows the fallback UI to render
+          setMapError('Google Maps API key is not configured. Contact support for map functionality.');
+          setMapLoaded(false);
+          return; // Exit gracefully instead of throwing
         }
 
         if (!isGoogleMapsLoaded()) {
@@ -111,12 +114,20 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
         setMapError(null);
       } catch (err) {
         console.error('Failed to load Google Maps:', err);
+        // Set error state instead of throwing
         setMapError(err instanceof Error ? err.message : 'Failed to load map');
         setMapLoaded(false);
       }
     };
 
-    initMap();
+    // Wrap in try-catch to prevent any unhandled errors from bubbling up
+    try {
+      initMap();
+    } catch (err) {
+      console.error('Error initializing map:', err);
+      setMapError('Failed to initialize map');
+      setMapLoaded(false);
+    }
   }, []);
 
   // Create map instance

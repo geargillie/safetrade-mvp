@@ -33,6 +33,7 @@ export default function SafeZonesPage() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [userLocation, setUserLocation] = useState<{latitude: number; longitude: number} | null>(null);
+  const [componentError, setComponentError] = useState<string | null>(null);
   
   const [filters, setFilters] = useState<SafeZoneFilters>({
     search: '',
@@ -42,20 +43,30 @@ export default function SafeZonesPage() {
     minRating: 0
   });
 
-  // Get user location
+  // Get user location with proper error handling
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.warn('Could not get user location:', error);
-        }
-      );
+    if (typeof window !== 'undefined' && 'navigator' in window && 'geolocation' in navigator) {
+      try {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            });
+          },
+          (error) => {
+            console.warn('Could not get user location:', error);
+            // Don't throw error, just continue without location
+          },
+          {
+            timeout: 10000,
+            enableHighAccuracy: false,
+            maximumAge: 300000
+          }
+        );
+      } catch (error) {
+        console.warn('Geolocation not supported or failed:', error);
+      }
     }
   }, []);
 
@@ -267,16 +278,39 @@ export default function SafeZonesPage() {
                       </div>
                     </div>
                     <div className="safe-zones-map-container">
-                      <SafeZoneMap
-                        safeZones={safeZones}
-                        loading={loading}
-                        error={null}
-                        showUserLocation={!!userLocation}
-                        onSafeZoneSelect={(safeZone) => {
-                          console.log('Selected safe zone:', safeZone.name);
-                        }}
-                        height="400px"
-                      />
+                      {(() => {
+                        try {
+                          return (
+                            <SafeZoneMap
+                              safeZones={safeZones || []}
+                              loading={loading}
+                              error={null}
+                              showUserLocation={!!userLocation}
+                              onSafeZoneSelect={(safeZone) => {
+                                console.log('Selected safe zone:', safeZone?.name);
+                              }}
+                              height="400px"
+                            />
+                          );
+                        } catch (err) {
+                          console.error('Error rendering SafeZoneMap:', err);
+                          return (
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center" style={{height: '400px'}}>
+                              <div className="flex items-center justify-center h-full">
+                                <div>
+                                  <div className="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                    </svg>
+                                  </div>
+                                  <h3 className="text-sm font-medium text-gray-900 mb-1">Map Service Unavailable</h3>
+                                  <p className="text-xs text-gray-500">Please switch to list view to see safe zones</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
 
