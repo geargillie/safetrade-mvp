@@ -473,8 +473,8 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
         <div className="flex-1 overflow-y-auto p-4">
           <h4 className="text-sm font-medium text-gray-900 mb-3">Available Safe Zones</h4>
           <div className="space-y-3">
-            {filteredSafeZones.length > 0 ? (
-              filteredSafeZones.map(safeZone => {
+            {safeZones.length > 0 ? (
+              safeZones.map(safeZone => {
                 const markerConfig = getMarkerConfig(safeZone);
                 return (
                   <div 
@@ -522,7 +522,10 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
                 );
               })
             ) : (
-              <p className="text-sm text-gray-500 text-center py-8">No safe zones match your current filters.</p>
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-500 mb-2">No safe zones available at the moment.</p>
+                <p className="text-xs text-gray-400">Safe zones are being set up in your area. Check back soon!</p>
+              </div>
             )}
           </div>
         </div>
@@ -530,7 +533,7 @@ const SafeZoneMap = React.memo(function SafeZoneMap({
         {/* Results Counter */}
         <div className="border-t border-gray-200 bg-white px-4 py-2">
           <p className="text-xs text-gray-600 text-center">
-            Showing {filteredSafeZones.length} of {safeZones.length} safe zones
+            Showing {safeZones.length} safe zones
           </p>
         </div>
       </div>
