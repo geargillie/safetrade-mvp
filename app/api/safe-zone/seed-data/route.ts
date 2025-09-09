@@ -16,7 +16,10 @@ async function seedSafeZones() {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Seed safe zone locations for Newark, NJ area
+    // First, let's clear any existing data
+    await supabase.from('safe_zones').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+    // Seed safe zone locations for Newark, NJ area - using only basic types
     const safeZones = [
       {
         name: "Newark Police Department - Central Division",
@@ -26,7 +29,7 @@ async function seedSafeZones() {
         zip_code: "07102",
         latitude: 40.7351,
         longitude: -74.1654,
-        zone_type: "police_station",
+        zone_type: "public",
         features: ["24_7", "security_cameras", "police_presence", "parking_available"],
         is_verified: true,
         status: "active",
@@ -128,7 +131,7 @@ async function seedSafeZones() {
         zip_code: "07302",
         latitude: 40.7189,
         longitude: -74.0431,
-        zone_type: "police_station",
+        zone_type: "public",
         features: ["24_7", "security_cameras", "police_presence", "parking_available"],
         is_verified: true,
         status: "active",
@@ -162,7 +165,7 @@ async function seedSafeZones() {
         zip_code: "07505",
         latitude: 40.9176,
         longitude: -74.1718,
-        zone_type: "police_station",
+        zone_type: "public",
         features: ["24_7", "security_cameras", "police_presence", "parking_available"],
         is_verified: true,
         status: "active",
@@ -189,9 +192,6 @@ async function seedSafeZones() {
         description: "Shopping center parking with security cameras and lighting"
       }
     ];
-
-    // Delete existing data to re-seed with verified locations
-    await supabase.from('safe_zones').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
     // Insert safe zones
     const { data, error } = await supabase
